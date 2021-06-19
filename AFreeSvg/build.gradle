@@ -34,7 +34,7 @@ dependencies {
 apply plugin: 'maven'
 ext {
     // 从Github上clone下来的项目的本地地址
-    GITHUB_REPO_PATH = "../../AFreeSvgExample"
+    GITHUB_REPO_PATH = "../../AFreeSvg"
     PUBLISH_GROUP_ID = 'com.yf'
     PUBLISH_ARTIFACT_ID = 'afreesvg'
     PUBLISH_VERSION = '0.0.1-beta1'
