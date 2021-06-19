@@ -1,4 +1,4 @@
-# AFreeSvgExample
+# AFreeSvg
 一个可以在安卓上绘制svg图片的库
 用法类似安卓canvas，通过SVGCanvas绘制图形，然后生成svg文本
 
