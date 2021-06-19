@@ -5,7 +5,6 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.drawable.shapes.Shape;
 
-
 import com.yf.afreesvg.util.DoubleFunction;
 
 import org.w3c.dom.DOMImplementation;
@@ -312,11 +311,11 @@ public class SVGCanvas {
 
     private String style(Paint paint, float[] dashArray) {
         if (paint == null || paint.getStyle() == Paint.Style.STROKE) {
-            return strokeStyle(paint, dashArray);
+            return strokeStyle(paint, dashArray, true);
         } else if (paint.getStyle() == Paint.Style.FILL)
             return getSVGFillStyle(paint);
         else
-            return strokeStyle(paint, dashArray) + ";" + getSVGFillStyle(paint);
+            return strokeStyle(paint, dashArray, false) + ";" + getSVGFillStyle(paint);
     }
 
     /**
@@ -335,7 +334,7 @@ public class SVGCanvas {
         return b.toString();
     }
 
-    private String strokeStyle(Paint paint, float[] dashArray) {
+    private String strokeStyle(Paint paint, float[] dashArray, boolean needFillAlpha) {
 
         double strokeWidth = 1.0f;
         String strokeCap = DEFAULT_STROKE_CAP;
@@ -343,7 +342,8 @@ public class SVGCanvas {
         float miterLimit = DEFAULT_MITER_LIMIT;
         int alpha = 255;
         if (paint != null) {
-            strokeWidth = paint.getStrokeWidth();
+            if (paint.getStrokeWidth() > 0)
+                strokeWidth = paint.getStrokeWidth();
             switch (paint.getStrokeCap()) {
                 case ROUND:
                     strokeCap = "round";
@@ -390,6 +390,8 @@ public class SVGCanvas {
                 b.append(dashArray[i]);
             }
         }
+        if (needFillAlpha)
+            b.append(";fill-opacity:0.0");
         return b.toString();
     }
 

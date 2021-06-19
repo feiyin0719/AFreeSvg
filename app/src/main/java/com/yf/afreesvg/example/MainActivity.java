@@ -29,14 +29,15 @@ public class MainActivity extends AppCompatActivity {
             paint.setStrokeWidth(2);
             svgCanvas.drawLine(10, 10, 200, 200, paint, new float[]{5, 5, 10});
             Paint paint1 = new Paint();
-            paint1.setStyle(Paint.Style.FILL_AND_STROKE);
+            paint1.setStyle(Paint.Style.STROKE);
+            paint1.setStrokeWidth(2);
             paint1.setARGB(100, 200, 200, 0);
             svgCanvas.drawRect(new RectF(300, 300, 400, 450), paint1);
             svgCanvas.drawOval(new RectF(150, 150, 200, 200), paint1);
             Matrix matrix = new Matrix();
             matrix.postTranslate(10, 10);
             svgCanvas.setTransform(matrix);
-            svgCanvas.drawRect(new RectF(300, 300, 400, 450), paint1);
+            svgCanvas.drawRect(new RectF(300, 300, 400, 450), paint1, new float[]{5, 5, 10});
             String s = svgCanvas.getSVGXmlString();
             Log.i("myyf", s);
 
