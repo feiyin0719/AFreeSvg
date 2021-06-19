@@ -1,0 +1,3 @@
+include ':AFreeSvg'
+include ':app'
+rootProject.name = "AFreeSvgExample"
