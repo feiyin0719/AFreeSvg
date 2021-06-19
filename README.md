@@ -32,6 +32,7 @@ SVGCanvas svgCanvas = null;
         } catch (TransformerException e) {
             e.printStackTrace();
         }
-    ```
+ ```
     
-    目前仅支持线段、矩形、圆形、椭圆的绘制填充，以及transform操作，后续会支持更多功能
+    
+ 目前仅支持线段、矩形、圆形、椭圆的绘制填充，以及transform操作，后续会支持更多功能
