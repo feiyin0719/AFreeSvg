@@ -2,6 +2,12 @@
 一个可以在安卓上绘制svg图片的库
 用法类似安卓canvas，通过SVGCanvas绘制图形，然后生成svg文本
 
+使用方法
+gradle添加jitpack仓库和依赖
+```
+ maven { url 'https://jitpack.io' }
+ implementation 'com.github.feiyin0719:AFreeSvg:0.0.1-beta1'
+```
 
 参考代码
 ```java
