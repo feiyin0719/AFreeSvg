@@ -325,6 +325,26 @@ public class SVGCanvas {
         transform.reset();
     }
 
+    public void translate(float dx, float dy) {
+        transform.postTranslate(dx, dy);
+    }
+
+    public void scale(float sx, float sy, float px, float py) {
+        transform.postScale(sx, sy, px, py);
+    }
+
+    public void scale(float sx, float sy) {
+        transform.postScale(sx, sy);
+    }
+
+    public void rotate(float degree, float px, float py) {
+        transform.postRotate(degree, px, py);
+    }
+
+    public void skew(float sx, float sy, float px, float py) {
+        transform.postSkew(sx, sy, px, py);
+    }
+
     public DoubleFunction<String> getGeomDoubleConverter() {
         return geomDoubleConverter;
     }
