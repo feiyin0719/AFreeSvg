@@ -55,6 +55,8 @@ gradle添加jitpack仓库和依赖
             e.printStackTrace();
         }
 ```
+生成图片如下
+![](https://raw.githubusercontent.com/feiyin0719/AFreeSvg/fe7008bb8ac81d406506c79c0ad06aab8950c23e/test.svg)
 ## api介绍
 - **SVGCanvas**
 绘制canvas，使用方法类似安卓canvas。
