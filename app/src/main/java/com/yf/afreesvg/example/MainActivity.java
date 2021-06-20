@@ -51,12 +51,15 @@ public class MainActivity extends AppCompatActivity {
             gradient.addStopColor(0.5f, 0xffff0000);
             gradient.addStopColor(1f, 0xff0000ff);
             paint2.setGradient(gradient);
+            paint2.setFillRule(SVGPaint.FILL_RULE_EVENODD);
             Matrix matrix = new Matrix();
             matrix.postTranslate(10, 10);
             svgCanvas.setTransform(matrix);
             svgCanvas.drawRect(new RectF(300, 300, 400, 450), paint2);
+            svgCanvas.drawPolygon(new float[]{100, 10, 40, 198, 190, 78, 10, 78, 160, 198}, paint2, null);
             String s = svgCanvas.getSVGXmlString();
             Log.i("myyf", s);
+
 
         } catch (ParserConfigurationException e) {
             e.printStackTrace();

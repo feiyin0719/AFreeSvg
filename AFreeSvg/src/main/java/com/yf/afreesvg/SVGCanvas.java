@@ -16,6 +16,7 @@ import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentType;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import java.io.OutputStream;
 import java.io.StringWriter;
@@ -204,6 +205,47 @@ public class SVGCanvas {
         svgElement.appendChild(element);
     }
 
+    public void drawPolygon(float[] points, SVGPaint paint) {
+        drawPolygon(points, paint, null);
+
+    }
+
+    public void drawPolygon(float[] points, SVGPaint paint, String id) {
+        if (points == null || points.length < 6) {
+            throw new IllegalArgumentException("points is null or points length < 6");
+        }
+        PointF pointF[] = new PointF[points.length / 2];
+        for (int i = 0; i < points.length; i += 2)
+            pointF[i / 2] = new PointF(points[i], points[i + 1]);
+        drawPolygon(pointF, paint, id);
+
+    }
+
+    public void drawPolygon(PointF points[], SVGPaint paint) {
+        drawPolygon(points, paint, null);
+    }
+
+    public void drawPolygon(PointF points[], SVGPaint paint, String id) {
+        if (points == null || points.length < 3) {
+            throw new IllegalArgumentException("points is null or points length <3");
+        }
+        Element element = document.createElement("polygon");
+        setElementId(element, id);
+        element.setAttribute("points", getPointsStr(points));
+        element.setAttribute("style", style(paint));
+        addTransformToElement(element);
+        svgElement.appendChild(element);
+    }
+
+    private String getPointsStr(PointF points[]) {
+        StringBuilder sb = new StringBuilder();
+        if (points.length > 0) {
+            for (int i = 0; i < points.length; ++i)
+                sb.append(" " + points[i].x + "," + points[i].y);
+        }
+        return sb.toString();
+    }
+
 
     public Element getSVGElement() {
         return getSVGElement(null, true, null, null, null);
@@ -232,6 +274,12 @@ public class SVGCanvas {
                 svgElement.setAttribute("preserveAspectRatio", preserveAspectRatio.toString() + (meetOrSlice == null ? "" : " " + meetOrSlice.toString()));
 
             }
+        }
+        if (defElement != null) {
+            NodeList list = svgElement.getElementsByTagName("defs");
+            if (list != null && list.getLength() > 0)
+                svgElement.removeChild(defElement);
+            svgElement.appendChild(defElement);
         }
         return svgElement;
     }
@@ -338,7 +386,9 @@ public class SVGCanvas {
         if (opacity < 1.0) {
             b.append(';').append("fill-opacity:").append(opacity);
         }
-
+        if (!paint.getFillRule().equals(SVGPaint.FILL_RULE_DEFAULT)) {
+            b.append(';').append("fill-rule:" + paint.getFillRule());
+        }
         return b.toString();
     }
 
@@ -352,7 +402,7 @@ public class SVGCanvas {
         return gradients.get(gradient);
     }
 
-    private String strokeStyle(SVGPaint paint, boolean needFillAlpha) {
+    private String strokeStyle(SVGPaint paint, boolean needFillNone) {
 
         double strokeWidth = 1.0f;
         String strokeCap = DEFAULT_STROKE_CAP;
@@ -414,8 +464,8 @@ public class SVGCanvas {
                 b.append(dashArray[i]);
             }
         }
-        if (needFillAlpha)
-            b.append(";fill-opacity:0.0");
+        if (needFillNone)
+            b.append(";fill:none");
         return b.toString();
     }
 
@@ -573,7 +623,6 @@ public class SVGCanvas {
         if (element == null) return;
         if (defElement == null) {
             defElement = document.createElement("defs");
-            svgElement.appendChild(defElement);
         }
         defElement.appendChild(element);
     }
