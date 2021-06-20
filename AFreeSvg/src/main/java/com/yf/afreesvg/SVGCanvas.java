@@ -398,7 +398,7 @@ public class SVGCanvas {
         } else if (paint.getStyle() == Paint.Style.FILL)
             return getSVGFillStyle(paint);
         else
-            return strokeStyle(paint, false) + ";" + getSVGFillStyle(paint);
+            return strokeStyle(paint, false) + getSVGFillStyle(paint);
     }
 
     /**
@@ -409,16 +409,34 @@ public class SVGCanvas {
      */
     private String getSVGFillStyle(SVGPaint paint) {
         StringBuilder b = new StringBuilder();
-        b.append("fill:").append(svgColorStr(paint));
+        b.append("fill:").append(fillColor(paint)).append(';');
 
-        double opacity = getColorAlpha(paint.getAlpha());
+        double opacity = getColorAlpha(paint.getFillColorAlpha());
         if (opacity < 1.0) {
-            b.append(';').append("fill-opacity:").append(opacity);
+            b.append("fill-opacity:").append(opacity).append(';');
         }
         if (!paint.getFillRule().equals(SVGPaint.FILL_RULE_DEFAULT)) {
-            b.append(';').append("fill-rule:" + paint.getFillRule());
+            b.append("fill-rule:" + paint.getFillRule()).append(';');
         }
         return b.toString();
+    }
+
+    private String fillColor(SVGPaint paint) {
+        if (paint.getGradient() != null) {
+            String id = addGradient(paint.gradient);
+            return "url(#" + id + ")";
+        }
+
+        return rgbColorStr(paint.getFillColor());
+    }
+
+    private String strokeColor(SVGPaint paint) {
+        if (paint.getGradient() != null && paint.isUseGradientStroke()) {
+            String id = addGradient(paint.gradient);
+            return "url(#" + id + ")";
+        }
+
+        return rgbColorStr(paint.getColor());
     }
 
     private String addGradient(SVGGradient gradient) {
@@ -468,7 +486,7 @@ public class SVGCanvas {
             miterLimit = paint.getStrokeMiter();
 
             dashArray = paint.getDashArray();
-            strokeColor = svgColorStr(paint);
+            strokeColor = strokeColor(paint);
             alpha = paint.getAlpha();
         }
 
@@ -476,25 +494,26 @@ public class SVGCanvas {
         b.append("stroke-width:").append(strokeWidth).append(";");
         b.append("stroke:").append(strokeColor).append(";");
         if (alpha < 255)
-            b.append("stroke-opacity:").append(getColorAlpha(alpha));
+            b.append("stroke-opacity:").append(getColorAlpha(alpha)).append(';');
         if (!strokeCap.equals(DEFAULT_STROKE_CAP)) {
-            b.append(";stroke-linecap:").append(strokeCap);
+            b.append("stroke-linecap:").append(strokeCap).append(';');
         }
         if (!strokeJoin.equals(DEFAULT_STROKE_JOIN)) {
-            b.append(";stroke-linejoin:").append(strokeJoin);
+            b.append("stroke-linejoin:").append(strokeJoin).append(';');
         }
         if (Math.abs(DEFAULT_MITER_LIMIT - miterLimit) > 0.001) {
-            b.append(";stroke-miterlimit:").append(geomDP(miterLimit));
+            b.append("stroke-miterlimit:").append(geomDP(miterLimit)).append(';');
         }
         if (dashArray != null && dashArray.length != 0) {
-            b.append(";stroke-dasharray:");
+            b.append("stroke-dasharray:");
             for (int i = 0; i < dashArray.length; i++) {
-                if (i != 0) b.append(",");
+                if (i != 0) b.append(';');
                 b.append(dashArray[i]);
             }
+            b.append(';');
         }
         if (needFillNone)
-            b.append(";fill:none");
+            b.append("fill:none;");
         return b.toString();
     }
 
