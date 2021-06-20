@@ -2,9 +2,14 @@ package com.yf.afreesvg;
 
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.PointF;
 import android.graphics.RectF;
 import android.graphics.drawable.shapes.Shape;
 
+import com.yf.afreesvg.gradient.SVGBaseGradient;
+import com.yf.afreesvg.gradient.SVGGradient;
+import com.yf.afreesvg.gradient.SVGLinearGradient;
+import com.yf.afreesvg.gradient.SVGRadialGradient;
 import com.yf.afreesvg.util.DoubleFunction;
 
 import org.w3c.dom.DOMImplementation;
@@ -14,6 +19,8 @@ import org.w3c.dom.Element;
 
 import java.io.OutputStream;
 import java.io.StringWriter;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -29,11 +36,21 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 
+/**
+ * The type Svg canvas.
+ */
 public class SVGCanvas {
     /**
      * The prefix for keys used to identify clip paths.
      */
     private static final String CLIP_KEY_PREFIX = "clip-";
+
+    /**
+     * A prefix for the keys used in the DEFS element.  This can be used to
+     * ensure that the keys are unique when creating more than one SVG element
+     * for a single HTML page.
+     */
+    private String defsKeyPrefix = "_" + System.nanoTime();
 
     private static final String DEFAULT_STROKE_CAP = "butt";
     private static final String DEFAULT_STROKE_JOIN = "miter";
@@ -72,6 +89,13 @@ public class SVGCanvas {
     private DoubleFunction<String> transformDoubleConverter;
 
     /**
+     * A map of all the gradients used, and the corresponding id.  When
+     * generating the SVG file, all the gradient paints used must be defined
+     * in the defs element.
+     */
+    private Map<SVGGradient, String> gradients = new HashMap<>();
+
+    /**
      * Units for the width and height of the SVG, if null then no
      * unit information is written in the SVG output.  This is set via
      * the class constructors.
@@ -85,6 +109,8 @@ public class SVGCanvas {
 
 
     private final Element svgElement;
+
+    private Element defElement;
 
     private final Document document;
 
@@ -111,6 +137,7 @@ public class SVGCanvas {
         initXmlVersion();
         svgElement = document.createElement("svg");
         document.appendChild(svgElement);
+
         geomDoubleConverter = new DoubleFunction<String>() {
             @Override
             public String apply(double value) {
@@ -303,14 +330,26 @@ public class SVGCanvas {
      *
      * @return A fill style string.
      */
-    private String getSVGFillStyle(Paint paint) {
+    private String getSVGFillStyle(SVGPaint paint) {
         StringBuilder b = new StringBuilder();
         b.append("fill:").append(svgColorStr(paint));
+
         double opacity = getColorAlpha(paint.getAlpha());
         if (opacity < 1.0) {
             b.append(';').append("fill-opacity:").append(opacity);
         }
+
         return b.toString();
+    }
+
+    private String addGradient(SVGGradient gradient) {
+        if (!gradients.containsKey(gradient)) {
+            String id = this.defsKeyPrefix + "gp" + gradients.size();
+            gradients.put(gradient, id);
+            addElementToDef(getGradientElement(id, gradient));
+            return id;
+        }
+        return gradients.get(gradient);
     }
 
     private String strokeStyle(SVGPaint paint, boolean needFillAlpha) {
@@ -320,6 +359,7 @@ public class SVGCanvas {
         String strokeJoin = DEFAULT_STROKE_JOIN;
         float miterLimit = DEFAULT_MITER_LIMIT;
         int alpha = 255;
+        String strokeColor = "white";
         float dashArray[] = null;
         if (paint != null) {
             if (paint.getStrokeWidth() > 0)
@@ -347,14 +387,17 @@ public class SVGCanvas {
                     // already set to "miter"
             }
             miterLimit = paint.getStrokeMiter();
-            alpha = paint.getAlpha();
+
             dashArray = paint.getDashArray();
+            strokeColor = svgColorStr(paint);
+            alpha = paint.getAlpha();
         }
 
         StringBuilder b = new StringBuilder();
         b.append("stroke-width:").append(strokeWidth).append(";");
-        b.append("stroke:").append(svgColorStr(paint)).append(";");
-        b.append("stroke-opacity:").append(getColorAlpha(alpha));
+        b.append("stroke:").append(strokeColor).append(";");
+        if (alpha < 255)
+            b.append("stroke-opacity:").append(getColorAlpha(alpha));
         if (!strokeCap.equals(DEFAULT_STROKE_CAP)) {
             b.append(";stroke-linecap:").append(strokeCap);
         }
@@ -376,6 +419,86 @@ public class SVGCanvas {
         return b.toString();
     }
 
+    private Element getGradientElement(String id, SVGGradient gradient) {
+        if (gradient == null) return null;
+        if (gradient instanceof SVGLinearGradient) {
+            return getLinearGradientElement(id, (SVGLinearGradient) gradient);
+        } else if (gradient instanceof SVGRadialGradient) {
+            return getRadialGradientElement(id, (SVGRadialGradient) gradient);
+        }
+        return null;
+    }
+
+
+    /**
+     * Returns an element to represent a linear gradient.  All the linear
+     * gradients that are used get written to the DEFS element in the SVG.
+     *
+     * @param id       the reference id.
+     * @param gradient the gradient.
+     * @return The SVG element.
+     */
+    private Element getLinearGradientElement(String id, SVGLinearGradient gradient) {
+
+        Element element = document.createElement("linearGradient");
+        setElementId(element, id);
+
+        PointF p1 = gradient.getStartPoint();
+        PointF p2 = gradient.getEndPoint();
+        element.setAttribute("x1", geomDP(p1.x));
+        element.setAttribute("y1", geomDP(p1.y));
+        element.setAttribute("x2", geomDP(p2.x));
+        element.setAttribute("y2", geomDP(p2.y));
+        if (gradient.getPosMode() == SVGBaseGradient.MODE_USERSPACE)
+            element.setAttribute("gradientUnits", "userSpaceOnUse");
+        for (int i = 0; i < gradient.getStopCount(); ++i) {
+            Element stop = document.createElement("stop");
+            long c1 = gradient.getStopColor(i);
+            stop.setAttribute("offset", "" + gradient.getStopOffset(i));
+            stop.setAttribute("stop-color", rgbColorStr(c1));
+
+
+            if (colorAlpha(c1) < 255) {
+                double alphaPercent = colorAlpha(c1) / 255.0;
+                stop.setAttribute("stop-opacity", transformDP(alphaPercent));
+
+            }
+            element.appendChild(stop);
+        }
+
+        return element;
+    }
+
+    private Element getRadialGradientElement(String id, SVGRadialGradient gradient) {
+
+        Element element = document.createElement("radialGradient");
+        setElementId(element, id);
+
+        element.setAttribute("cx", geomDP(gradient.getCx()));
+        element.setAttribute("cy", geomDP(gradient.getCy()));
+        element.setAttribute("r", geomDP(gradient.getR()));
+        element.setAttribute("fx", geomDP(gradient.getFx()));
+        element.setAttribute("fy", geomDP(gradient.getFy()));
+        if (gradient.getPosMode() == SVGBaseGradient.MODE_USERSPACE)
+            element.setAttribute("gradientUnits", "userSpaceOnUse");
+        for (int i = 0; i < gradient.getStopCount(); ++i) {
+            Element stop = document.createElement("stop");
+            long c1 = gradient.getStopColor(i);
+            stop.setAttribute("offset", "" + gradient.getStopOffset(i));
+            stop.setAttribute("stop-color", rgbColorStr(c1));
+
+
+            if (colorAlpha(c1) < 255) {
+                double alphaPercent = colorAlpha(c1) / 255.0;
+                stop.setAttribute("stop-opacity", transformDP(alphaPercent));
+
+            }
+            element.appendChild(stop);
+        }
+
+        return element;
+    }
+
 
     /**
      * Returns an SVG color string based on the current paint.  To handle
@@ -384,7 +507,12 @@ public class SVGCanvas {
      *
      * @return An SVG color string.
      */
-    private String svgColorStr(Paint paint) {
+    private String svgColorStr(SVGPaint paint) {
+        if (paint.getGradient() != null) {
+            String id = addGradient(paint.gradient);
+            return "url(#" + id + ")";
+        }
+
         return rgbColorStr(paint.getColor());
     }
 
@@ -395,11 +523,15 @@ public class SVGCanvas {
      * @return The SVG RGB color string.
      */
 
-    private String rgbColorStr(int color) {
+    private String rgbColorStr(long color) {
         StringBuilder b = new StringBuilder("rgb(");
         b.append(((color >> 16) & 0xff)).append(",").append(((color >> 8) & 0xff)).append(",")
                 .append((color) & 0xff).append(")");
         return b.toString();
+    }
+
+    private int colorAlpha(long color) {
+        return (int) (color >> 24 & 0xff);
     }
 
     private float getColorAlpha(int alpha) {
@@ -437,24 +569,15 @@ public class SVGCanvas {
     }
 
 
-    /**
-     * A utility method that appends an optional element id if one is
-     * specified via the rendering hints.
-     *
-     * @param builder the string builder ({@code null} not permitted).
-     */
-    private void setElementId(StringBuilder builder, String elementID) {
-
-        if (elementID != null) {
-            if (this.elementIDs.contains(elementID)) {
-                throw new IllegalStateException("The element id "
-                        + elementID + " is already used.");
-            } else {
-                this.elementIDs.add(elementID);
-            }
-            builder.append(" id='").append(elementID).append("'");
+    private void addElementToDef(Element element) {
+        if (element == null) return;
+        if (defElement == null) {
+            defElement = document.createElement("defs");
+            svgElement.appendChild(defElement);
         }
+        defElement.appendChild(element);
     }
+
 
     private void setElementId(Element element, String elementID) {
 
@@ -468,6 +591,5 @@ public class SVGCanvas {
             element.setAttribute("id", elementID);
         }
     }
-
 
 }
