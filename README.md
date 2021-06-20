@@ -55,27 +55,33 @@ gradle添加jitpack仓库和依赖
             e.printStackTrace();
         }
 ```
+
 生成图片如下
 ![](https://raw.githubusercontent.com/feiyin0719/AFreeSvg/fe7008bb8ac81d406506c79c0ad06aab8950c23e/test.svg)
 ## api介绍
 - **SVGCanvas**
+
 绘制canvas，使用方法类似安卓canvas。
-1.图形绘制api 
-   - drawRect(RectF rectF, SVGPaint paint) //绘制矩形
-   - drawLine(float x1, float y1, float x2, float y2, SVGPaint paint) //绘制线段
-   - drawOval(RectF rectF, SVGPaint paint) //绘制椭圆或者圆
-   - drawPolygon(float[] points, SVGPaint paint) //绘制多边形
-   - drawPolyline(float points[], SVGPaint paint) //绘制多线段
+
+图形绘制api 
+   1. drawRect(RectF rectF, SVGPaint paint) //绘制矩形
+   2. drawLine(float x1, float y1, float x2, float y2, SVGPaint paint) //绘制线段
+   3. drawOval(RectF rectF, SVGPaint paint) //绘制椭圆或者圆
+   4. drawPolygon(float[] points, SVGPaint paint) //绘制多边形
+   5. drawPolyline(float points[], SVGPaint paint) //绘制多线段 
+
 - **SVGPaint**
+
 绘制画笔类，继承自安卓paint，主要用来添加一些安卓paint不支持的功能，以及解决无法获取渐变色和dash的问题
-  - setDashArray(float[] dashArray) //设置线段dash值
-  - setGradient(SVGGradient gradient) //设置渐变色
-  - setFillRule(String fillRule) //设置填充规则 值意义参考svg 
-  nonzero / evenodd / inherit 默认nonzero
+   1. setDashArray(float[] dashArray) //设置线段dash值
+   2. setGradient(SVGGradient gradient) //设置渐变色
+   3. setFillRule(String fillRule) //设置填充规则 值意义参考svg    nonzero / evenodd / inherit 默认nonzero
+
 - **SVGGradient**
+
 渐变色
-  - SVGLinearGradient  //线性渐变
-  - SVGRadialGradient //放射渐变
+  1. SVGLinearGradient  //线性渐变
+  2. SVGRadialGradient //放射渐变
 ## 版本日志
 - **0.0.1-beta3**
   1.新增渐变色支持
