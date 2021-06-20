@@ -9,7 +9,7 @@ public class SVGRadialGradient extends SVGBaseGradient {
     public SVGRadialGradient() {
     }
 
-    public SVGRadialGradient(float cx, float cy, float r, float fx, float fy, @POSMODE int posMode) {
+    public SVGRadialGradient(float cx, float cy, float r, float fx, float fy, @POS_MODE int posMode) {
         super(posMode);
         this.cx = cx;
         this.cy = cy;

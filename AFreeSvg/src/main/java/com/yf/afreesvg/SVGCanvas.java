@@ -567,22 +567,7 @@ public class SVGCanvas {
         element.setAttribute("y1", geomDP(p1.y));
         element.setAttribute("x2", geomDP(p2.x));
         element.setAttribute("y2", geomDP(p2.y));
-        if (gradient.getPosMode() == SVGBaseGradient.MODE_USERSPACE)
-            element.setAttribute("gradientUnits", "userSpaceOnUse");
-        for (int i = 0; i < gradient.getStopCount(); ++i) {
-            Element stop = document.createElement("stop");
-            long c1 = gradient.getStopColor(i);
-            stop.setAttribute("offset", "" + gradient.getStopOffset(i));
-            stop.setAttribute("stop-color", rgbColorStr(c1));
-
-
-            if (colorAlpha(c1) < 255) {
-                double alphaPercent = colorAlpha(c1) / 255.0;
-                stop.setAttribute("stop-opacity", transformDP(alphaPercent));
-
-            }
-            element.appendChild(stop);
-        }
+        initBaseGradientAttr(element, gradient);
 
         return element;
     }
@@ -597,14 +582,21 @@ public class SVGCanvas {
         element.setAttribute("r", geomDP(gradient.getR()));
         element.setAttribute("fx", geomDP(gradient.getFx()));
         element.setAttribute("fy", geomDP(gradient.getFy()));
+        initBaseGradientAttr(element, gradient);
+
+        return element;
+    }
+
+    private void initBaseGradientAttr(Element element, SVGBaseGradient gradient) {
         if (gradient.getPosMode() == SVGBaseGradient.MODE_USERSPACE)
             element.setAttribute("gradientUnits", "userSpaceOnUse");
+        if (!gradient.getSpreadMode().equals(SVGBaseGradient.SPREAD_PAD))
+            element.setAttribute("spreadMethod", gradient.getSpreadMode());
         for (int i = 0; i < gradient.getStopCount(); ++i) {
             Element stop = document.createElement("stop");
             long c1 = gradient.getStopColor(i);
             stop.setAttribute("offset", "" + gradient.getStopOffset(i));
             stop.setAttribute("stop-color", rgbColorStr(c1));
-
 
             if (colorAlpha(c1) < 255) {
                 double alphaPercent = colorAlpha(c1) / 255.0;
@@ -613,8 +605,6 @@ public class SVGCanvas {
             }
             element.appendChild(stop);
         }
-
-        return element;
     }
 
 

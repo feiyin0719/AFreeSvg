@@ -14,7 +14,7 @@ public class SVGLinearGradient extends SVGBaseGradient {
         this(startPoint, endPoint, MODE_DEFAULT);
     }
 
-    public SVGLinearGradient(PointF startPoint, PointF endPoint, @POSMODE int mode) {
+    public SVGLinearGradient(PointF startPoint, PointF endPoint, @POS_MODE int mode) {
         super(mode);
         this.startPoint = startPoint;
         this.endPoint = endPoint;
