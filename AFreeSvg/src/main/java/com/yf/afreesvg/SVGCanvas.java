@@ -88,7 +88,7 @@ public class SVGCanvas {
 
     private final Document document;
 
-    private Matrix transform;
+    private Matrix transform = new Matrix();
 
     public SVGCanvas(double width, double height) throws ParserConfigurationException {
         this(width, height, null);
@@ -125,75 +125,54 @@ public class SVGCanvas {
         };
     }
 
-    public void drawLine(float x1, float y1, float x2, float y2, Paint paint) {
-        drawLine(x1, y1, x2, y2, paint, null, null);
+    public void drawLine(float x1, float y1, float x2, float y2, SVGPaint paint) {
+        drawLine(x1, y1, x2, y2, paint, null);
     }
 
-    public void drawLine(float x1, float y1, float x2, float y2, Paint paint, float dashArray[]) {
-        drawLine(x1, y1, x2, y2, paint, dashArray, null);
-    }
 
-    public void drawLine(float x1, float y1, float x2, float y2, Paint paint, String id) {
-        drawLine(x1, y1, x2, y2, paint, null, null);
-    }
-
-    public void drawLine(float x1, float y1, float x2, float y2, Paint paint, float dashArray[], String id) {
+    public void drawLine(float x1, float y1, float x2, float y2, SVGPaint paint, String id) {
         Element element = document.createElement("line");
         setElementId(element, id);
         element.setAttribute("x1", geomDP(x1));
         element.setAttribute("y1", geomDP(y1));
         element.setAttribute("x2", geomDP(x2));
         element.setAttribute("y2", geomDP(y2));
-        element.setAttribute("style", style(paint, dashArray));
+        element.setAttribute("style", style(paint));
         addTransformToElement(element);
         svgElement.appendChild(element);
 
     }
 
-    public void drawRect(RectF rectF, Paint paint) {
-        drawRect(rectF, paint, null, null);
+    public void drawRect(RectF rectF, SVGPaint paint) {
+        drawRect(rectF, paint, null);
     }
 
-    public void drawRect(RectF rectF, Paint paint, float dashArray[]) {
-        drawRect(rectF, paint, dashArray, null);
-    }
 
-    public void drawRect(RectF rectF, Paint paint, String id) {
-        drawRect(rectF, paint, null, id);
-    }
-
-    public void drawRect(RectF rectF, Paint paint, float dashArray[], String id) {
+    public void drawRect(RectF rectF, SVGPaint paint, String id) {
         Element element = document.createElement("rect");
         setElementId(element, id);
         element.setAttribute("x", "" + rectF.left);
         element.setAttribute("y", "" + rectF.top);
         element.setAttribute("width", "" + rectF.width());
         element.setAttribute("height", "" + rectF.height());
-        element.setAttribute("style", style(paint, dashArray));
+        element.setAttribute("style", style(paint));
         addTransformToElement(element);
         svgElement.appendChild(element);
     }
 
-    public void drawOval(RectF rectF, Paint paint) {
-        drawOval(rectF, paint, null, null);
+    public void drawOval(RectF rectF, SVGPaint paint) {
+        drawOval(rectF, paint, null);
     }
 
-    public void drawOval(RectF rectF, Paint paint, float dashArray[]) {
-        drawOval(rectF, paint, dashArray, null);
-    }
 
-    public void drawOval(RectF rectF, Paint paint, String id) {
-        drawOval(rectF, paint, null, id);
-    }
-
-    public void drawOval(RectF rectF, Paint paint, float dashArray[], String id) {
+    public void drawOval(RectF rectF, SVGPaint paint, String id) {
         Element element = document.createElement("ellipse");
         setElementId(element, id);
         element.setAttribute("cx", "" + rectF.centerX());
         element.setAttribute("cy", "" + rectF.centerY());
         element.setAttribute("rx", "" + rectF.width() / 2);
         element.setAttribute("ry", "" + rectF.height() / 2);
-        element.setAttribute("style", style(paint, dashArray));
+        element.setAttribute("style", style(paint));
         addTransformToElement(element);
         svgElement.appendChild(element);
     }
@@ -239,7 +218,7 @@ public class SVGCanvas {
     }
 
     public void resetTransform() {
-        transform = null;
+        transform.reset();
     }
 
     public DoubleFunction<String> getGeomDoubleConverter() {
@@ -309,13 +288,13 @@ public class SVGCanvas {
         return this.geomDoubleConverter.apply(d);
     }
 
-    private String style(Paint paint, float[] dashArray) {
+    private String style(SVGPaint paint) {
         if (paint == null || paint.getStyle() == Paint.Style.STROKE) {
-            return strokeStyle(paint, dashArray, true);
+            return strokeStyle(paint, true);
         } else if (paint.getStyle() == Paint.Style.FILL)
             return getSVGFillStyle(paint);
         else
-            return strokeStyle(paint, dashArray, false) + ";" + getSVGFillStyle(paint);
+            return strokeStyle(paint, false) + ";" + getSVGFillStyle(paint);
     }
 
     /**
@@ -334,13 +313,14 @@ public class SVGCanvas {
         return b.toString();
     }
 
-    private String strokeStyle(Paint paint, float[] dashArray, boolean needFillAlpha) {
+    private String strokeStyle(SVGPaint paint, boolean needFillAlpha) {
 
         double strokeWidth = 1.0f;
         String strokeCap = DEFAULT_STROKE_CAP;
         String strokeJoin = DEFAULT_STROKE_JOIN;
         float miterLimit = DEFAULT_MITER_LIMIT;
         int alpha = 255;
+        float dashArray[] = null;
         if (paint != null) {
             if (paint.getStrokeWidth() > 0)
                 strokeWidth = paint.getStrokeWidth();
@@ -368,6 +348,7 @@ public class SVGCanvas {
             }
             miterLimit = paint.getStrokeMiter();
             alpha = paint.getAlpha();
+            dashArray = paint.getDashArray();
         }
 
         StringBuilder b = new StringBuilder();
