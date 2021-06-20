@@ -214,10 +214,8 @@ public class SVGCanvas {
         if (points == null || points.length < 6) {
             throw new IllegalArgumentException("points is null or points length < 6");
         }
-        PointF pointF[] = new PointF[points.length / 2];
-        for (int i = 0; i < points.length; i += 2)
-            pointF[i / 2] = new PointF(points[i], points[i + 1]);
-        drawPolygon(pointF, paint, id);
+
+        drawPolygon(convertPoints(points), paint, id);
 
     }
 
@@ -235,6 +233,37 @@ public class SVGCanvas {
         element.setAttribute("style", style(paint));
         addTransformToElement(element);
         svgElement.appendChild(element);
+    }
+
+    public void drawPolyline(float points[], SVGPaint paint) {
+        drawPolyline(points, paint, null);
+    }
+
+    public void drawPolyline(float points[], SVGPaint paint, String id) {
+        drawPolyline(convertPoints(points), paint, id);
+    }
+
+    public void drawPolyline(PointF points[], SVGPaint paint) {
+        drawPolyline(points, paint, null);
+    }
+
+    public void drawPolyline(PointF points[], SVGPaint paint, String id) {
+        if (points == null || points.length < 2) {
+            throw new IllegalArgumentException("points is null or points length <2");
+        }
+        Element element = document.createElement("polyline");
+        setElementId(element, id);
+        element.setAttribute("points", getPointsStr(points));
+        element.setAttribute("style", style(paint));
+        addTransformToElement(element);
+        svgElement.appendChild(element);
+    }
+
+    private PointF[] convertPoints(float points[]) {
+        PointF pointF[] = new PointF[points.length / 2];
+        for (int i = 0; i < points.length; i += 2)
+            pointF[i / 2] = new PointF(points[i], points[i + 1]);
+        return pointF;
     }
 
     private String getPointsStr(PointF points[]) {

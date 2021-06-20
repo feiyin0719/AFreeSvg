@@ -56,7 +56,8 @@ public class MainActivity extends AppCompatActivity {
             matrix.postTranslate(10, 10);
             svgCanvas.setTransform(matrix);
             svgCanvas.drawRect(new RectF(300, 300, 400, 450), paint2);
-            svgCanvas.drawPolygon(new float[]{100, 10, 40, 198, 190, 78, 10, 78, 160, 198}, paint2, null);
+            svgCanvas.drawPolygon(new float[]{100, 10, 40, 198, 190, 78, 10, 78, 160, 198}, paint2);
+            svgCanvas.drawPolyline(new float[]{20, 20, 40, 25, 60, 40, 80, 120, 120, 140, 200, 180}, paint);
             String s = svgCanvas.getSVGXmlString();
             Log.i("myyf", s);
 
