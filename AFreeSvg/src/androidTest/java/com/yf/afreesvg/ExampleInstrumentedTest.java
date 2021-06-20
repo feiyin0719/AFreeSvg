@@ -1,13 +1,11 @@
 package com.yf.afreesvg;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.Log;
 
-import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import org.junit.Test;
@@ -15,8 +13,6 @@ import org.junit.runner.RunWith;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
-
-import static org.junit.Assert.*;
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -31,12 +27,13 @@ public class ExampleInstrumentedTest {
         SVGCanvas svgCanvas = null;
         try {
             svgCanvas = new SVGCanvas(500, 500);
-            Paint paint = new Paint();
+            SVGPaint paint = new SVGPaint();
             paint.setStyle(Paint.Style.STROKE);
             paint.setColor(Color.RED);
             paint.setStrokeWidth(2);
-            svgCanvas.drawLine(10, 10, 200, 200, paint, new float[]{5, 5, 10});
-            Paint paint1 = new Paint();
+            paint.setDashArray(new float[]{5, 5, 10});
+            svgCanvas.drawLine(10, 10, 200, 200, paint);
+            SVGPaint paint1 = new SVGPaint();
             paint1.setStyle(Paint.Style.FILL_AND_STROKE);
             paint1.setARGB(100, 200, 200, 0);
             svgCanvas.drawRect(new RectF(300, 300, 400, 450), paint1);
