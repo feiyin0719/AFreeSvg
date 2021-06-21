@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.yf.afreesvg.SVGCanvas;
 import com.yf.afreesvg.SVGPaint;
+import com.yf.afreesvg.SVGPath;
 import com.yf.afreesvg.gradient.SVGLinearGradient;
 import com.yf.afreesvg.gradient.SVGRadialGradient;
 
@@ -29,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
             svgCanvas = new SVGCanvas(500, 500);
             SVGPaint paint = new SVGPaint();
             paint.setStyle(Paint.Style.STROKE);
+            paint.setFillColor(0xff0000ff);
             paint.setDashArray(new float[]{5, 5, 10});
             paint.setColor(Color.RED);
             paint.setStrokeWidth(2);
@@ -58,6 +60,17 @@ public class MainActivity extends AppCompatActivity {
             svgCanvas.drawRect(new RectF(300, 300, 400, 450), paint2);
             svgCanvas.drawPolygon(new float[]{100, 10, 40, 198, 190, 78, 10, 78, 160, 198}, paint2);
             svgCanvas.drawPolyline(new float[]{20, 20, 40, 25, 60, 40, 80, 120, 120, 140, 200, 180}, paint);
+            SVGPath svgPath = new SVGPath();
+            svgPath.moveTo(200, 200);
+            svgPath.oval(200, 200, 50, 50);
+
+            svgPath.rect(100, 50, 50, 50);
+
+            svgPath.moveTo(100, 300);
+            svgPath.quadraticBelzierCurve(150, 250, 200, 400);
+            svgCanvas.drawPath(svgPath, paint);
+            svgCanvas.drawCurve(50, 50, 200, 50, 100, 25, paint);
+            svgCanvas.drawArc(300, 100, 50, 50, 90, 270, paint);
             String s = svgCanvas.getSVGXmlString();
             Log.i("myyf", s);
 

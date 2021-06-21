@@ -21,6 +21,7 @@ import org.w3c.dom.NodeList;
 import java.io.OutputStream;
 import java.io.StringWriter;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -179,10 +180,10 @@ public class SVGCanvas {
     public void drawRect(RectF rectF, SVGPaint paint, String id) {
         Element element = document.createElement("rect");
         setElementId(element, id);
-        element.setAttribute("x", "" + rectF.left);
-        element.setAttribute("y", "" + rectF.top);
-        element.setAttribute("width", "" + rectF.width());
-        element.setAttribute("height", "" + rectF.height());
+        element.setAttribute("x", geomDP(rectF.left));
+        element.setAttribute("y", geomDP(rectF.top));
+        element.setAttribute("width", geomDP(rectF.width()));
+        element.setAttribute("height", geomDP(rectF.height()));
         element.setAttribute("style", style(paint));
         addTransformToElement(element);
         svgElement.appendChild(element);
@@ -196,10 +197,10 @@ public class SVGCanvas {
     public void drawOval(RectF rectF, SVGPaint paint, String id) {
         Element element = document.createElement("ellipse");
         setElementId(element, id);
-        element.setAttribute("cx", "" + rectF.centerX());
-        element.setAttribute("cy", "" + rectF.centerY());
-        element.setAttribute("rx", "" + rectF.width() / 2);
-        element.setAttribute("ry", "" + rectF.height() / 2);
+        element.setAttribute("cx", geomDP(rectF.centerX()));
+        element.setAttribute("cy", geomDP(rectF.centerY()));
+        element.setAttribute("rx", geomDP(rectF.width() / 2));
+        element.setAttribute("ry", geomDP(rectF.height() / 2));
         element.setAttribute("style", style(paint));
         addTransformToElement(element);
         svgElement.appendChild(element);
@@ -259,6 +260,51 @@ public class SVGCanvas {
         svgElement.appendChild(element);
     }
 
+    public void drawArc(float x, float y, float width, float height, float startAngle,
+                        float arcAngle, SVGPaint paint) {
+        drawArc(x, y, width, height, startAngle, arcAngle, paint, null);
+    }
+
+    public void drawArc(float x, float y, float width, float height, float startAngle,
+                        float arcAngle, SVGPaint paint, String id) {
+        SVGPath path = new SVGPath();
+        double sr = Math.toRadians(startAngle);
+        float sx = (float) (x + width * Math.cos(sr));
+        float sy = (float) (y + height * Math.sin(sr));
+        path.moveTo(sx, sy);
+        double er = Math.toRadians(startAngle + arcAngle);
+        float ex = (float) (x + width * Math.cos(er));
+        float ey = (float) (y + height * Math.sin(er));
+        path.ellipticalArc(width, height, 0, arcAngle > 180 ? 1 : 0, 1, ex, ey);
+        drawPath(path, paint, id);
+
+    }
+
+    public void drawCurve(float sx, float sy, float ex, float ey, float x, float y, SVGPaint paint) {
+        drawCurve(sx, sy, ex, ey, x, y, paint, null);
+    }
+
+    public void drawCurve(float sx, float sy, float ex, float ey, float x, float y, SVGPaint paint, String id) {
+        SVGPath path = new SVGPath();
+        path.moveTo(sx, sy);
+        path.quadraticBelzierCurve(x, y, ex, ey);
+        drawPath(path, paint, id);
+    }
+
+    public void drawPath(SVGPath path, SVGPaint paint) {
+        drawPath(path, paint, null);
+    }
+
+    public void drawPath(SVGPath path, SVGPaint paint, String id) {
+        Element element = document.createElement("path");
+        setElementId(element, id);
+        element.setAttribute("d", getSVGPathD(path));
+        element.setAttribute("style", style(paint));
+        addTransformToElement(element);
+        svgElement.appendChild(element);
+    }
+
+
     private PointF[] convertPoints(float points[]) {
         PointF pointF[] = new PointF[points.length / 2];
         for (int i = 0; i < points.length; i += 2)
@@ -270,7 +316,7 @@ public class SVGCanvas {
         StringBuilder sb = new StringBuilder();
         if (points.length > 0) {
             for (int i = 0; i < points.length; ++i)
-                sb.append(" " + points[i].x + "," + points[i].y);
+                sb.append(" " + geomDP(points[i].x) + "," + geomDP(points[i].y));
         }
         return sb.toString();
     }
@@ -323,6 +369,26 @@ public class SVGCanvas {
 
     public void resetTransform() {
         transform.reset();
+    }
+
+    public void translate(float dx, float dy) {
+        transform.postTranslate(dx, dy);
+    }
+
+    public void scale(float sx, float sy, float px, float py) {
+        transform.postScale(sx, sy, px, py);
+    }
+
+    public void scale(float sx, float sy) {
+        transform.postScale(sx, sy);
+    }
+
+    public void rotate(float degree, float px, float py) {
+        transform.postRotate(degree, px, py);
+    }
+
+    public void skew(float sx, float sy, float px, float py) {
+        transform.postSkew(sx, sy, px, py);
     }
 
     public DoubleFunction<String> getGeomDoubleConverter() {
@@ -398,7 +464,7 @@ public class SVGCanvas {
         } else if (paint.getStyle() == Paint.Style.FILL)
             return getSVGFillStyle(paint);
         else
-            return strokeStyle(paint, false) + ";" + getSVGFillStyle(paint);
+            return strokeStyle(paint, false) + getSVGFillStyle(paint);
     }
 
     /**
@@ -409,16 +475,34 @@ public class SVGCanvas {
      */
     private String getSVGFillStyle(SVGPaint paint) {
         StringBuilder b = new StringBuilder();
-        b.append("fill:").append(svgColorStr(paint));
+        b.append("fill:").append(fillColor(paint)).append(';');
 
-        double opacity = getColorAlpha(paint.getAlpha());
+        double opacity = getColorAlpha(paint.getFillColorAlpha());
         if (opacity < 1.0) {
-            b.append(';').append("fill-opacity:").append(opacity);
+            b.append("fill-opacity:").append(opacity).append(';');
         }
         if (!paint.getFillRule().equals(SVGPaint.FILL_RULE_DEFAULT)) {
-            b.append(';').append("fill-rule:" + paint.getFillRule());
+            b.append("fill-rule:" + paint.getFillRule()).append(';');
         }
         return b.toString();
+    }
+
+    private String fillColor(SVGPaint paint) {
+        if (paint.getGradient() != null) {
+            String id = addGradient(paint.gradient);
+            return "url(#" + id + ")";
+        }
+
+        return rgbColorStr(paint.getFillColor());
+    }
+
+    private String strokeColor(SVGPaint paint) {
+        if (paint.getGradient() != null && paint.isUseGradientStroke()) {
+            String id = addGradient(paint.gradient);
+            return "url(#" + id + ")";
+        }
+
+        return rgbColorStr(paint.getColor());
     }
 
     private String addGradient(SVGGradient gradient) {
@@ -468,7 +552,7 @@ public class SVGCanvas {
             miterLimit = paint.getStrokeMiter();
 
             dashArray = paint.getDashArray();
-            strokeColor = svgColorStr(paint);
+            strokeColor = strokeColor(paint);
             alpha = paint.getAlpha();
         }
 
@@ -476,26 +560,37 @@ public class SVGCanvas {
         b.append("stroke-width:").append(strokeWidth).append(";");
         b.append("stroke:").append(strokeColor).append(";");
         if (alpha < 255)
-            b.append("stroke-opacity:").append(getColorAlpha(alpha));
+            b.append("stroke-opacity:").append(getColorAlpha(alpha)).append(';');
         if (!strokeCap.equals(DEFAULT_STROKE_CAP)) {
-            b.append(";stroke-linecap:").append(strokeCap);
+            b.append("stroke-linecap:").append(strokeCap).append(';');
         }
         if (!strokeJoin.equals(DEFAULT_STROKE_JOIN)) {
-            b.append(";stroke-linejoin:").append(strokeJoin);
+            b.append("stroke-linejoin:").append(strokeJoin).append(';');
         }
         if (Math.abs(DEFAULT_MITER_LIMIT - miterLimit) > 0.001) {
-            b.append(";stroke-miterlimit:").append(geomDP(miterLimit));
+            b.append("stroke-miterlimit:").append(geomDP(miterLimit)).append(';');
         }
         if (dashArray != null && dashArray.length != 0) {
-            b.append(";stroke-dasharray:");
+            b.append("stroke-dasharray:");
             for (int i = 0; i < dashArray.length; i++) {
-                if (i != 0) b.append(",");
+                if (i != 0) b.append(';');
                 b.append(dashArray[i]);
             }
+            b.append(';');
         }
         if (needFillNone)
-            b.append(";fill:none");
+            b.append("fill:none;");
         return b.toString();
+    }
+
+    private String getSVGPathD(SVGPath path) {
+        Iterator<SVGPath.SVGPathElement> iterator = path.iterator();
+        StringBuilder sb = new StringBuilder();
+        while (iterator.hasNext()) {
+            SVGPath.SVGPathElement pathElement = iterator.next();
+            sb.append(pathElement.getString(geomDoubleConverter));
+        }
+        return sb.toString();
     }
 
     private Element getGradientElement(String id, SVGGradient gradient) {
@@ -528,22 +623,7 @@ public class SVGCanvas {
         element.setAttribute("y1", geomDP(p1.y));
         element.setAttribute("x2", geomDP(p2.x));
         element.setAttribute("y2", geomDP(p2.y));
-        if (gradient.getPosMode() == SVGBaseGradient.MODE_USERSPACE)
-            element.setAttribute("gradientUnits", "userSpaceOnUse");
-        for (int i = 0; i < gradient.getStopCount(); ++i) {
-            Element stop = document.createElement("stop");
-            long c1 = gradient.getStopColor(i);
-            stop.setAttribute("offset", "" + gradient.getStopOffset(i));
-            stop.setAttribute("stop-color", rgbColorStr(c1));
-
-
-            if (colorAlpha(c1) < 255) {
-                double alphaPercent = colorAlpha(c1) / 255.0;
-                stop.setAttribute("stop-opacity", transformDP(alphaPercent));
-
-            }
-            element.appendChild(stop);
-        }
+        initBaseGradientAttr(element, gradient);
 
         return element;
     }
@@ -558,14 +638,21 @@ public class SVGCanvas {
         element.setAttribute("r", geomDP(gradient.getR()));
         element.setAttribute("fx", geomDP(gradient.getFx()));
         element.setAttribute("fy", geomDP(gradient.getFy()));
+        initBaseGradientAttr(element, gradient);
+
+        return element;
+    }
+
+    private void initBaseGradientAttr(Element element, SVGBaseGradient gradient) {
         if (gradient.getPosMode() == SVGBaseGradient.MODE_USERSPACE)
             element.setAttribute("gradientUnits", "userSpaceOnUse");
+        if (!gradient.getSpreadMode().equals(SVGBaseGradient.SPREAD_PAD))
+            element.setAttribute("spreadMethod", gradient.getSpreadMode());
         for (int i = 0; i < gradient.getStopCount(); ++i) {
             Element stop = document.createElement("stop");
             long c1 = gradient.getStopColor(i);
             stop.setAttribute("offset", "" + gradient.getStopOffset(i));
             stop.setAttribute("stop-color", rgbColorStr(c1));
-
 
             if (colorAlpha(c1) < 255) {
                 double alphaPercent = colorAlpha(c1) / 255.0;
@@ -574,8 +661,6 @@ public class SVGCanvas {
             }
             element.appendChild(stop);
         }
-
-        return element;
     }
 
 
