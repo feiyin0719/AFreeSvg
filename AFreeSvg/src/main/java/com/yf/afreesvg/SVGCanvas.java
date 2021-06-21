@@ -21,6 +21,7 @@ import org.w3c.dom.NodeList;
 import java.io.OutputStream;
 import java.io.StringWriter;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -179,10 +180,10 @@ public class SVGCanvas {
     public void drawRect(RectF rectF, SVGPaint paint, String id) {
         Element element = document.createElement("rect");
         setElementId(element, id);
-        element.setAttribute("x", "" + rectF.left);
-        element.setAttribute("y", "" + rectF.top);
-        element.setAttribute("width", "" + rectF.width());
-        element.setAttribute("height", "" + rectF.height());
+        element.setAttribute("x", geomDP(rectF.left));
+        element.setAttribute("y", geomDP(rectF.top));
+        element.setAttribute("width", geomDP(rectF.width()));
+        element.setAttribute("height", geomDP(rectF.height()));
         element.setAttribute("style", style(paint));
         addTransformToElement(element);
         svgElement.appendChild(element);
@@ -196,10 +197,10 @@ public class SVGCanvas {
     public void drawOval(RectF rectF, SVGPaint paint, String id) {
         Element element = document.createElement("ellipse");
         setElementId(element, id);
-        element.setAttribute("cx", "" + rectF.centerX());
-        element.setAttribute("cy", "" + rectF.centerY());
-        element.setAttribute("rx", "" + rectF.width() / 2);
-        element.setAttribute("ry", "" + rectF.height() / 2);
+        element.setAttribute("cx", geomDP(rectF.centerX()));
+        element.setAttribute("cy", geomDP(rectF.centerY()));
+        element.setAttribute("rx", geomDP(rectF.width() / 2));
+        element.setAttribute("ry", geomDP(rectF.height() / 2));
         element.setAttribute("style", style(paint));
         addTransformToElement(element);
         svgElement.appendChild(element);
@@ -259,6 +260,51 @@ public class SVGCanvas {
         svgElement.appendChild(element);
     }
 
+    public void drawArc(float x, float y, float width, float height, float startAngle,
+                        float arcAngle, SVGPaint paint) {
+        drawArc(x, y, width, height, startAngle, arcAngle, paint, null);
+    }
+
+    public void drawArc(float x, float y, float width, float height, float startAngle,
+                        float arcAngle, SVGPaint paint, String id) {
+        SVGPath path = new SVGPath();
+        double sr = Math.toRadians(startAngle);
+        float sx = (float) (x + width * Math.cos(sr));
+        float sy = (float) (y + height * Math.sin(sr));
+        path.moveTo(sx, sy);
+        double er = Math.toRadians(startAngle + arcAngle);
+        float ex = (float) (x + width * Math.cos(er));
+        float ey = (float) (y + height * Math.sin(er));
+        path.ellipticalArc(width, height, 0, arcAngle > 180 ? 1 : 0, 1, ex, ey);
+        drawPath(path, paint, id);
+
+    }
+
+    public void drawCurve(float sx, float sy, float ex, float ey, float x, float y, SVGPaint paint) {
+        drawCurve(sx, sy, ex, ey, x, y, paint, null);
+    }
+
+    public void drawCurve(float sx, float sy, float ex, float ey, float x, float y, SVGPaint paint, String id) {
+        SVGPath path = new SVGPath();
+        path.moveTo(sx, sy);
+        path.quadraticBelzierCurve(x, y, ex, ey);
+        drawPath(path, paint, id);
+    }
+
+    public void drawPath(SVGPath path, SVGPaint paint) {
+        drawPath(path, paint, null);
+    }
+
+    public void drawPath(SVGPath path, SVGPaint paint, String id) {
+        Element element = document.createElement("path");
+        setElementId(element, id);
+        element.setAttribute("d", getSVGPathD(path));
+        element.setAttribute("style", style(paint));
+        addTransformToElement(element);
+        svgElement.appendChild(element);
+    }
+
+
     private PointF[] convertPoints(float points[]) {
         PointF pointF[] = new PointF[points.length / 2];
         for (int i = 0; i < points.length; i += 2)
@@ -270,7 +316,7 @@ public class SVGCanvas {
         StringBuilder sb = new StringBuilder();
         if (points.length > 0) {
             for (int i = 0; i < points.length; ++i)
-                sb.append(" " + points[i].x + "," + points[i].y);
+                sb.append(" " + geomDP(points[i].x) + "," + geomDP(points[i].y));
         }
         return sb.toString();
     }
@@ -535,6 +581,16 @@ public class SVGCanvas {
         if (needFillNone)
             b.append("fill:none;");
         return b.toString();
+    }
+
+    private String getSVGPathD(SVGPath path) {
+        Iterator<SVGPath.SVGPathElement> iterator = path.iterator();
+        StringBuilder sb = new StringBuilder();
+        while (iterator.hasNext()) {
+            SVGPath.SVGPathElement pathElement = iterator.next();
+            sb.append(pathElement.getString(geomDoubleConverter));
+        }
+        return sb.toString();
     }
 
     private Element getGradientElement(String id, SVGGradient gradient) {

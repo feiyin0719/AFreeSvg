@@ -51,4 +51,34 @@ public class ExampleInstrumentedTest {
             e.printStackTrace();
         }
     }
+
+    @Test
+    public void pathTest() {
+        SVGCanvas svgCanvas = null;
+        try {
+            svgCanvas = new SVGCanvas(500, 500);
+            SVGPaint paint = new SVGPaint();
+            paint.setStyle(Paint.Style.STROKE);
+            paint.setFillColor(0xff0000ff);
+            paint.setDashArray(new float[]{5, 5, 10});
+            paint.setColor(Color.RED);
+            paint.setStrokeWidth(2);
+            svgCanvas.drawLine(10, 10, 200, 200, paint);
+
+            SVGPath svgPath = new SVGPath();
+            svgPath.moveTo(200, 200);
+            svgPath.oval(200, 200, 50, 50);
+
+            svgPath.rect(100, 50, 50, 50);
+
+            svgPath.moveTo(100, 300);
+            svgPath.quadraticBelzierCurve(150, 250, 200, 400);
+            svgCanvas.drawPath(svgPath, paint);
+            String s = svgCanvas.getSVGXmlString();
+        } catch (ParserConfigurationException e) {
+            e.printStackTrace();
+        } catch (TransformerException e) {
+            e.printStackTrace();
+        }
+    }
 }
