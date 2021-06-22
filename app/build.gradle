@@ -26,9 +26,9 @@ dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation 'androidx.appcompat:appcompat:1.3.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
-    implementation project(path: ':AFreeSvg')
-//    implementation 'com.github.feiyin0719:AFreeSvg:0.0.1-beta3'
-    testImplementation 'junit:junit:4.12'
+//    implementation project(path: ':AFreeSvg')
+    implementation 'com.github.feiyin0719:AFreeSvg:0.0.1-beta4'
+//    testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
