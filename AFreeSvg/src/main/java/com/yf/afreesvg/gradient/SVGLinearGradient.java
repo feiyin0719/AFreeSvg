@@ -2,6 +2,11 @@ package com.yf.afreesvg.gradient;
 
 import android.graphics.PointF;
 
+import com.yf.afreesvg.util.DoubleFunction;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 import java.util.Objects;
 
 public class SVGLinearGradient extends SVGBaseGradient {
@@ -54,5 +59,17 @@ public class SVGLinearGradient extends SVGBaseGradient {
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), startPoint, endPoint);
+    }
+
+    @Override
+    public Element convertToSVGElement(Document document, DoubleFunction<String> convert) {
+        Element element = document.createElement("linearGradient");
+
+        element.setAttribute("x1", convert.apply(startPoint.x));
+        element.setAttribute("y1", convert.apply(startPoint.y));
+        element.setAttribute("x2", convert.apply(endPoint.x));
+        element.setAttribute("y2", convert.apply(endPoint.y));
+        initBaseGradientAttr(element, document, convert);
+        return element;
     }
 }

@@ -1,5 +1,10 @@
 package com.yf.afreesvg.gradient;
 
+import com.yf.afreesvg.util.DoubleFunction;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 import java.util.Objects;
 
 public class SVGRadialGradient extends SVGBaseGradient {
@@ -79,5 +84,19 @@ public class SVGRadialGradient extends SVGBaseGradient {
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), cx, cy, r, fx, fy);
+    }
+
+    @Override
+    public Element convertToSVGElement(Document document, DoubleFunction<String> convert) {
+        Element element = document.createElement("radialGradient");
+
+        element.setAttribute("cx", convert.apply(getCx()));
+        element.setAttribute("cy", convert.apply(getCy()));
+        element.setAttribute("r", convert.apply(getR()));
+        element.setAttribute("fx", convert.apply(getFx()));
+        element.setAttribute("fy", convert.apply(getFy()));
+        initBaseGradientAttr(element, document, convert);
+
+        return element;
     }
 }

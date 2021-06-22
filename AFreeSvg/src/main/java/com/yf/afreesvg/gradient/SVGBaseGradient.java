@@ -4,13 +4,19 @@ import androidx.annotation.ColorLong;
 import androidx.annotation.IntDef;
 import androidx.annotation.StringDef;
 
+import com.yf.afreesvg.SVGUtils;
+import com.yf.afreesvg.util.DoubleFunction;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class SVGBaseGradient implements SVGGradient {
+public abstract class SVGBaseGradient implements SVGGradient {
     public static final int MODE_DEFAULT = 0;
     public static final int MODE_USERSPACE = 1;
 
@@ -93,5 +99,25 @@ public class SVGBaseGradient implements SVGGradient {
 
     public void setSpreadMode(String spreadMode) {
         this.spreadMode = spreadMode;
+    }
+
+    protected void initBaseGradientAttr(Element element, Document document, DoubleFunction<String> convert) {
+        if (getPosMode() == SVGBaseGradient.MODE_USERSPACE)
+            element.setAttribute("gradientUnits", "userSpaceOnUse");
+        if (!getSpreadMode().equals(SVGBaseGradient.SPREAD_PAD))
+            element.setAttribute("spreadMethod", getSpreadMode());
+        for (int i = 0; i < getStopCount(); ++i) {
+            Element stop = document.createElement("stop");
+            long c1 = getStopColor(i);
+            stop.setAttribute("offset", "" + getStopOffset(i));
+            stop.setAttribute("stop-color", SVGUtils.rgbColorStr(c1));
+
+            if (SVGUtils.colorAlpha(c1) < 255) {
+                double alphaPercent = SVGUtils.colorAlpha(c1) / 255.0;
+                stop.setAttribute("stop-opacity", convert.apply(alphaPercent));
+
+            }
+            element.appendChild(stop);
+        }
     }
 }

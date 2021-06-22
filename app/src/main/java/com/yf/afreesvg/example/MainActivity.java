@@ -1,7 +1,6 @@
 package com.yf.afreesvg.example;
 
 import android.graphics.Color;
-import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.RectF;
@@ -12,9 +11,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.yf.afreesvg.SVGCanvas;
 import com.yf.afreesvg.SVGPaint;
-import com.yf.afreesvg.SVGPath;
 import com.yf.afreesvg.gradient.SVGLinearGradient;
 import com.yf.afreesvg.gradient.SVGRadialGradient;
+import com.yf.afreesvg.shape.SVGPath;
+import com.yf.afreesvg.shape.SVGShapeGroup;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -54,12 +54,13 @@ public class MainActivity extends AppCompatActivity {
             gradient.addStopColor(1f, 0xff0000ff);
             paint2.setGradient(gradient);
             paint2.setFillRule(SVGPaint.FILL_RULE_EVENODD);
-            Matrix matrix = new Matrix();
-            matrix.postTranslate(10, 10);
-            svgCanvas.setTransform(matrix);
+            svgCanvas.save();
+            svgCanvas.translate(10, 10);
+
             svgCanvas.drawRect(new RectF(300, 300, 400, 450), paint2);
             svgCanvas.drawPolygon(new float[]{100, 10, 40, 198, 190, 78, 10, 78, 160, 198}, paint2);
             svgCanvas.drawPolyline(new float[]{20, 20, 40, 25, 60, 40, 80, 120, 120, 140, 200, 180}, paint);
+            svgCanvas.restore();
             SVGPath svgPath = new SVGPath();
             svgPath.moveTo(200, 200);
             svgPath.oval(200, 200, 50, 50);
@@ -71,6 +72,15 @@ public class MainActivity extends AppCompatActivity {
             svgCanvas.drawPath(svgPath, paint);
             svgCanvas.drawCurve(50, 50, 200, 50, 100, 25, paint);
             svgCanvas.drawArc(300, 100, 50, 50, 90, 270, paint);
+
+            SVGPath path = new SVGPath();
+            path.rect(20, 20, 100, 400);
+
+            SVGShapeGroup group = new SVGShapeGroup();
+            group.addShape(path);
+            group.addShape(svgPath);
+            svgCanvas.drawShape(group, paint);
+
             String s = svgCanvas.getSVGXmlString();
             Log.i("myyf", s);
 
