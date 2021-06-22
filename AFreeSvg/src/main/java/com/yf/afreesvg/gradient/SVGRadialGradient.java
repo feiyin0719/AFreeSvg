@@ -1,5 +1,11 @@
 package com.yf.afreesvg.gradient;
 
+import com.yf.afreesvg.SVGModes;
+import com.yf.afreesvg.util.DoubleFunction;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 import java.util.Objects;
 
 public class SVGRadialGradient extends SVGBaseGradient {
@@ -9,7 +15,7 @@ public class SVGRadialGradient extends SVGBaseGradient {
     public SVGRadialGradient() {
     }
 
-    public SVGRadialGradient(float cx, float cy, float r, float fx, float fy, @POS_MODE int posMode) {
+    public SVGRadialGradient(float cx, float cy, float r, float fx, float fy, @SVGModes.POS_MODE String posMode) {
         super(posMode);
         this.cx = cx;
         this.cy = cy;
@@ -19,7 +25,7 @@ public class SVGRadialGradient extends SVGBaseGradient {
     }
 
     public SVGRadialGradient(float cx, float cy, float r, float fx, float fy) {
-        this(cx, cy, r, fx, fy, MODE_DEFAULT);
+        this(cx, cy, r, fx, fy, SVGModes.MODE_BOX);
     }
 
     public float getCx() {
@@ -79,5 +85,19 @@ public class SVGRadialGradient extends SVGBaseGradient {
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), cx, cy, r, fx, fy);
+    }
+
+    @Override
+    public Element convertToSVGElement(Document document, DoubleFunction<String> convert) {
+        Element element = document.createElement("radialGradient");
+
+        element.setAttribute("cx", convert.apply(getCx()));
+        element.setAttribute("cy", convert.apply(getCy()));
+        element.setAttribute("r", convert.apply(getR()));
+        element.setAttribute("fx", convert.apply(getFx()));
+        element.setAttribute("fy", convert.apply(getFy()));
+        initBaseGradientAttr(element, document, convert);
+
+        return element;
     }
 }

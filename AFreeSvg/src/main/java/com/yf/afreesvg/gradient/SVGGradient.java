@@ -1,5 +1,7 @@
 package com.yf.afreesvg.gradient;
 
-public interface SVGGradient {
+import com.yf.afreesvg.ConvertToSVGElement;
+
+public interface SVGGradient extends ConvertToSVGElement {
 
 }

@@ -8,6 +8,8 @@ import android.util.Log;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import com.yf.afreesvg.shape.SVGPath;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 

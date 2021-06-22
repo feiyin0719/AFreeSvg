@@ -1,8 +1,11 @@
-package com.yf.afreesvg;
+package com.yf.afreesvg.shape;
 
 import androidx.annotation.StringDef;
 
 import com.yf.afreesvg.util.DoubleFunction;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -12,7 +15,24 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
-public class SVGPath {
+public class SVGPath implements SVGShape {
+    @Override
+    public Element convertToSVGElement(Document document, DoubleFunction<String> convert) {
+        Element element = document.createElement("path");
+        element.setAttribute("d", getSVGPathD(convert));
+        return element;
+    }
+
+    private String getSVGPathD(DoubleFunction<String> convert) {
+        Iterator<SVGPath.SVGPathElement> iterator = iterator();
+        StringBuilder sb = new StringBuilder();
+        while (iterator.hasNext()) {
+            SVGPath.SVGPathElement pathElement = iterator.next();
+            sb.append(pathElement.valueStr(convert));
+        }
+        return sb.toString();
+    }
+
     public static class SVGPathElement {
         public static final String M = "M";
         public static final String L = "L";
@@ -79,13 +99,13 @@ public class SVGPath {
             return result;
         }
 
-        public String getString(DoubleFunction gemo) {
+        public String valueStr(DoubleFunction convert) {
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append(isRelative ? type.toLowerCase() : type).append(" ");
             if (type != A) {
                 if (data != null)
                     for (float f : data)
-                        stringBuilder.append(gemo.apply(f)).append(" ");
+                        stringBuilder.append(convert.apply(f)).append(" ");
             } else {
                 if (data != null)
                     for (int i = 0; i < data.length; ++i) {
@@ -105,6 +125,10 @@ public class SVGPath {
     private List<SVGPathElement> pathElements = new ArrayList<>();
 
     public SVGPath() {
+    }
+
+    public SVGPath(SVGPath path) {
+        pathElements.addAll(path.pathElements);
     }
 
     public void moveTo(float x, float y) {
@@ -208,5 +232,9 @@ public class SVGPath {
 
     public Iterator<SVGPathElement> iterator() {
         return pathElements.listIterator();
+    }
+
+    public Object clone() {
+        return new SVGPath(this);
     }
 }

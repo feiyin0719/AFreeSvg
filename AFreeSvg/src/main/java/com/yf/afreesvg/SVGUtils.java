@@ -216,4 +216,26 @@ public class SVGUtils {
         return new DoubleConverter(dp);
     }
 
+    /**
+     * Returns the SVG RGB color string for the specified color.
+     *
+     * @param color the color ({@code null} not permitted).
+     * @return The SVG RGB color string.
+     */
+
+    public static String rgbColorStr(long color) {
+        StringBuilder b = new StringBuilder("rgb(");
+        b.append(((color >> 16) & 0xff)).append(",").append(((color >> 8) & 0xff)).append(",")
+                .append((color) & 0xff).append(")");
+        return b.toString();
+    }
+
+    public static int colorAlpha(long color) {
+        return (int) (color >> 24 & 0xff);
+    }
+
+    public static float getColorAlpha(int alpha) {
+        return alpha / 255.0f;
+    }
+
 }
