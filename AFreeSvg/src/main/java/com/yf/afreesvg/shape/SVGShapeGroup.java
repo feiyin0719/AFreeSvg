@@ -16,6 +16,13 @@ public class SVGShapeGroup implements SVGShape {
         list = new ArrayList<>();
     }
 
+    public SVGShapeGroup(SVGShapeGroup shapeGroup) {
+        list = new ArrayList<>();
+        for (SVGShape shape : shapeGroup.list) {
+            list.add((SVGShape) shape.clone());
+        }
+    }
+
     public void addShape(SVGShape shape) {
         list.add(shape);
     }
@@ -30,5 +37,10 @@ public class SVGShapeGroup implements SVGShape {
             g.appendChild(shape.convertToSVGElement(document, convert));
         }
         return g;
+    }
+
+    @Override
+    public Object clone() {
+        return new SVGShapeGroup(this);
     }
 }

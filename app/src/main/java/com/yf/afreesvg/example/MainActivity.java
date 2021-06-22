@@ -10,9 +10,11 @@ import android.util.Log;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.yf.afreesvg.SVGCanvas;
+import com.yf.afreesvg.SVGModes;
 import com.yf.afreesvg.SVGPaint;
 import com.yf.afreesvg.gradient.SVGLinearGradient;
 import com.yf.afreesvg.gradient.SVGRadialGradient;
+import com.yf.afreesvg.shape.SVGClipShape;
 import com.yf.afreesvg.shape.SVGPath;
 import com.yf.afreesvg.shape.SVGShapeGroup;
 
@@ -56,9 +58,22 @@ public class MainActivity extends AppCompatActivity {
             paint2.setFillRule(SVGPaint.FILL_RULE_EVENODD);
             svgCanvas.save();
             svgCanvas.translate(10, 10);
-
+            SVGShapeGroup clipGroup = new SVGShapeGroup();
+            SVGPath clipPath = new SVGPath();
+            clipPath.oval(0.2f, 0.2f, 0.2f, 0.2f);
+            SVGPath clipPath1 = new SVGPath();
+            clipPath1.oval(0.6f, 0.2f, 0.2f, 0.2f);
+            clipGroup.addShape(clipPath);
+            clipGroup.addShape(clipPath1);
+            SVGClipShape clipShape = new SVGClipShape(clipGroup, SVGModes.MODE_BOX);
+            svgCanvas.save();
+            svgCanvas.clip(clipShape);
             svgCanvas.drawRect(new RectF(300, 300, 400, 450), paint2);
+            svgCanvas.save();
+            SVGClipShape clipShape1 = new SVGClipShape(clipPath, SVGModes.MODE_BOX);
+            svgCanvas.clip(clipShape1);
             svgCanvas.drawPolygon(new float[]{100, 10, 40, 198, 190, 78, 10, 78, 160, 198}, paint2);
+            svgCanvas.restore();
             svgCanvas.drawPolyline(new float[]{20, 20, 40, 25, 60, 40, 80, 120, 120, 140, 200, 180}, paint);
             svgCanvas.restore();
             SVGPath svgPath = new SVGPath();
@@ -75,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
 
             SVGPath path = new SVGPath();
             path.rect(20, 20, 100, 400);
-
+            svgCanvas.restore();
             SVGShapeGroup group = new SVGShapeGroup();
             group.addShape(path);
             group.addShape(svgPath);

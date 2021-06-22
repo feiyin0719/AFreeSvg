@@ -4,8 +4,10 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.RectF;
+import android.text.TextUtils;
 
 import com.yf.afreesvg.gradient.SVGGradient;
+import com.yf.afreesvg.shape.SVGClipShape;
 import com.yf.afreesvg.shape.SVGPath;
 import com.yf.afreesvg.shape.SVGShape;
 import com.yf.afreesvg.util.DoubleFunction;
@@ -69,12 +71,14 @@ public class SVGCanvas {
     /**
      * The user clip (can be null).
      */
-    private SVGShape clip;
+    private SVGClipShape clip;
 
     /**
      * The reference for the current clip.
      */
     private String clipRef;
+
+    private int clipCount = 0;
 
     /**
      * The function used to convert double values to strings for the geometry
@@ -115,13 +119,15 @@ public class SVGCanvas {
     private final Document document;
 
     private Matrix transform = new Matrix();
-
+    public static final int SAVE_FLAG_CLIP = 0x01;
     public static final int SAVE_FLAG_MATRIX = 0x02;
     public static final int SAVE_FLAG_ALL = 0xffff;
 
     public Stack<Integer> saveFlags = new Stack<>();
 
     private Stack<Matrix> matrixList = new Stack<>();
+    private Stack<SVGClipShape> clipShapes = new Stack<>();
+    private Stack<String> clipRefs = new Stack<>();
 
     public SVGCanvas(double width, double height) throws ParserConfigurationException {
         this(width, height, null);
@@ -166,13 +172,11 @@ public class SVGCanvas {
 
     public void drawLine(float x1, float y1, float x2, float y2, SVGPaint paint, String id) {
         Element element = document.createElement("line");
-        setElementId(element, id);
         element.setAttribute("x1", geomDP(x1));
         element.setAttribute("y1", geomDP(y1));
         element.setAttribute("x2", geomDP(x2));
         element.setAttribute("y2", geomDP(y2));
-        element.setAttribute("style", style(paint));
-        addTransformToElement(element);
+        addBaseAttrToDrawElement(element, paint, id);
         svgElement.appendChild(element);
 
     }
@@ -184,13 +188,11 @@ public class SVGCanvas {
 
     public void drawRect(RectF rectF, SVGPaint paint, String id) {
         Element element = document.createElement("rect");
-        setElementId(element, id);
         element.setAttribute("x", geomDP(rectF.left));
         element.setAttribute("y", geomDP(rectF.top));
         element.setAttribute("width", geomDP(rectF.width()));
         element.setAttribute("height", geomDP(rectF.height()));
-        element.setAttribute("style", style(paint));
-        addTransformToElement(element);
+        addBaseAttrToDrawElement(element, paint, id);
         svgElement.appendChild(element);
     }
 
@@ -201,13 +203,11 @@ public class SVGCanvas {
 
     public void drawOval(RectF rectF, SVGPaint paint, String id) {
         Element element = document.createElement("ellipse");
-        setElementId(element, id);
         element.setAttribute("cx", geomDP(rectF.centerX()));
         element.setAttribute("cy", geomDP(rectF.centerY()));
         element.setAttribute("rx", geomDP(rectF.width() / 2));
         element.setAttribute("ry", geomDP(rectF.height() / 2));
-        element.setAttribute("style", style(paint));
-        addTransformToElement(element);
+        addBaseAttrToDrawElement(element, paint, id);
         svgElement.appendChild(element);
     }
 
@@ -234,10 +234,8 @@ public class SVGCanvas {
             throw new IllegalArgumentException("points is null or points length <3");
         }
         Element element = document.createElement("polygon");
-        setElementId(element, id);
         element.setAttribute("points", getPointsStr(points));
-        element.setAttribute("style", style(paint));
-        addTransformToElement(element);
+        addBaseAttrToDrawElement(element, paint, id);
         svgElement.appendChild(element);
     }
 
@@ -258,10 +256,8 @@ public class SVGCanvas {
             throw new IllegalArgumentException("points is null or points length <2");
         }
         Element element = document.createElement("polyline");
-        setElementId(element, id);
         element.setAttribute("points", getPointsStr(points));
-        element.setAttribute("style", style(paint));
-        addTransformToElement(element);
+        addBaseAttrToDrawElement(element, paint, id);
         svgElement.appendChild(element);
     }
 
@@ -302,9 +298,7 @@ public class SVGCanvas {
 
     public void drawPath(SVGPath path, SVGPaint paint, String id) {
         Element element = path.convertToSVGElement(document, geomDoubleConverter);
-        setElementId(element, id);
-        element.setAttribute("style", style(paint));
-        addTransformToElement(element);
+        addBaseAttrToDrawElement(element, paint, id);
         svgElement.appendChild(element);
     }
 
@@ -314,9 +308,7 @@ public class SVGCanvas {
 
     public void drawShape(SVGShape shape, SVGPaint paint, String id) {
         Element element = shape.convertToSVGElement(document, geomDoubleConverter);
-        setElementId(element, id);
-        element.setAttribute("style", style(paint));
-        addTransformToElement(element);
+        addBaseAttrToDrawElement(element, paint, id);
         svgElement.appendChild(element);
     }
 
@@ -335,6 +327,49 @@ public class SVGCanvas {
                 sb.append(" " + geomDP(points[i].x) + "," + geomDP(points[i].y));
         }
         return sb.toString();
+    }
+
+    private void addBaseAttrToDrawElement(Element element, SVGPaint paint, String id) {
+        setElementId(element, id);
+        element.setAttribute("style", style(paint));
+        addTransformToElement(element);
+        addClipToElement(element);
+    }
+
+    private void addClipToElement(Element element) {
+        String clipId = getClipRef();
+        if (!TextUtils.isEmpty(clipId)) {
+            element.setAttribute("clip-path", clipId);
+        }
+    }
+
+    public void clip(SVGClipShape clipShape) {
+        this.clip = clipShape;
+        clipRef = null;
+    }
+
+    public String getClipRef() {
+        if (clip == null) {
+            this.clipRef = null;
+            return null;
+        }
+        if (this.clipRef == null)
+            clipRef = registerClip(clip);
+        return "url(#" + clipRef + ")";
+
+    }
+
+    private String registerClip(SVGClipShape clipShape) {
+        if (clipShape == null) {
+            clipRef = null;
+            return null;
+        }
+        Element element = clipShape.convertToSVGElement(document, geomDoubleConverter);
+        String id = this.defsKeyPrefix + CLIP_KEY_PREFIX + clipCount;
+        element.setAttribute("id", id);
+        addElementToDef(element);
+        ++clipCount;
+        return id;
     }
 
 
@@ -432,6 +467,15 @@ public class SVGCanvas {
             matrix.setValues(values);
             matrixList.push(matrix);
         }
+        if ((flags & SAVE_FLAG_CLIP) == SAVE_FLAG_CLIP) {
+            if (clip != null)
+                clipShapes.push((SVGClipShape) clip.clone());
+            else
+                clipShapes.push(null);
+            if (clipRef != null)
+                clipRefs.push(clipRef);
+            else clipRefs.push(null);
+        }
     }
 
     public void restore() {
@@ -439,6 +483,11 @@ public class SVGCanvas {
             int flags = saveFlags.pop();
             if ((flags & SAVE_FLAG_MATRIX) == SAVE_FLAG_MATRIX) {
                 transform = matrixList.pop();
+            }
+
+            if ((flags & SAVE_FLAG_CLIP) == SAVE_FLAG_CLIP) {
+                clipRef = clipRefs.pop();
+                clip = clipShapes.pop();
             }
 
         }

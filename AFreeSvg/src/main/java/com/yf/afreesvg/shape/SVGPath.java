@@ -127,6 +127,10 @@ public class SVGPath implements SVGShape {
     public SVGPath() {
     }
 
+    public SVGPath(SVGPath path) {
+        pathElements.addAll(path.pathElements);
+    }
+
     public void moveTo(float x, float y) {
         moveTo(x, y, false);
     }
@@ -228,5 +232,9 @@ public class SVGPath implements SVGShape {
 
     public Iterator<SVGPathElement> iterator() {
         return pathElements.listIterator();
+    }
+
+    public Object clone() {
+        return new SVGPath(this);
     }
 }

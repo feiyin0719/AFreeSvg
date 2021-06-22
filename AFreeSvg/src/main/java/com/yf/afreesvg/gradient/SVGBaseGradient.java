@@ -1,9 +1,9 @@
 package com.yf.afreesvg.gradient;
 
 import androidx.annotation.ColorLong;
-import androidx.annotation.IntDef;
 import androidx.annotation.StringDef;
 
+import com.yf.afreesvg.SVGModes;
 import com.yf.afreesvg.SVGUtils;
 import com.yf.afreesvg.util.DoubleFunction;
 
@@ -17,17 +17,12 @@ import java.util.List;
 import java.util.Objects;
 
 public abstract class SVGBaseGradient implements SVGGradient {
-    public static final int MODE_DEFAULT = 0;
-    public static final int MODE_USERSPACE = 1;
+
 
     public static final String SPREAD_PAD = "pad";
     public static final String SPREAD_REPEAT = "repeat";
     public static final String SPREAD_REFLECT = "reflect";
 
-    @IntDef({MODE_DEFAULT, MODE_USERSPACE})
-    @Retention(RetentionPolicy.SOURCE)
-    public @interface POS_MODE {
-    }
 
     @StringDef({SPREAD_PAD, SPREAD_REPEAT, SPREAD_REFLECT})
     @Retention(RetentionPolicy.SOURCE)
@@ -35,8 +30,8 @@ public abstract class SVGBaseGradient implements SVGGradient {
     }
 
 
-    protected @POS_MODE
-    int posMode = MODE_DEFAULT;
+    protected @SVGModes.POS_MODE
+    String posMode = SVGModes.MODE_BOX;
 
     protected @SPREAD_MODE
     String spreadMode = SPREAD_PAD;
@@ -44,18 +39,19 @@ public abstract class SVGBaseGradient implements SVGGradient {
     protected List<Float> stopOffset = new ArrayList<>();
     protected List<Long> stopColor = new ArrayList<>();
 
-    public SVGBaseGradient(int posMode) {
+    public SVGBaseGradient(@SVGModes.POS_MODE String posMode) {
         this.posMode = posMode;
     }
 
     public SVGBaseGradient() {
     }
 
-    public int getPosMode() {
+    public @SVGModes.POS_MODE
+    String getPosMode() {
         return posMode;
     }
 
-    public void setPosMode(int posMode) {
+    public void setPosMode(@SVGModes.POS_MODE String posMode) {
         this.posMode = posMode;
     }
 
@@ -93,7 +89,8 @@ public abstract class SVGBaseGradient implements SVGGradient {
         return Objects.hash(posMode, spreadMode, stopOffset, stopColor);
     }
 
-    public String getSpreadMode() {
+    public @SPREAD_MODE
+    String getSpreadMode() {
         return spreadMode;
     }
 
@@ -102,8 +99,8 @@ public abstract class SVGBaseGradient implements SVGGradient {
     }
 
     protected void initBaseGradientAttr(Element element, Document document, DoubleFunction<String> convert) {
-        if (getPosMode() == SVGBaseGradient.MODE_USERSPACE)
-            element.setAttribute("gradientUnits", "userSpaceOnUse");
+        if (SVGModes.MODE_USERSPACE.equals(posMode))
+            element.setAttribute("gradientUnits", posMode);
         if (!getSpreadMode().equals(SVGBaseGradient.SPREAD_PAD))
             element.setAttribute("spreadMethod", getSpreadMode());
         for (int i = 0; i < getStopCount(); ++i) {
