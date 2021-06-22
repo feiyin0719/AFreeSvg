@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.Stack;
 import java.util.TreeSet;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -117,6 +118,13 @@ public class SVGCanvas {
     private final Document document;
 
     private Matrix transform = new Matrix();
+
+    public static final int SAVE_FLAG_MATRIX = 0x02;
+    public static final int SAVE_FLAG_ALL = 0xffff;
+
+    public Stack<Integer> saveFlags = new Stack<>();
+
+    private Stack<Matrix> matrixList = new Stack<>();
 
     public SVGCanvas(double width, double height) throws ParserConfigurationException {
         this(width, height, null);
@@ -401,6 +409,31 @@ public class SVGCanvas {
 
     public DoubleFunction<String> getTransformDoubleConverter() {
         return transformDoubleConverter;
+    }
+
+    public void save() {
+        save(SAVE_FLAG_ALL);
+    }
+
+    public void save(int flags) {
+        saveFlags.push(flags);
+        if ((flags & SAVE_FLAG_MATRIX) == SAVE_FLAG_MATRIX) {
+            Matrix matrix = new Matrix();
+            float[] values = new float[9];
+            transform.getValues(values);
+            matrix.setValues(values);
+            matrixList.push(matrix);
+        }
+    }
+
+    public void restore() {
+        if (saveFlags.size() > 0) {
+            int flags = saveFlags.pop();
+            if ((flags & SAVE_FLAG_MATRIX) == SAVE_FLAG_MATRIX) {
+                transform = matrixList.pop();
+            }
+
+        }
     }
 
     public void setTransformDoubleConverter(DoubleFunction<String> transformDoubleConverter) {
