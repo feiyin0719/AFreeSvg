@@ -11,7 +11,7 @@ gradle添加jitpack仓库和依赖
 
 ## 参考代码
 ```java
-      SVGCanvas svgCanvas = null;
+        SVGCanvas svgCanvas = null;
         try {
             svgCanvas = new SVGCanvas(500, 500);
             SVGPaint paint = new SVGPaint();
@@ -94,13 +94,33 @@ gradle添加jitpack仓库和依赖
             //绘制shape
             svgCanvas.drawShape(group, paint);
 
+            //绘制文字
+            SVGPaint textPaint = new SVGPaint();
+            textPaint.setStyle(Paint.Style.FILL);
+            textPaint.setGradient(svgLinearGradient);
+            textPaint.setFont(new SVGFont.Builder().setFontFamily("sans-serif")
+                    .setFontStyle(SVGFont.STYLE_ITALIC)
+                    .setFontWeight("bold")
+                    .build());
+            svgCanvas.drawText("hello world", 200, 20, textPaint, "");
+
+            SVGPath textPath = new SVGPath();
+            textPath.oval(100, 400, 100, 100);
+            svgCanvas.drawTextOnPath("hello", 0, 0, 0, 0, textPath, textPaint, null);
+            svgCanvas.drawTextOnPath("world", 0, 0, 50, 0, textPath, textPaint, null);
+
+            svgCanvas.drawPath(textPath, paint);
             String s = svgCanvas.getSVGXmlString();
             Log.i("myyf", s);
+            File file =new File(getExternalCacheDir(),"test.svg");
+            svgCanvas.writeSVGXMLToStream(new FileOutputStream(file));
 
 
         } catch (ParserConfigurationException e) {
             e.printStackTrace();
         } catch (TransformerException e) {
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
 ```
