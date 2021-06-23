@@ -1,5 +1,6 @@
 package com.yf.afreesvg.gradient;
 
+import com.yf.afreesvg.SVGCanvas;
 import com.yf.afreesvg.SVGModes;
 import com.yf.afreesvg.util.DoubleFunction;
 
@@ -88,7 +89,7 @@ public class SVGRadialGradient extends SVGBaseGradient {
     }
 
     @Override
-    public Element convertToSVGElement(Document document, DoubleFunction<String> convert) {
+    public Element convertToSVGElement(SVGCanvas canvas, Document document, DoubleFunction<String> convert) {
         Element element = document.createElement("radialGradient");
 
         element.setAttribute("cx", convert.apply(getCx()));

@@ -13,6 +13,7 @@ import com.yf.afreesvg.gradient.SVGGradient;
 import com.yf.afreesvg.shape.SVGClipShape;
 import com.yf.afreesvg.shape.SVGPath;
 import com.yf.afreesvg.shape.SVGShape;
+import com.yf.afreesvg.shape.SVGTextPath;
 import com.yf.afreesvg.util.DoubleFunction;
 
 import org.w3c.dom.DOMImplementation;
@@ -50,14 +51,14 @@ public class SVGCanvas {
      */
     private static final String CLIP_KEY_PREFIX = "clip-";
 
-    private static final String TEXT_PATH_KEY_PREFIX = "textPath-";
+    private static final String TEXT_PATH_KEY_PREFIX = "Path-";
 
     /**
      * A prefix for the keys used in the DEFS element.  This can be used to
      * ensure that the keys are unique when creating more than one SVG element
      * for a single HTML page.
      */
-    private String defsKeyPrefix = "_" + System.nanoTime();
+    private String defsKeyPrefix = "def_" + System.nanoTime();
 
     private static final String DEFAULT_STROKE_CAP = "butt";
     private static final String DEFAULT_STROKE_JOIN = "miter";
@@ -322,7 +323,7 @@ public class SVGCanvas {
     }
 
     public void drawPath(SVGPath path, SVGPaint paint, String id) {
-        Element element = path.convertToSVGElement(document, geomDoubleConverter);
+        Element element = path.convertToSVGElement(this, document, geomDoubleConverter);
         addBaseAttrToDrawElement(element, paint, id);
         svgElement.appendChild(element);
     }
@@ -332,7 +333,7 @@ public class SVGCanvas {
     }
 
     public void drawShape(SVGShape shape, SVGPaint paint, String id) {
-        Element element = shape.convertToSVGElement(document, geomDoubleConverter);
+        Element element = shape.convertToSVGElement(this, document, geomDoubleConverter);
         addBaseAttrToDrawElement(element, paint, id);
         svgElement.appendChild(element);
     }
@@ -363,23 +364,21 @@ public class SVGCanvas {
     }
 
     public void drawTextOnPath(String text, float x, float y, float startOffset, int textLength, SVGPath path, SVGPaint paint, String id) {
-        Element element = document.createElement("text");
-        element.setAttribute("x", geomDP(x));
-        element.setAttribute("y", geomDP(y));
-        if (textLength > 0)
-            element.setAttribute("textLength", "" + textLength);
-        if (path != null) {
-            Element pathElement = getTextPathElement(text, path, startOffset);
-            element.appendChild(pathElement);
-        } else
-            element.setTextContent(text);
-        setTextStyle(element, paint);
-        addBaseAttrToDrawElement(element, paint, id);
-        svgElement.appendChild(element);
+        SVGTextPath textPath = new SVGTextPath.Builder()
+                .setText(text)
+                .setX(x)
+                .setY(y)
+                .setStartOffset(startOffset)
+                .setTextLength(textLength)
+                .setFontSizeUnit(fontSizeUnit)
+                .setPaint(paint)
+                .setPath(path)
+                .build();
+        drawShape(textPath, paint, id);
     }
 
     private Element getTextPathElement(String text, SVGPath path, float startOffset) {
-        String id = addTextPath(path);
+        String id = addPathToDef(path);
         Element element = document.createElement("textPath");
         element.setAttribute("xlink:href", "#" + id);
         if (startOffset > 0)
@@ -388,20 +387,20 @@ public class SVGCanvas {
         return element;
     }
 
-    private String addTextPath(SVGPath path) {
+    public String addPathToDef(SVGPath path) {
         if (textPaths.containsKey(path)) {
             return textPaths.get(path);
         }
 
         String id = defsKeyPrefix + TEXT_PATH_KEY_PREFIX + textPaths.size();
         textPaths.put(path, id);
-        addTextPathElementToDef(path, id);
+        addPathElementToDef(path, id);
 
         return id;
     }
 
-    private void addTextPathElementToDef(SVGPath path, String id) {
-        Element element = path.convertToSVGElement(document, geomDoubleConverter);
+    private void addPathElementToDef(SVGPath path, String id) {
+        Element element = path.convertToSVGElement(this, document, geomDoubleConverter);
         element.setAttribute("id", id);
         addElementToDef(element);
     }
@@ -458,7 +457,7 @@ public class SVGCanvas {
             clipRef = null;
             return null;
         }
-        Element element = clipShape.convertToSVGElement(document, geomDoubleConverter);
+        Element element = clipShape.convertToSVGElement(this, document, geomDoubleConverter);
         String id = this.defsKeyPrefix + CLIP_KEY_PREFIX + clipCount;
         element.setAttribute("id", id);
         addElementToDef(element);
@@ -805,7 +804,7 @@ public class SVGCanvas {
 
     private Element getGradientElement(String id, SVGGradient gradient) {
         if (gradient == null) return null;
-        Element element = gradient.convertToSVGElement(document, geomDoubleConverter);
+        Element element = gradient.convertToSVGElement(this, document, geomDoubleConverter);
         setElementId(element, id);
         return element;
     }

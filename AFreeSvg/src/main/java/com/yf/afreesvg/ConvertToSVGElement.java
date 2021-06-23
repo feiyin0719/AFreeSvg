@@ -6,5 +6,5 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 public interface ConvertToSVGElement {
-    public Element convertToSVGElement(Document document, DoubleFunction<String> convert);
+    public Element convertToSVGElement(SVGCanvas canvas,Document document, DoubleFunction<String> convert);
 }
