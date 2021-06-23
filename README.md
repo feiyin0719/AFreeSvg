@@ -143,6 +143,8 @@ gradle添加jitpack仓库和依赖
    8. public void drawPath(SVGPath path, SVGPaint paint) //绘制普通path
    9. public void drawShape(SVGShape shape, SVGPaint paint) //绘制shape
    10. public void clip(SVGClipShape clipShape) //设置裁剪区域
+   11. public void drawText(String text, float x, float y, SVGPaint paint)//绘制文本
+   12. public void drawTextOnPath(String text, float x, float y, SVGPath path, SVGPaint paint) //绘制文本在path上
 
 - **SVGPaint**
 
@@ -164,6 +166,10 @@ gradle添加jitpack仓库和依赖
 设置裁剪区域
   
 ## 版本日志
+- **0.0.1-beta5**
+
+ 1. 增加绘制文本能力
+ 2. 增加字体类
 - **0.0.1-beta4**
  1. 支持分别设置fillColor和strokeColor
  2. 增加渐变填充模式支持
