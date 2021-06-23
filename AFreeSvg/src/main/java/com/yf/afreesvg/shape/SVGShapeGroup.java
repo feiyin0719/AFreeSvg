@@ -1,5 +1,6 @@
 package com.yf.afreesvg.shape;
 
+import com.yf.afreesvg.SVGCanvas;
 import com.yf.afreesvg.util.DoubleFunction;
 
 import org.w3c.dom.Document;
@@ -29,12 +30,12 @@ public class SVGShapeGroup implements SVGShape {
 
 
     @Override
-    public Element convertToSVGElement(Document document, DoubleFunction<String> convert) {
+    public Element convertToSVGElement(SVGCanvas canvas, Document document, DoubleFunction<String> convert) {
         Element g = document.createElement("g");
         Iterator<SVGShape> iterator = list.iterator();
         while (iterator.hasNext()) {
             SVGShape shape = iterator.next();
-            g.appendChild(shape.convertToSVGElement(document, convert));
+            g.appendChild(shape.convertToSVGElement(canvas, document, convert));
         }
         return g;
     }

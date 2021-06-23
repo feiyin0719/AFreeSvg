@@ -1,6 +1,7 @@
 package com.yf.afreesvg.shape;
 
 import com.yf.afreesvg.ConvertToSVGElement;
+import com.yf.afreesvg.SVGCanvas;
 import com.yf.afreesvg.SVGModes;
 import com.yf.afreesvg.util.DoubleFunction;
 
@@ -42,11 +43,11 @@ public class SVGClipShape implements ConvertToSVGElement, Cloneable {
     }
 
     @Override
-    public Element convertToSVGElement(Document document, DoubleFunction<String> convert) {
+    public Element convertToSVGElement(SVGCanvas canvas, Document document, DoubleFunction<String> convert) {
         Element element = document.createElement("clipPath");
         element.setAttribute("clipPathUnits", posMode);
         if (shape instanceof SVGShapeGroup) {
-            Element g = shape.convertToSVGElement(document, convert);
+            Element g = shape.convertToSVGElement(canvas,document, convert);
             NodeList list = g.getChildNodes();
             if (list != null && list.getLength() > 0) {
                 for (int i = 0; i < list.getLength(); ++i) {
@@ -55,7 +56,7 @@ public class SVGClipShape implements ConvertToSVGElement, Cloneable {
                 }
             }
         } else {
-            element.appendChild(shape.convertToSVGElement(document, convert));
+            element.appendChild(shape.convertToSVGElement(canvas,document, convert));
         }
         return element;
     }

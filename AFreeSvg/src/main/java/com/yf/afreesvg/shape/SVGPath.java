@@ -2,6 +2,7 @@ package com.yf.afreesvg.shape;
 
 import androidx.annotation.StringDef;
 
+import com.yf.afreesvg.SVGCanvas;
 import com.yf.afreesvg.util.DoubleFunction;
 
 import org.w3c.dom.Document;
@@ -17,7 +18,7 @@ import java.util.Objects;
 
 public class SVGPath implements SVGShape {
     @Override
-    public Element convertToSVGElement(Document document, DoubleFunction<String> convert) {
+    public Element convertToSVGElement(SVGCanvas canvas, Document document, DoubleFunction<String> convert) {
         Element element = document.createElement("path");
         element.setAttribute("d", getSVGPathD(convert));
         return element;

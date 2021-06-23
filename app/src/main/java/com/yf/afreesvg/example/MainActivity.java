@@ -4,7 +4,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.RectF;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -19,6 +18,7 @@ import com.yf.afreesvg.gradient.SVGRadialGradient;
 import com.yf.afreesvg.shape.SVGClipShape;
 import com.yf.afreesvg.shape.SVGPath;
 import com.yf.afreesvg.shape.SVGShapeGroup;
+import com.yf.afreesvg.shape.SVGTextPath;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -128,13 +128,17 @@ public class MainActivity extends AppCompatActivity {
 
             SVGPath textPath = new SVGPath();
             textPath.oval(100, 400, 100, 100);
-            svgCanvas.drawTextOnPath("hello", 0, 0, 0, 0, textPath, textPaint, null);
+//            svgCanvas.drawTextOnPath("hello", 0, 0, 0, 0, textPath, textPaint, null);
             svgCanvas.drawTextOnPath("world", 0, 0, 50, 0, textPath, textPaint, null);
-
+            //设置文本clip
+            SVGTextPath svgTextPath = new SVGTextPath.Builder().setPath(textPath).setPaint(textPaint).setText("hello").build();
+            svgCanvas.clip(new SVGClipShape(svgTextPath, SVGModes.MODE_USERSPACE));
+            svgCanvas.drawPath(textPath, paint2);
+            svgCanvas.clip(null);
             svgCanvas.drawPath(textPath, paint);
             String s = svgCanvas.getSVGXmlString();
             Log.i("myyf", s);
-            File file =new File(getExternalCacheDir(),"test.svg");
+            File file = new File(getExternalCacheDir(), "test.svg");
             svgCanvas.writeSVGXMLToStream(new FileOutputStream(file));
 
 

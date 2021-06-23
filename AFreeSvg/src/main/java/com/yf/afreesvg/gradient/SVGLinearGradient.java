@@ -2,6 +2,7 @@ package com.yf.afreesvg.gradient;
 
 import android.graphics.PointF;
 
+import com.yf.afreesvg.SVGCanvas;
 import com.yf.afreesvg.SVGModes;
 import com.yf.afreesvg.util.DoubleFunction;
 
@@ -20,7 +21,7 @@ public class SVGLinearGradient extends SVGBaseGradient {
         this(startPoint, endPoint, SVGModes.MODE_BOX);
     }
 
-    public SVGLinearGradient(PointF startPoint, PointF endPoint, @SVGModes.POS_MODE String  mode) {
+    public SVGLinearGradient(PointF startPoint, PointF endPoint, @SVGModes.POS_MODE String mode) {
         super(mode);
         this.startPoint = startPoint;
         this.endPoint = endPoint;
@@ -63,7 +64,7 @@ public class SVGLinearGradient extends SVGBaseGradient {
     }
 
     @Override
-    public Element convertToSVGElement(Document document, DoubleFunction<String> convert) {
+    public Element convertToSVGElement(SVGCanvas canvas, Document document, DoubleFunction<String> convert) {
         Element element = document.createElement("linearGradient");
 
         element.setAttribute("x1", convert.apply(startPoint.x));
