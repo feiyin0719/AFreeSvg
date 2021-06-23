@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.RectF;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -12,11 +13,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.yf.afreesvg.SVGCanvas;
 import com.yf.afreesvg.SVGModes;
 import com.yf.afreesvg.SVGPaint;
+import com.yf.afreesvg.font.SVGFont;
 import com.yf.afreesvg.gradient.SVGLinearGradient;
 import com.yf.afreesvg.gradient.SVGRadialGradient;
 import com.yf.afreesvg.shape.SVGClipShape;
 import com.yf.afreesvg.shape.SVGPath;
 import com.yf.afreesvg.shape.SVGShapeGroup;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -110,13 +116,33 @@ public class MainActivity extends AppCompatActivity {
             //绘制shape
             svgCanvas.drawShape(group, paint);
 
+            //绘制文字
+            SVGPaint textPaint = new SVGPaint();
+            textPaint.setStyle(Paint.Style.FILL);
+            textPaint.setGradient(svgLinearGradient);
+            textPaint.setFont(new SVGFont.Builder().setFontFamily("sans-serif")
+                    .setFontStyle(SVGFont.STYLE_ITALIC)
+                    .setFontWeight("bold")
+                    .build());
+            svgCanvas.drawText("hello world", 200, 20, textPaint, "");
+
+            SVGPath textPath = new SVGPath();
+            textPath.oval(100, 400, 100, 100);
+            svgCanvas.drawTextOnPath("hello", 0, 0, 0, 0, textPath, textPaint, null);
+            svgCanvas.drawTextOnPath("world", 0, 0, 10, 0, textPath, textPaint, null);
+
+            svgCanvas.drawPath(textPath, paint);
             String s = svgCanvas.getSVGXmlString();
             Log.i("myyf", s);
+            File file =new File(getExternalCacheDir(),"test.svg");
+            svgCanvas.writeSVGXMLToStream(new FileOutputStream(file));
 
 
         } catch (ParserConfigurationException e) {
             e.printStackTrace();
         } catch (TransformerException e) {
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
     }

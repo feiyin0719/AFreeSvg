@@ -6,6 +6,7 @@ import android.graphics.PointF;
 import android.graphics.RectF;
 import android.text.TextUtils;
 
+import com.yf.afreesvg.font.SVGFont;
 import com.yf.afreesvg.gradient.SVGGradient;
 import com.yf.afreesvg.shape.SVGClipShape;
 import com.yf.afreesvg.shape.SVGPath;
@@ -46,6 +47,8 @@ public class SVGCanvas {
      * The prefix for keys used to identify clip paths.
      */
     private static final String CLIP_KEY_PREFIX = "clip-";
+
+    private static final String TEXT_PATH_KEY_PREFIX = "textPath-";
 
     /**
      * A prefix for the keys used in the DEFS element.  This can be used to
@@ -106,6 +109,8 @@ public class SVGCanvas {
      */
     private final SVGUnits units;
 
+    private SVGUnits fontSizeUnit = SVGUnits.PX;
+
     /**
      * A set of element IDs.
      */
@@ -128,6 +133,8 @@ public class SVGCanvas {
     private Stack<Matrix> matrixList = new Stack<>();
     private Stack<SVGClipShape> clipShapes = new Stack<>();
     private Stack<String> clipRefs = new Stack<>();
+
+    private Map<SVGPath, String> textPaths = new HashMap<>();
 
     public SVGCanvas(double width, double height) throws ParserConfigurationException {
         this(width, height, null);
@@ -163,6 +170,14 @@ public class SVGCanvas {
                 return SVGUtils.doubleToString(value);
             }
         };
+    }
+
+    public SVGUnits getFontSizeUnit() {
+        return fontSizeUnit;
+    }
+
+    public void setFontSizeUnit(SVGUnits fontSizeUnit) {
+        this.fontSizeUnit = fontSizeUnit;
     }
 
     public void drawLine(float x1, float y1, float x2, float y2, SVGPaint paint) {
@@ -310,6 +325,75 @@ public class SVGCanvas {
         Element element = shape.convertToSVGElement(document, geomDoubleConverter);
         addBaseAttrToDrawElement(element, paint, id);
         svgElement.appendChild(element);
+    }
+
+    public void drawText(String text, float x, float y, SVGPaint paint) {
+        drawText(text, x, y, 0, paint, null);
+    }
+
+    public void drawText(String text, float x, float y, int textLength, SVGPaint paint) {
+        drawText(text, x, y, textLength, paint, null);
+    }
+
+    public void drawText(String text, float x, float y, SVGPaint paint, String id) {
+        drawText(text, x, y, 0, paint, id);
+    }
+
+    public void drawText(String text, float x, float y, int textLength, SVGPaint paint, String id) {
+        drawTextOnPath(text, x, y, 0, 0, null, paint, id);
+    }
+
+    public void drawTextOnPath(String text, float x, float y, SVGPath path, SVGPaint paint) {
+        drawTextOnPath(text, x, y, 0, 0, path, paint, null);
+
+    }
+
+    public void drawTextOnPath(String text, float x, float y, float startOffset, SVGPath path, SVGPaint paint, String id) {
+        drawTextOnPath(text, x, y, startOffset, 0, path, paint, id);
+    }
+
+    public void drawTextOnPath(String text, float x, float y, float startOffset, int textLength, SVGPath path, SVGPaint paint, String id) {
+        Element element = document.createElement("text");
+        element.setAttribute("x", geomDP(x));
+        element.setAttribute("y", geomDP(y));
+        if (textLength > 0)
+            element.setAttribute("textLength", "" + textLength);
+        if (path != null) {
+            Element pathElement = getTextPathElement(text, path, startOffset);
+            element.appendChild(pathElement);
+        } else
+            element.setTextContent(text);
+        setTextStyle(element, paint);
+        addBaseAttrToDrawElement(element, paint, id);
+        svgElement.appendChild(element);
+    }
+
+    private Element getTextPathElement(String text, SVGPath path, float startOffset) {
+        String id = addTextPath(path);
+        Element element = document.createElement("textPath");
+        element.setAttribute("xlink:href", "#" + id);
+        if (startOffset > 0)
+            element.setAttribute("startOffset", geomDP(startOffset));
+        element.setTextContent(text);
+        return element;
+    }
+
+    private String addTextPath(SVGPath path) {
+        if (textPaths.containsKey(path)) {
+            return textPaths.get(path);
+        }
+
+        String id = defsKeyPrefix + TEXT_PATH_KEY_PREFIX + textPaths.size();
+        textPaths.put(path, id);
+        addTextPathElementToDef(path, id);
+
+        return id;
+    }
+
+    private void addTextPathElementToDef(SVGPath path, String id) {
+        Element element = path.convertToSVGElement(document, geomDoubleConverter);
+        element.setAttribute("id", id);
+        addElementToDef(element);
     }
 
 
@@ -603,6 +687,41 @@ public class SVGCanvas {
             return id;
         }
         return gradients.get(gradient);
+    }
+
+    private void setTextStyle(Element element, SVGPaint paint) {
+        if (paint.getFont() != null) {
+            SVGFont font = paint.getFont();
+            element.setAttribute("font-family", font.getFontFamily());
+            element.setAttribute("font-style", font.getFontStyle());
+            element.setAttribute("font-weight", font.getFontWeight());
+            element.setAttribute("font-size", "" + font.getFontSize() + fontSizeUnit.toString());
+        }
+        if (paint.getTextAlign() != Paint.Align.LEFT)
+            element.setAttribute("text-anchor", textAlignToAnchor(paint.getTextAlign()));
+
+        if (paint.getLetterSpacing() > 0) {
+            element.setAttribute("letter-spacing", geomDP(paint.getLetterSpacing()));
+        }
+
+        if (paint.getWordSpacing() > 0) {
+            element.setAttribute("word-spacing", geomDP(paint.getWordSpacing()));
+        }
+        if (!SVGPaint.TEXT_DECORATION_NONE.equals(paint.getTextDecoration()))
+            element.setAttribute("text-decoration", paint.getTextDecoration());
+        if (!SVGPaint.LENGTH_ADJUST_SPACING.equals(paint.getLengthAdjust()) && element.hasAttribute("textLength"))
+            element.setAttribute("lengthAdjust", paint.getLengthAdjust());
+    }
+
+    private String textAlignToAnchor(Paint.Align align) {
+        switch (align) {
+            case RIGHT:
+                return "middle";
+            case CENTER:
+                return "end";
+            default:
+                return "start";
+        }
     }
 
     private String strokeStyle(SVGPaint paint, boolean needFillNone) {
