@@ -6,6 +6,8 @@ import android.graphics.PointF;
 import android.graphics.RectF;
 import android.text.TextUtils;
 
+import androidx.annotation.NonNull;
+
 import com.yf.afreesvg.font.SVGFont;
 import com.yf.afreesvg.gradient.SVGGradient;
 import com.yf.afreesvg.shape.SVGClipShape;
@@ -178,6 +180,14 @@ public class SVGCanvas {
 
     public void setFontSizeUnit(SVGUnits fontSizeUnit) {
         this.fontSizeUnit = fontSizeUnit;
+    }
+
+    public String getDefsKeyPrefix() {
+        return defsKeyPrefix;
+    }
+
+    public void setDefsKeyPrefix(@NonNull String defsKeyPrefix) {
+        this.defsKeyPrefix = defsKeyPrefix;
     }
 
     public void drawLine(float x1, float y1, float x2, float y2, SVGPaint paint) {

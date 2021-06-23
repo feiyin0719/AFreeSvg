@@ -129,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
             SVGPath textPath = new SVGPath();
             textPath.oval(100, 400, 100, 100);
             svgCanvas.drawTextOnPath("hello", 0, 0, 0, 0, textPath, textPaint, null);
-            svgCanvas.drawTextOnPath("world", 0, 0, 10, 0, textPath, textPaint, null);
+            svgCanvas.drawTextOnPath("world", 0, 0, 50, 0, textPath, textPaint, null);
 
             svgCanvas.drawPath(textPath, paint);
             String s = svgCanvas.getSVGXmlString();

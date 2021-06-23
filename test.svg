@@ -1,22 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
-    <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
-    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:jfreesvg="http://www.jfree.org/jfreesvg/svg" width="500.0" height="500.0">
-    <line x1="10.0" y1="10.0" x2="200.0" y2="200.0" style="stroke-width:2.0;stroke:rgb(255,0,0);;stroke-dasharray:5.0,5.0,10.0;fill:none"/>
-    <rect x="300.0" y="300.0" width="100.0" height="150.0" style="stroke-width:2.0;stroke:url(#_68154026535737gp0);;fill:url(#_68154026535737gp0)"/>
-    <ellipse cx="175.0" cy="175.0" rx="25.0" ry="25.0" style="stroke-width:2.0;stroke:url(#_68154026535737gp0);;fill:url(#_68154026535737gp0)"/>
-    <rect x="300.0" y="300.0" width="100.0" height="150.0" style="fill:url(#_68154026535737gp1);fill-rule:evenodd" transform="matrix(1.0,0.0,0.0,1.0,10.0,10.0)"/>
-    <polygon points=" 100.0,10.0 40.0,198.0 190.0,78.0 10.0,78.0 160.0,198.0" style="fill:url(#_68154026535737gp1);fill-rule:evenodd" transform="matrix(1.0,0.0,0.0,1.0,10.0,10.0)"/>
-    <polyline points=" 20.0,20.0 40.0,25.0 60.0,40.0 80.0,120.0 120.0,140.0 200.0,180.0" style="stroke-width:2.0;stroke:rgb(255,0,0);;stroke-dasharray:5.0,5.0,10.0;fill:none" transform="matrix(1.0,0.0,0.0,1.0,10.0,10.0)"/>
-    <defs>
-    <linearGradient id="_68154026535737gp0" x1="0.0" y1="0.0" x2="1.0" y2="0.0">
-    <stop offset="0.0" stop-color="rgb(255,0,0)"/>
-    <stop offset="0.5" stop-color="rgb(0,255,0)"/>
-    <stop offset="0.75" stop-color="rgb(0,238,238)"/>
-    <stop offset="1.0" stop-color="rgb(0,0,255)"/>
-    </linearGradient>
-    <radialGradient id="_68154026535737gp1" cx="0.5" cy="0.5" r="1.0" fx="0.800000011920929" fy="0.800000011920929">
-    <stop offset="0.5" stop-color="rgb(255,0,0)"/>
-    <stop offset="1.0" stop-color="rgb(0,0,255)"/>
-    </radialGradient>
-    </defs>
-    </svg>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:jfreesvg="http://www.jfree.org/jfreesvg/svg" width="500.0" height="500.0">
+<line x1="10.0" y1="10.0" x2="200.0" y2="200.0" style="stroke-width:2.0;stroke:rgb(255,0,0);stroke-dasharray:5.0;5.0;10.0;fill:none;"/>
+<rect x="300.0" y="300.0" width="100.0" height="150.0" style="stroke-width:2.0;stroke:rgb(200,200,0);stroke-opacity:0.39215687;fill:url(#_149518331571257gp0);"/>
+<ellipse cx="175.0" cy="175.0" rx="25.0" ry="25.0" style="stroke-width:2.0;stroke:rgb(200,200,0);stroke-opacity:0.39215687;fill:url(#_149518331571257gp0);"/>
+<rect x="300.0" y="300.0" width="100.0" height="150.0" style="fill:url(#_149518331571257gp1);fill-rule:evenodd;" transform="matrix(1.0,0.0,0.0,1.0,10.0,10.0)" clip-path="url(#_149518331571257clip-0)"/>
+<polyline points=" 20.0,20.0 40.0,25.0 60.0,40.0 80.0,120.0 120.0,140.0 200.0,180.0" style="stroke-width:2.0;stroke:rgb(255,0,0);stroke-dasharray:5.0;5.0;10.0;fill:none;" transform="matrix(1.0,0.0,0.0,1.0,10.0,10.0)" clip-path="url(#_149518331571257clip-0)"/>
+<polygon points=" 100.0,10.0 40.0,198.0 190.0,78.0 10.0,78.0 160.0,198.0" style="fill:url(#_149518331571257gp1);fill-rule:evenodd;" transform="matrix(1.0,0.0,0.0,1.0,10.0,10.0)"/>
+<path d="M 200.0 200.0 M 150.0 200.0 A 50.0 50.0 0.0 1 0 250.0 200.0 A 50.0 50.0 0.0 1 0 150.0 200.0 M 100.0 50.0 h 50.0 v 50.0 h -50.0 v -50.0 M 100.0 300.0 Q 150.0 250.0 200.0 400.0 " style="stroke-width:2.0;stroke:rgb(255,0,0);stroke-dasharray:5.0;5.0;10.0;fill:none;" transform="matrix(1.0,0.0,0.0,1.0,10.0,10.0)"/>
+<path d="M 50.0 50.0 Q 100.0 25.0 200.0 50.0 " style="stroke-width:2.0;stroke:rgb(255,0,0);stroke-dasharray:5.0;5.0;10.0;fill:none;" transform="matrix(1.0,0.0,0.0,1.0,10.0,10.0)"/>
+<path d="M 300.0 150.0 A 50.0 50.0 0.0 1 1 350.0 100.0 " style="stroke-width:2.0;stroke:rgb(255,0,0);stroke-dasharray:5.0;5.0;10.0;fill:none;" transform="matrix(1.0,0.0,0.0,1.0,10.0,10.0)"/>
+<g style="stroke-width:2.0;stroke:rgb(255,0,0);stroke-dasharray:5.0;5.0;10.0;fill:none;">
+<path d="M 20.0 20.0 h 100.0 v 400.0 h -100.0 v -400.0 "/>
+<path d="M 200.0 200.0 M 150.0 200.0 A 50.0 50.0 0.0 1 0 250.0 200.0 A 50.0 50.0 0.0 1 0 150.0 200.0 M 100.0 50.0 h 50.0 v 50.0 h -50.0 v -50.0 M 100.0 300.0 Q 150.0 250.0 200.0 400.0 "/>
+</g>
+<text x="200.0" y="20.0" font-family="sans-serif" font-style="italic" font-weight="bold" font-size="16px" id="" style="fill:url(#_149518331571257gp0);">hello world</text>
+<text x="0.0" y="0.0" font-family="sans-serif" font-style="italic" font-weight="bold" font-size="16px" style="fill:url(#_149518331571257gp0);">
+<textPath xlink:href="#_149518331571257textPath-0">hello</textPath>
+</text>
+<text x="0.0" y="0.0" font-family="sans-serif" font-style="italic" font-weight="bold" font-size="16px" style="fill:url(#_149518331571257gp0);">
+<textPath xlink:href="#_149518331571257textPath-0" startOffset="50.0">world</textPath>
+</text>
+<path d="M 0.0 400.0 A 100.0 100.0 0.0 1 0 200.0 400.0 A 100.0 100.0 0.0 1 0 0.0 400.0 " style="stroke-width:2.0;stroke:rgb(255,0,0);stroke-dasharray:5.0;5.0;10.0;fill:none;"/>
+<defs>
+<linearGradient x1="0.0" y1="0.0" x2="1.0" y2="0.0" id="_149518331571257gp0">
+<stop offset="0.0" stop-color="rgb(255,0,0)"/>
+<stop offset="0.5" stop-color="rgb(0,255,0)"/>
+<stop offset="0.75" stop-color="rgb(0,238,238)"/>
+<stop offset="1.0" stop-color="rgb(0,0,255)"/>
+</linearGradient>
+<radialGradient cx="0.5" cy="0.5" r="1.0" fx="0.800000011920929" fy="0.800000011920929" id="_149518331571257gp1">
+<stop offset="0.5" stop-color="rgb(255,0,0)"/>
+<stop offset="1.0" stop-color="rgb(0,0,255)"/>
+</radialGradient>
+<clipPath clipPathUnits="objectBoundingBox" id="_149518331571257clip-0">
+<path d="M 0.0 0.20000000298023224 A 0.2 0.2 0.0 1 0 0.4 0.2 A 0.2 0.2 0.0 1 0 0.0 0.2 "/>
+<path d="M 0.40000003576278687 0.20000000298023224 A 0.2 0.2 0.0 1 0 0.8 0.2 A 0.2 0.2 0.0 1 0 0.40000004 0.2 "/>
+</clipPath>
+<path d="M 0.0 400.0 A 100.0 100.0 0.0 1 0 200.0 400.0 A 100.0 100.0 0.0 1 0 0.0 400.0 " id="_149518331571257textPath-0"/>
+</defs>
+</svg>
