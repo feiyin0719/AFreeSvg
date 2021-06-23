@@ -237,4 +237,17 @@ public class SVGPath implements SVGShape {
     public Object clone() {
         return new SVGPath(this);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SVGPath path = (SVGPath) o;
+        return Objects.equals(pathElements, path.pathElements);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(pathElements);
+    }
 }
