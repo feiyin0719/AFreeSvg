@@ -126,7 +126,7 @@ gradle添加jitpack仓库和依赖
 ```
 
 生成图片如下
-![](https://raw.githubusercontent.com/feiyin0719/AFreeSvg/806b6c907157668835a07b1b11ba80be6df226de/test.svg)
+![](https://raw.githubusercontent.com/feiyin0719/AFreeSvg/c2921aa02d5542c13d380c9bb4d5a350a51d7393/test.svg)
 ## api介绍
 - **SVGCanvas**
 
