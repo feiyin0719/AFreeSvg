@@ -2,11 +2,11 @@
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:jfreesvg="http://www.jfree.org/jfreesvg/svg" width="500.0" height="500.0">
 <line x1="10.0" y1="10.0" x2="200.0" y2="200.0" style="stroke-width:2.0;stroke:rgb(255,0,0);stroke-dasharray:5.0;5.0;10.0;fill:none;"/>
-<rect x="300.0" y="300.0" width="100.0" height="150.0" style="stroke-width:2.0;stroke:rgb(200,200,0);stroke-opacity:0.39215687;fill:url(#_149518331571257gp0);"/>
-<ellipse cx="175.0" cy="175.0" rx="25.0" ry="25.0" style="stroke-width:2.0;stroke:rgb(200,200,0);stroke-opacity:0.39215687;fill:url(#_149518331571257gp0);"/>
-<rect x="300.0" y="300.0" width="100.0" height="150.0" style="fill:url(#_149518331571257gp1);fill-rule:evenodd;" transform="matrix(1.0,0.0,0.0,1.0,10.0,10.0)" clip-path="url(#_149518331571257clip-0)"/>
-<polyline points=" 20.0,20.0 40.0,25.0 60.0,40.0 80.0,120.0 120.0,140.0 200.0,180.0" style="stroke-width:2.0;stroke:rgb(255,0,0);stroke-dasharray:5.0;5.0;10.0;fill:none;" transform="matrix(1.0,0.0,0.0,1.0,10.0,10.0)" clip-path="url(#_149518331571257clip-0)"/>
-<polygon points=" 100.0,10.0 40.0,198.0 190.0,78.0 10.0,78.0 160.0,198.0" style="fill:url(#_149518331571257gp1);fill-rule:evenodd;" transform="matrix(1.0,0.0,0.0,1.0,10.0,10.0)"/>
+<rect x="300.0" y="300.0" width="100.0" height="150.0" style="stroke-width:2.0;stroke:rgb(200,200,0);stroke-opacity:0.39215687;fill:url(#def_182959474269057gp0);"/>
+<ellipse cx="175.0" cy="175.0" rx="25.0" ry="25.0" style="stroke-width:2.0;stroke:rgb(200,200,0);stroke-opacity:0.39215687;fill:url(#def_182959474269057gp0);"/>
+<rect x="300.0" y="300.0" width="100.0" height="150.0" style="fill:url(#def_182959474269057gp1);fill-rule:evenodd;" transform="matrix(1.0,0.0,0.0,1.0,10.0,10.0)" clip-path="url(#def_182959474269057clip-0)"/>
+<polyline points=" 20.0,20.0 40.0,25.0 60.0,40.0 80.0,120.0 120.0,140.0 200.0,180.0" style="stroke-width:2.0;stroke:rgb(255,0,0);stroke-dasharray:5.0;5.0;10.0;fill:none;" transform="matrix(1.0,0.0,0.0,1.0,10.0,10.0)" clip-path="url(#def_182959474269057clip-0)"/>
+<polygon points=" 100.0,10.0 40.0,198.0 190.0,78.0 10.0,78.0 160.0,198.0" style="fill:url(#def_182959474269057gp1);fill-rule:evenodd;" transform="matrix(1.0,0.0,0.0,1.0,10.0,10.0)"/>
 <path d="M 200.0 200.0 M 150.0 200.0 A 50.0 50.0 0.0 1 0 250.0 200.0 A 50.0 50.0 0.0 1 0 150.0 200.0 M 100.0 50.0 h 50.0 v 50.0 h -50.0 v -50.0 M 100.0 300.0 Q 150.0 250.0 200.0 400.0 " style="stroke-width:2.0;stroke:rgb(255,0,0);stroke-dasharray:5.0;5.0;10.0;fill:none;" transform="matrix(1.0,0.0,0.0,1.0,10.0,10.0)"/>
 <path d="M 50.0 50.0 Q 100.0 25.0 200.0 50.0 " style="stroke-width:2.0;stroke:rgb(255,0,0);stroke-dasharray:5.0;5.0;10.0;fill:none;" transform="matrix(1.0,0.0,0.0,1.0,10.0,10.0)"/>
 <path d="M 300.0 150.0 A 50.0 50.0 0.0 1 1 350.0 100.0 " style="stroke-width:2.0;stroke:rgb(255,0,0);stroke-dasharray:5.0;5.0;10.0;fill:none;" transform="matrix(1.0,0.0,0.0,1.0,10.0,10.0)"/>
@@ -14,29 +14,40 @@
 <path d="M 20.0 20.0 h 100.0 v 400.0 h -100.0 v -400.0 "/>
 <path d="M 200.0 200.0 M 150.0 200.0 A 50.0 50.0 0.0 1 0 250.0 200.0 A 50.0 50.0 0.0 1 0 150.0 200.0 M 100.0 50.0 h 50.0 v 50.0 h -50.0 v -50.0 M 100.0 300.0 Q 150.0 250.0 200.0 400.0 "/>
 </g>
-<text x="200.0" y="20.0" font-family="sans-serif" font-style="italic" font-weight="bold" font-size="16px" id="" style="fill:url(#_149518331571257gp0);">hello world</text>
-<text x="0.0" y="0.0" font-family="sans-serif" font-style="italic" font-weight="bold" font-size="16px" style="fill:url(#_149518331571257gp0);">
-<textPath xlink:href="#_149518331571257textPath-0">hello</textPath>
+<text x="200.0" y="20.0" font-family="sans-serif" font-style="italic" font-weight="bold" font-size="24px" id="" style="fill:url(#def_182959474269057gp0);">hello world</text>
+<text x="0.0" y="0.0" font-family="sans-serif" font-style="italic" font-weight="bold" font-size="24px" style="fill:url(#def_182959474269057gp0);">
+<textPath xlink:href="#def_182959474269057Path-0" startOffset="80.0">world</textPath>
 </text>
-<text x="0.0" y="0.0" font-family="sans-serif" font-style="italic" font-weight="bold" font-size="16px" style="fill:url(#_149518331571257gp0);">
-<textPath xlink:href="#_149518331571257textPath-0" startOffset="50.0">world</textPath>
-</text>
+<path d="M 0.0 400.0 A 100.0 100.0 0.0 1 0 200.0 400.0 A 100.0 100.0 0.0 1 0 0.0 400.0 " style="fill:url(#def_182959474269057gp1);fill-rule:evenodd;" clip-path="url(#def_182959474269057clip-1)"/>
 <path d="M 0.0 400.0 A 100.0 100.0 0.0 1 0 200.0 400.0 A 100.0 100.0 0.0 1 0 0.0 400.0 " style="stroke-width:2.0;stroke:rgb(255,0,0);stroke-dasharray:5.0;5.0;10.0;fill:none;"/>
+<image xlink:href="https://raw.githubusercontent.com/feiyin0719/AFreeSvg/dev/dog.jpg" x="200.0" y="250.0" width="100.0" height="100.0"/>
+<image xlink:href="https://raw.githubusercontent.com/feiyin0719/AFreeSvg/dev/dog.jpg" x="200.0" y="400.0" width="100.0" height="100.0" clip-path="url(#def_182959474269057clip-2)"/>
 <defs>
-<linearGradient x1="0.0" y1="0.0" x2="1.0" y2="0.0" id="_149518331571257gp0">
+<linearGradient x1="0.0" y1="0.0" x2="1.0" y2="0.0" id="def_182959474269057gp0">
 <stop offset="0.0" stop-color="rgb(255,0,0)"/>
 <stop offset="0.5" stop-color="rgb(0,255,0)"/>
 <stop offset="0.75" stop-color="rgb(0,238,238)"/>
 <stop offset="1.0" stop-color="rgb(0,0,255)"/>
 </linearGradient>
-<radialGradient cx="0.5" cy="0.5" r="1.0" fx="0.800000011920929" fy="0.800000011920929" id="_149518331571257gp1">
+<radialGradient cx="0.5" cy="0.5" r="1.0" fx="0.800000011920929" fy="0.800000011920929" id="def_182959474269057gp1">
 <stop offset="0.5" stop-color="rgb(255,0,0)"/>
 <stop offset="1.0" stop-color="rgb(0,0,255)"/>
 </radialGradient>
-<clipPath clipPathUnits="objectBoundingBox" id="_149518331571257clip-0">
+<clipPath clipPathUnits="objectBoundingBox" id="def_182959474269057clip-0">
 <path d="M 0.0 0.20000000298023224 A 0.2 0.2 0.0 1 0 0.4 0.2 A 0.2 0.2 0.0 1 0 0.0 0.2 "/>
 <path d="M 0.40000003576278687 0.20000000298023224 A 0.2 0.2 0.0 1 0 0.8 0.2 A 0.2 0.2 0.0 1 0 0.40000004 0.2 "/>
 </clipPath>
-<path d="M 0.0 400.0 A 100.0 100.0 0.0 1 0 200.0 400.0 A 100.0 100.0 0.0 1 0 0.0 400.0 " id="_149518331571257textPath-0"/>
+<path d="M 0.0 400.0 A 100.0 100.0 0.0 1 0 200.0 400.0 A 100.0 100.0 0.0 1 0 0.0 400.0 " id="def_182959474269057Path-0"/>
+<clipPath clipPathUnits="userSpaceOnUse" id="def_182959474269057clip-1">
+<text x="0.0" y="0.0" font-family="sans-serif" font-style="italic" font-weight="bold" font-size="24px">
+<textPath xlink:href="#def_182959474269057Path-0">hello</textPath>
+</text>
+</clipPath>
+<path d="M 200.0 450.0 h 100.0 v 50.0 h -100.0 v -50.0 " id="def_182959474269057Path-1"/>
+<clipPath clipPathUnits="userSpaceOnUse" id="def_182959474269057clip-2">
+<text x="0.0" y="0.0" textLength="200" font-family="sans-serif" font-style="italic" font-weight="bold" font-size="24px">
+<textPath xlink:href="#def_182959474269057Path-1">SVGDOG</textPath>
+</text>
+</clipPath>
 </defs>
 </svg>
