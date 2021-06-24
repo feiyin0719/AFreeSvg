@@ -144,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
             svgCanvas.drawPath(textPath, paint);
 
             //绘制图片
-            String url = "https://img.phb123.com/uploads/allimg/170406/16-1F406111I0501.jpg";
+            String url = "https://raw.githubusercontent.com/feiyin0719/AFreeSvg/dev/dog.jpg";
             svgCanvas.drawImage(url, 200, 250, 100, 100, null);
             SVGPath path1 = new SVGPath();
             path1.rect(200, 450, 100, 50);
