@@ -377,6 +377,21 @@ public class SVGCanvas {
         drawShape(textPath, paint, id);
     }
 
+    public void drawImage(String uri, float x, float y, float width, float height, SVGPaint paint) {
+        drawImage(uri, x, y, width, height, paint, null);
+    }
+
+    public void drawImage(String uri, float x, float y, float width, float height, SVGPaint paint, String id) {
+        Element element = document.createElement("image");
+        element.setAttribute("xlink:href", uri);
+        element.setAttribute("x", geomDP(x));
+        element.setAttribute("y", geomDP(y));
+        element.setAttribute("width", geomDP(width));
+        element.setAttribute("height", geomDP(height));
+        addBaseAttrToDrawElement(element, null, id);
+        svgElement.appendChild(element);
+    }
+
     private Element getTextPathElement(String text, SVGPath path, float startOffset) {
         String id = addPathToDef(path);
         Element element = document.createElement("textPath");
@@ -424,7 +439,8 @@ public class SVGCanvas {
 
     private void addBaseAttrToDrawElement(Element element, SVGPaint paint, String id) {
         setElementId(element, id);
-        element.setAttribute("style", style(paint));
+        if (paint != null)
+            element.setAttribute("style", style(paint));
         addTransformToElement(element);
         addClipToElement(element);
     }

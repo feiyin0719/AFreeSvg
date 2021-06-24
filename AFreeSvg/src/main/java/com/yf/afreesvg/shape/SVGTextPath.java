@@ -170,9 +170,9 @@ public class SVGTextPath implements SVGShape {
 
     private String textAlignToAnchor(Paint.Align align) {
         switch (align) {
-            case RIGHT:
-                return "middle";
             case CENTER:
+                return "middle";
+            case RIGHT:
                 return "end";
             default:
                 return "start";

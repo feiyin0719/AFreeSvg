@@ -119,23 +119,45 @@ public class MainActivity extends AppCompatActivity {
             //绘制文字
             SVGPaint textPaint = new SVGPaint();
             textPaint.setStyle(Paint.Style.FILL);
+
             textPaint.setGradient(svgLinearGradient);
             textPaint.setFont(new SVGFont.Builder().setFontFamily("sans-serif")
                     .setFontStyle(SVGFont.STYLE_ITALIC)
                     .setFontWeight("bold")
+                    .setFontSize(24)
                     .build());
             svgCanvas.drawText("hello world", 200, 20, textPaint, "");
 
             SVGPath textPath = new SVGPath();
             textPath.oval(100, 400, 100, 100);
 //            svgCanvas.drawTextOnPath("hello", 0, 0, 0, 0, textPath, textPaint, null);
-            svgCanvas.drawTextOnPath("world", 0, 0, 50, 0, textPath, textPaint, null);
+            svgCanvas.drawTextOnPath("world", 0, 0, 80, 0, textPath, textPaint, null);
             //设置文本clip
-            SVGTextPath svgTextPath = new SVGTextPath.Builder().setPath(textPath).setPaint(textPaint).setText("hello").build();
+            svgCanvas.save();
+            SVGTextPath svgTextPath = new SVGTextPath.Builder()
+                    .setPath(textPath)
+                    .setPaint(textPaint)
+                    .setText("hello").build();
             svgCanvas.clip(new SVGClipShape(svgTextPath, SVGModes.MODE_USERSPACE));
             svgCanvas.drawPath(textPath, paint2);
-            svgCanvas.clip(null);
+            svgCanvas.restore();
             svgCanvas.drawPath(textPath, paint);
+
+            //绘制图片
+            String url = "https://raw.githubusercontent.com/feiyin0719/AFreeSvg/dev/dog.jpg";
+            svgCanvas.drawImage(url, 200, 250, 100, 100, null);
+            SVGPath path1 = new SVGPath();
+            path1.rect(200, 450, 100, 50);
+            SVGTextPath svgTextPath1 = new SVGTextPath.Builder()
+                    .setText("SVGDOG")
+                    .setPath(path1)
+                    .setPaint(textPaint)
+                    .setTextLength(200)
+                    .build();
+            svgCanvas.save();
+            svgCanvas.clip(new SVGClipShape(svgTextPath1, SVGModes.MODE_USERSPACE));
+            svgCanvas.drawImage(url, 200, 400, 100, 100, null);
+            svgCanvas.restore();
             String s = svgCanvas.getSVGXmlString();
             Log.i("myyf", s);
             File file = new File(getExternalCacheDir(), "test.svg");
