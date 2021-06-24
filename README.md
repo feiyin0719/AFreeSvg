@@ -6,7 +6,7 @@
 gradle添加jitpack仓库和依赖
 ```
  maven { url 'https://jitpack.io' }
- implementation 'com.github.feiyin0719:AFreeSvg:0.0.1-beta4'
+ implementation 'com.github.feiyin0719:AFreeSvg:0.0.1-beta6'
 ```
 
 ## 参考代码
@@ -171,6 +171,7 @@ gradle添加jitpack仓库和依赖
    10. public void clip(SVGClipShape clipShape) //设置裁剪区域
    11. public void drawText(String text, float x, float y, SVGPaint paint)//绘制文本
    12. public void drawTextOnPath(String text, float x, float y, SVGPath path, SVGPaint paint) //绘制文本在path上
+   13. public void drawImage(String uri, float x, float y, float width, float height, SVGPaint paint)//绘制图片
 
 - **SVGPaint**
 
@@ -187,11 +188,14 @@ gradle添加jitpack仓库和依赖
 - **SVGShape**
  1. SVGPath //设置path路径
  2. SVGShapeGroup //shape组，可以同时绘制多个shape 对应于 svg的g
+ 3. SVGTextPath //文本path
 - **SVGClipShape**
 
 设置裁剪区域
   
 ## 版本日志
+- **0.0.1-beta6**
+ 1. 增加绘制图片能力
 - **0.0.1-beta5**
 
  1. 增加绘制文本能力
