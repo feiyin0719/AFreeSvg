@@ -11,7 +11,12 @@ import androidx.annotation.NonNull;
 import com.yf.afreesvg.font.SVGFont;
 import com.yf.afreesvg.gradient.SVGGradient;
 import com.yf.afreesvg.shape.SVGClipShape;
+import com.yf.afreesvg.shape.SVGLine;
+import com.yf.afreesvg.shape.SVGOval;
 import com.yf.afreesvg.shape.SVGPath;
+import com.yf.afreesvg.shape.SVGPolygon;
+import com.yf.afreesvg.shape.SVGPolyline;
+import com.yf.afreesvg.shape.SVGRect;
 import com.yf.afreesvg.shape.SVGShape;
 import com.yf.afreesvg.shape.SVGTextPath;
 import com.yf.afreesvg.util.DoubleFunction;
@@ -197,13 +202,8 @@ public class SVGCanvas {
 
 
     public void drawLine(float x1, float y1, float x2, float y2, SVGPaint paint, String id) {
-        Element element = document.createElement("line");
-        element.setAttribute("x1", geomDP(x1));
-        element.setAttribute("y1", geomDP(y1));
-        element.setAttribute("x2", geomDP(x2));
-        element.setAttribute("y2", geomDP(y2));
-        addBaseAttrToDrawElement(element, paint, id);
-        svgElement.appendChild(element);
+        SVGLine svgLine = new SVGLine(x1, y1, x2, y2);
+        drawShape(svgLine, paint, id);
 
     }
 
@@ -213,13 +213,8 @@ public class SVGCanvas {
 
 
     public void drawRect(RectF rectF, SVGPaint paint, String id) {
-        Element element = document.createElement("rect");
-        element.setAttribute("x", geomDP(rectF.left));
-        element.setAttribute("y", geomDP(rectF.top));
-        element.setAttribute("width", geomDP(rectF.width()));
-        element.setAttribute("height", geomDP(rectF.height()));
-        addBaseAttrToDrawElement(element, paint, id);
-        svgElement.appendChild(element);
+        SVGRect rect = new SVGRect(rectF.left, rectF.top, rectF.width(), rectF.height());
+        drawShape(rect, paint, id);
     }
 
     public void drawOval(RectF rectF, SVGPaint paint) {
@@ -228,13 +223,8 @@ public class SVGCanvas {
 
 
     public void drawOval(RectF rectF, SVGPaint paint, String id) {
-        Element element = document.createElement("ellipse");
-        element.setAttribute("cx", geomDP(rectF.centerX()));
-        element.setAttribute("cy", geomDP(rectF.centerY()));
-        element.setAttribute("rx", geomDP(rectF.width() / 2));
-        element.setAttribute("ry", geomDP(rectF.height() / 2));
-        addBaseAttrToDrawElement(element, paint, id);
-        svgElement.appendChild(element);
+        SVGOval oval = new SVGOval(rectF.centerX(), rectF.centerY(), rectF.width() / 2, rectF.height() / 2);
+        drawShape(oval, paint, id);
     }
 
     public void drawPolygon(float[] points, SVGPaint paint) {
@@ -259,10 +249,8 @@ public class SVGCanvas {
         if (points == null || points.length < 3) {
             throw new IllegalArgumentException("points is null or points length <3");
         }
-        Element element = document.createElement("polygon");
-        element.setAttribute("points", getPointsStr(points));
-        addBaseAttrToDrawElement(element, paint, id);
-        svgElement.appendChild(element);
+        SVGPolygon polygon = new SVGPolygon(points);
+        drawShape(polygon, paint, id);
     }
 
     public void drawPolyline(float points[], SVGPaint paint) {
@@ -281,10 +269,8 @@ public class SVGCanvas {
         if (points == null || points.length < 2) {
             throw new IllegalArgumentException("points is null or points length <2");
         }
-        Element element = document.createElement("polyline");
-        element.setAttribute("points", getPointsStr(points));
-        addBaseAttrToDrawElement(element, paint, id);
-        svgElement.appendChild(element);
+        SVGPolyline polyline = new SVGPolyline(points);
+        drawShape(polyline, paint, id);
     }
 
     public void drawArc(float x, float y, float width, float height, float startAngle,
@@ -323,9 +309,7 @@ public class SVGCanvas {
     }
 
     public void drawPath(SVGPath path, SVGPaint paint, String id) {
-        Element element = path.convertToSVGElement(this, document, geomDoubleConverter);
-        addBaseAttrToDrawElement(element, paint, id);
-        svgElement.appendChild(element);
+        drawShape(path, paint, id);
     }
 
     public void drawShape(SVGShape shape, SVGPaint paint) {
