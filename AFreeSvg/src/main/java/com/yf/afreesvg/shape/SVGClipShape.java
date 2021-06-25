@@ -3,6 +3,7 @@ package com.yf.afreesvg.shape;
 import com.yf.afreesvg.ConvertToSVGElement;
 import com.yf.afreesvg.SVGCanvas;
 import com.yf.afreesvg.SVGModes;
+import com.yf.afreesvg.SVGPaint;
 import com.yf.afreesvg.util.DoubleFunction;
 
 import org.w3c.dom.Document;
@@ -13,7 +14,7 @@ import org.w3c.dom.NodeList;
 public class SVGClipShape implements ConvertToSVGElement, Cloneable {
     private SVGShape shape;
     private @SVGModes.POS_MODE
-    String posMode;
+    String posMode = SVGModes.MODE_USERSPACE;
 
     public SVGClipShape(SVGShape shape, @SVGModes.POS_MODE String posMode) {
         this.shape = shape;
@@ -47,16 +48,20 @@ public class SVGClipShape implements ConvertToSVGElement, Cloneable {
         Element element = document.createElement("clipPath");
         element.setAttribute("clipPathUnits", posMode);
         if (shape instanceof SVGShapeGroup) {
-            Element g = shape.convertToSVGElement(canvas,document, convert);
+            Element g = shape.convertToSVGElement(canvas, document, convert);
             NodeList list = g.getChildNodes();
             if (list != null && list.getLength() > 0) {
                 for (int i = 0; i < list.getLength(); ++i) {
                     Node n = list.item(i);
-                    element.appendChild(n);
+                    if (n instanceof Element) {
+                        Element element1 = (Element) n;
+                        element.appendChild(element1);
+                    }
                 }
             }
         } else {
-            element.appendChild(shape.convertToSVGElement(canvas,document, convert));
+            Element element1 = shape.convertToSVGElement(canvas, document, convert);
+            element.appendChild(element1);
         }
         return element;
     }

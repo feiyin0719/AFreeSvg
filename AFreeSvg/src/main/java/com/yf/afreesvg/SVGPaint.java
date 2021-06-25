@@ -33,7 +33,6 @@ public class SVGPaint extends Paint {
 
     public static final String FILL_RULE_DEFAULT = "nonzero";
     public static final String FILL_RULE_EVENODD = "evenodd";
-    public static final String FILL_RULE_INHERIT = "inherit";
 
 
     public static final String LENGTH_ADJUST_SPACING = "spacing";
@@ -50,7 +49,7 @@ public class SVGPaint extends Paint {
     public @interface LengthAdjust {
     }
 
-    @StringDef({FILL_RULE_DEFAULT, FILL_RULE_EVENODD, FILL_RULE_INHERIT})
+    @StringDef({FILL_RULE_DEFAULT, FILL_RULE_EVENODD})
     @Retention(RetentionPolicy.SOURCE)
     public @interface FillRule {
     }

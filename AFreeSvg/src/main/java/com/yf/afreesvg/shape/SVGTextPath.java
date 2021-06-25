@@ -11,7 +11,9 @@ import com.yf.afreesvg.util.DoubleFunction;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public class SVGTextPath implements SVGShape {
+import java.util.Objects;
+
+public class SVGTextPath extends SVGBaseShape {
     private String text;
     private float x;
     private float y;
@@ -132,6 +134,7 @@ public class SVGTextPath implements SVGShape {
         } else
             element.setTextContent(text);
         setTextStyle(element, paint, convert);
+        addBaseAttr(element);
         return element;
     }
 
@@ -190,6 +193,26 @@ public class SVGTextPath implements SVGShape {
         paint.setTextAlign(this.paint.getTextAlign());
         paint.setLetterSpacing(this.paint.getLetterSpacing());
         paint.setTextDecoration(this.paint.getTextDecoration());
-        return new SVGTextPath(this.text, this.x, this.y, this.textLength, this.startOffset, (SVGPath) this.path.clone(), paint, this.fontSizeUnit);
+        return new Builder().setText(this.text).setX(this.x).setY(this.y).setTextLength(this.textLength).setStartOffset(this.startOffset).setPath((SVGPath) this.path.clone()).setPaint(paint).setFontSizeUnit(this.fontSizeUnit).build();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SVGTextPath that = (SVGTextPath) o;
+        return Float.compare(that.x, x) == 0 &&
+                Float.compare(that.y, y) == 0 &&
+                textLength == that.textLength &&
+                Float.compare(that.startOffset, startOffset) == 0 &&
+                Objects.equals(text, that.text) &&
+                Objects.equals(path, that.path) &&
+                Objects.equals(paint, that.paint) &&
+                fontSizeUnit == that.fontSizeUnit;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(text, x, y, textLength, startOffset, path, paint, fontSizeUnit);
     }
 }

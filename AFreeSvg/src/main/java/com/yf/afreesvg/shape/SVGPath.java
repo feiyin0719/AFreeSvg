@@ -16,11 +16,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
-public class SVGPath implements SVGShape {
+public class SVGPath extends SVGBaseShape {
     @Override
     public Element convertToSVGElement(SVGCanvas canvas, Document document, DoubleFunction<String> convert) {
         Element element = document.createElement("path");
         element.setAttribute("d", getSVGPathD(convert));
+        addBaseAttr(element);
         return element;
     }
 
