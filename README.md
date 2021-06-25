@@ -6,7 +6,7 @@
 gradle添加jitpack仓库和依赖
 ```
  maven { url 'https://jitpack.io' }
- implementation 'com.github.feiyin0719:AFreeSvg:0.0.1-beta6'
+ implementation 'com.github.feiyin0719:AFreeSvg:0.0.1-beta7'
 ```
 
 ## 参考代码
@@ -189,11 +189,19 @@ gradle添加jitpack仓库和依赖
  1. SVGPath //设置path路径
  2. SVGShapeGroup //shape组，可以同时绘制多个shape 对应于 svg的g
  3. SVGTextPath //文本path
+ 4. SVGLine
+ 5. SVGRect
+ 6. SVGOval
+ 7. SVGPolygon
+ 8. SVGPolyline
 - **SVGClipShape**
 
 设置裁剪区域
   
 ## 版本日志
+- **0.0.1-beta7**
+ 1. 增加基础shape rect line等
+ 2. 重构内部实现
 - **0.0.1-beta6**
  1. 增加绘制图片能力
 - **0.0.1-beta5**
