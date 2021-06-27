@@ -37,7 +37,7 @@ ext {
     GITHUB_REPO_PATH = "../../AFreeSvg"
     PUBLISH_GROUP_ID = 'com.yf'
     PUBLISH_ARTIFACT_ID = 'afreesvg'
-    PUBLISH_VERSION = '0.0.1-beta7'
+    PUBLISH_VERSION = '0.0.1'
 }
 uploadArchives {
     repositories.mavenDeployer {
