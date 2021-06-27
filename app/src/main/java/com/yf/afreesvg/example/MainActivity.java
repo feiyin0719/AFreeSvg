@@ -57,7 +57,8 @@ public class MainActivity extends AppCompatActivity {
             paint1.setARGB(100, 200, 200, 0);
 
             svgCanvas.drawRect(new RectF(300, 300, 400, 450), paint1);
-            svgCanvas.drawOval(new RectF(150, 150, 200, 200), paint1);
+            svgCanvas.drawOval(new RectF(150, 150, 200, 400), paint1);
+            svgCanvas.drawCircle(240, 240, 50, paint1);
             SVGPaint paint2 = new SVGPaint();
             paint2.setStyle(Paint.Style.FILL);
             //放射渐变
