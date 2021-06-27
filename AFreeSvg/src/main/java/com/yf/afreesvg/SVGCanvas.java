@@ -8,8 +8,8 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 
-import com.yf.afreesvg.font.SVGFont;
 import com.yf.afreesvg.gradient.SVGGradient;
+import com.yf.afreesvg.shape.SVGCircle;
 import com.yf.afreesvg.shape.SVGClipShape;
 import com.yf.afreesvg.shape.SVGLine;
 import com.yf.afreesvg.shape.SVGOval;
@@ -217,6 +217,15 @@ public class SVGCanvas {
         drawShape(rect, paint, id);
     }
 
+    public void drawCircle(float cx, float cy, float r, SVGPaint paint) {
+        drawCircle(cx, cy, r, paint, null);
+    }
+
+    public void drawCircle(float cx, float cy, float r, SVGPaint paint, String id) {
+        SVGCircle circle = new SVGCircle(cx, cy, r);
+        drawShape(circle, paint, id);
+    }
+
     public void drawOval(RectF rectF, SVGPaint paint) {
         drawOval(rectF, paint, null);
     }
@@ -376,15 +385,6 @@ public class SVGCanvas {
         svgElement.appendChild(element);
     }
 
-    private Element getTextPathElement(String text, SVGPath path, float startOffset) {
-        String id = addPathToDef(path);
-        Element element = document.createElement("textPath");
-        element.setAttribute("xlink:href", "#" + id);
-        if (startOffset > 0)
-            element.setAttribute("startOffset", geomDP(startOffset));
-        element.setTextContent(text);
-        return element;
-    }
 
     public String addPathToDef(SVGPath path) {
         if (textPaths.containsKey(path)) {
@@ -410,15 +410,6 @@ public class SVGCanvas {
         for (int i = 0; i < points.length; i += 2)
             pointF[i / 2] = new PointF(points[i], points[i + 1]);
         return pointF;
-    }
-
-    private String getPointsStr(PointF points[]) {
-        StringBuilder sb = new StringBuilder();
-        if (points.length > 0) {
-            for (int i = 0; i < points.length; ++i)
-                sb.append(" " + geomDP(points[i].x) + "," + geomDP(points[i].y));
-        }
-        return sb.toString();
     }
 
     private void addBaseAttrToDrawElement(Element element, SVGPaint paint, String id) {
@@ -698,41 +689,6 @@ public class SVGCanvas {
         return gradients.get(gradient);
     }
 
-    private void setTextStyle(Element element, SVGPaint paint) {
-        if (paint.getFont() != null) {
-            SVGFont font = paint.getFont();
-            element.setAttribute("font-family", font.getFontFamily());
-            element.setAttribute("font-style", font.getFontStyle());
-            element.setAttribute("font-weight", font.getFontWeight());
-            element.setAttribute("font-size", "" + font.getFontSize() + fontSizeUnit.toString());
-        }
-        if (paint.getTextAlign() != Paint.Align.LEFT)
-            element.setAttribute("text-anchor", textAlignToAnchor(paint.getTextAlign()));
-
-        if (paint.getLetterSpacing() > 0) {
-            element.setAttribute("letter-spacing", geomDP(paint.getLetterSpacing()));
-        }
-
-        if (paint.getWordSpacing() > 0) {
-            element.setAttribute("word-spacing", geomDP(paint.getWordSpacing()));
-        }
-        if (!SVGPaint.TEXT_DECORATION_NONE.equals(paint.getTextDecoration()))
-            element.setAttribute("text-decoration", paint.getTextDecoration());
-        if (!SVGPaint.LENGTH_ADJUST_SPACING.equals(paint.getLengthAdjust()) && element.hasAttribute("textLength"))
-            element.setAttribute("lengthAdjust", paint.getLengthAdjust());
-    }
-
-    private String textAlignToAnchor(Paint.Align align) {
-        switch (align) {
-            case RIGHT:
-                return "middle";
-            case CENTER:
-                return "end";
-            default:
-                return "start";
-        }
-    }
-
     private String strokeStyle(SVGPaint paint, boolean needFillNone) {
 
         double strokeWidth = 1.0f;
@@ -807,23 +763,6 @@ public class SVGCanvas {
         Element element = gradient.convertToSVGElement(this, document, geomDoubleConverter);
         setElementId(element, id);
         return element;
-    }
-
-
-    /**
-     * Returns an SVG color string based on the current paint.  To handle
-     * {@code GradientPaint} we rely on the {@code setPaint()} method
-     * having set the {@code gradientPaintRef} attribute.
-     *
-     * @return An SVG color string.
-     */
-    private String svgColorStr(SVGPaint paint) {
-        if (paint.getGradient() != null) {
-            String id = addGradient(paint.gradient);
-            return "url(#" + id + ")";
-        }
-
-        return SVGUtils.rgbColorStr(paint.getColor());
     }
 
 
