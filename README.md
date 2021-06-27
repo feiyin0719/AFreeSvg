@@ -6,7 +6,7 @@
 gradle添加jitpack仓库和依赖
 ```
  maven { url 'https://jitpack.io' }
- implementation 'com.github.feiyin0719:AFreeSvg:0.0.1-beta7'
+ implementation 'com.github.feiyin0719:AFreeSvg:0.0.1'
 ```
 
 ## 参考代码
@@ -172,6 +172,7 @@ gradle添加jitpack仓库和依赖
    11. public void drawText(String text, float x, float y, SVGPaint paint)//绘制文本
    12. public void drawTextOnPath(String text, float x, float y, SVGPath path, SVGPaint paint) //绘制文本在path上
    13. public void drawImage(String uri, float x, float y, float width, float height, SVGPaint paint)//绘制图片
+   14. public void drawCircle(float cx, float cy, float r, SVGPaint paint) //绘制圆形
 
 - **SVGPaint**
 
@@ -199,6 +200,14 @@ gradle添加jitpack仓库和依赖
 设置裁剪区域
   
 ## 版本日志
+- **0.0.1**
+
+第一个正式版
+
+ 1. 支持线段、矩形、圆形、椭圆、文本、多边形、贝塞尔曲线、图片绘制操作
+ 2. 支持clip功能
+ 3. 支持变换操作
+ 4. 支持save restore
 - **0.0.1-beta7**
  1. 增加基础shape rect line等
  2. 重构内部实现
