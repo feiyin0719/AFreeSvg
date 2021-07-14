@@ -179,14 +179,14 @@ gradle添加jitpack仓库和依赖
 
 transform clip 操作api
 
-1. void clip(SVGClipShape shape) //设置clip区域，后续的绘制操作只会在clip区域上显示
-2. translate scale rotate skew //变换操作，使用方法和canvas一致
-3. save() save(int flags)  restore() //和安卓canvas save restore一致，save后会保存当前canvas状态（transform和clip信息），restore会回退到之前状态,flags用来指示保存什么信息，不填则全部保存，SAVE_FLAG_CLIP 只保存clip信息。SAVE_FLAG_MATRIX 只保存transform信息
+      1. void clip(SVGClipShape shape) //设置clip区域，后续的绘制操作只会在clip区域上显示
+      2. translate scale rotate skew //变换操作，使用方法和canvas一致
+      3. save() save(int flags)  restore() //和安卓canvas save restore一致，save后会保存当前canvas状态（transform和clip信息），restore会回退到之前状态,flags用来指示保存什么信息，不填则全部保存，SAVE_FLAG_CLIP 只保存clip信息。SAVE_FLAG_MATRIX 只保存transform信息
 
 保存api
 
-1. getSVGXmlString() //获取svg string
-2. writeSVGXMLToStream(OutputStream outputStream) //保存svg
+      1. getSVGXmlString() //获取svg string
+      2. writeSVGXMLToStream(OutputStream outputStream) //保存svg
 
 - **SVGPaint**
 
@@ -203,19 +203,19 @@ transform clip 操作api
 
 渐变色
 
-    1. SVGLinearGradient  //线性渐变
-    2. SVGRadialGradient //放射渐变
+      1. SVGLinearGradient  //线性渐变
+      2. SVGRadialGradient //放射渐变
 
 - **SVGShape**
 
-    1. SVGPath //设置path路径
-    2. SVGShapeGroup //shape组，可以同时绘制多个shape 对应于 svg的g
-    3. SVGTextPath //文本path 
-    4. SVGLine
-    5. SVGRect
-    6. SVGOval
-    7. SVGPolygon
-    8. SVGPolyline
+      1. SVGPath //设置path路径
+      2. SVGShapeGroup //shape组，可以同时绘制多个shape 对应于 svg的g
+      3. SVGTextPath //文本path 
+      4. SVGLine
+      5. SVGRect
+      6. SVGOval
+      7. SVGPolygon
+      8. SVGPolyline
 
 - **SVGClipShape**
 
