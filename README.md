@@ -208,14 +208,14 @@ transform clip 操作api
 
 - **SVGShape**
 
-  1. SVGPath //设置path路径
-  2. SVGShapeGroup //shape组，可以同时绘制多个shape 对应于 svg的g
-  3. SVGTextPath //文本path 
-  4. SVGLine
-  5. SVGRect
-  6. SVGOval
-  7. SVGPolygon
-  8. SVGPolyline
+    1. SVGPath //设置path路径
+    2. SVGShapeGroup //shape组，可以同时绘制多个shape 对应于 svg的g
+    3. SVGTextPath //文本path 
+    4. SVGLine
+    5. SVGRect
+    6. SVGOval
+    7. SVGPolygon
+    8. SVGPolyline
 
 - **SVGClipShape**
 
