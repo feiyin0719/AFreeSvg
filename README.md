@@ -153,51 +153,79 @@ gradle添加jitpack仓库和依赖
 
 生成图片如下
 ![](https://raw.githubusercontent.com/feiyin0719/AFreeSvg/dev/test.jpg)
+
 ## api介绍
+
 - **SVGCanvas**
 
 绘制canvas，使用方法类似安卓canvas。
 
 图形绘制api 
-   1. drawRect(RectF rectF, SVGPaint paint) //绘制矩形
-   2. drawLine(float x1, float y1, float x2, float y2, SVGPaint paint) //绘制线段
-   3. drawOval(RectF rectF, SVGPaint paint) //绘制椭圆或者圆
-   4. drawPolygon(float[] points, SVGPaint paint) //绘制多边形
-   5. drawPolyline(float points[], SVGPaint paint) //绘制多线段 
-   6. public void drawArc(float x, float y, float width, float height, float startAngle,float arcAngle, SVGPaint paint) //绘制圆弧
-   7. public void drawCurve(float sx, float sy, float ex, float ey, float x, float y, SVGPaint paint) //绘制贝塞尔曲线
-   8. public void drawPath(SVGPath path, SVGPaint paint) //绘制普通path
-   9. public void drawShape(SVGShape shape, SVGPaint paint) //绘制shape
-   10. public void clip(SVGClipShape clipShape) //设置裁剪区域
-   11. public void drawText(String text, float x, float y, SVGPaint paint)//绘制文本
-   12. public void drawTextOnPath(String text, float x, float y, SVGPath path, SVGPaint paint) //绘制文本在path上
-   13. public void drawImage(String uri, float x, float y, float width, float height, SVGPaint paint)//绘制图片
-   14. public void drawCircle(float cx, float cy, float r, SVGPaint paint) //绘制圆形
+
+      1. drawRect(RectF rectF, SVGPaint paint) //绘制矩形
+      2. drawLine(float x1, float y1, float x2, float y2, SVGPaint paint) //绘制线段
+      3. drawOval(RectF rectF, SVGPaint paint) //绘制椭圆或者圆
+      4. drawPolygon(float[] points, SVGPaint paint) //绘制多边形
+      5. drawPolyline(float points[], SVGPaint paint) //绘制多线段 
+      6. public void drawArc(float x, float y, float width, float height, float startAngle,float arcAngle, SVGPaint paint) //绘制圆弧
+      7. public void drawCurve(float sx, float sy, float ex, float ey, float x, float y, SVGPaint paint) //绘制贝塞尔曲线
+      8. public void drawPath(SVGPath path, SVGPaint paint) //绘制普通path
+      9. public void drawShape(SVGShape shape, SVGPaint paint) //绘制shape
+      10. public void clip(SVGClipShape clipShape) //设置裁剪区域
+      11. public void drawText(String text, float x, float y, SVGPaint paint)//绘制文本
+      12. public void drawTextOnPath(String text, float x, float y, SVGPath path, SVGPaint paint) //绘制文本在path上
+      13. public void drawImage(String uri, float x, float y, float width, float height, SVGPaint paint)//绘制图片
+      14. public void drawCircle(float cx, float cy, float r, SVGPaint paint) //绘制圆形
+
+transform clip 操作api
+
+1. void clip(SVGClipShape shape) //设置clip区域，后续的绘制操作只会在clip区域上显示
+2. translate scale rotate skew //变换操作，使用方法和canvas一致
+3. save() save(int flags)  restore() //和安卓canvas save restore一致，save后会保存当前canvas状态（transform和clip信息），restore会回退到之前状态,flags用来指示保存什么信息，不填则全部保存，SAVE_FLAG_CLIP 只保存clip信息。SAVE_FLAG_MATRIX 只保存transform信息
+
+保存api
+
+1. getSVGXmlString() //获取svg string
+2. writeSVGXMLToStream(OutputStream outputStream) //保存svg
 
 - **SVGPaint**
 
 绘制画笔类，继承自安卓paint，主要用来添加一些安卓paint不支持的功能，以及解决无法获取渐变色和dash的问题
-   1. setDashArray(float[] dashArray) //设置线段dash值
-   2. setGradient(SVGGradient gradient) //设置渐变色
-   3. setFillRule(String fillRule) //设置填充规则 值意义参考svg    nonzero / evenodd / inherit 默认nonzero
+
+      1. setDashArray(float[] dashArray) //设置线段dash值
+      2. setGradient(SVGGradient gradient) //设置渐变色
+      3. setFillRule(String fillRule) //设置填充规则 值意义参考svg    nonzero / evenodd / inherit 默认nonzero
+      4. setFillColor(long color)//单独设置fill color，可以实现strokecolor和fillcolor不一样，不设置的话默认使用同一个颜色
+      5. setUseGradientStroke(bool useGradientStroke)//设置是否使用渐变色画线，当设置渐变填充时使用，默认为false
+      6. setFont(SVGFont font)  setLengthAdjust(@LengthAdjust String lengthAdjust) setTextDecoration(@TextDecoration String textDecoration) setWordSpacing(float wordSpacing) //绘制文本时设置文本font以及相关信息
 
 - **SVGGradient**
 
 渐变色
-  1. SVGLinearGradient  //线性渐变
-  2. SVGRadialGradient //放射渐变
+
+    1. SVGLinearGradient  //线性渐变
+    2. SVGRadialGradient //放射渐变
+
 - **SVGShape**
- 1. SVGPath //设置path路径
- 2. SVGShapeGroup //shape组，可以同时绘制多个shape 对应于 svg的g
- 3. SVGTextPath //文本path
- 4. SVGLine
- 5. SVGRect
- 6. SVGOval
- 7. SVGPolygon
- 8. SVGPolyline
+
+  1. SVGPath //设置path路径
+  2. SVGShapeGroup //shape组，可以同时绘制多个shape 对应于 svg的g
+  3. SVGTextPath //文本path 
+  4. SVGLine
+  5. SVGRect
+  6. SVGOval
+  7. SVGPolygon
+  8. SVGPolyline
+
 - **SVGClipShape**
 
 设置裁剪区域
+
+public SVGClipShape(SVGShape shape, @SVGModes.POS_MODE String posMode)//posMode设置坐标空间。MODE_BOX  相对绘制元素坐标。MODE_USERSPACE绝对坐标，即相对于画布的坐标
+
+- **SVGFont**
+
+  font信息，绘制文本时使用
   
 ## 版本日志
 - **0.0.1**
