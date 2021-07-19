@@ -8,6 +8,7 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 
+import com.yf.afreesvg.filter.SVGFilter;
 import com.yf.afreesvg.gradient.SVGGradient;
 import com.yf.afreesvg.shape.SVGCircle;
 import com.yf.afreesvg.shape.SVGClipShape;
@@ -57,6 +58,8 @@ public class SVGCanvas {
     private static final String CLIP_KEY_PREFIX = "clip-";
 
     private static final String TEXT_PATH_KEY_PREFIX = "Path-";
+
+    private static final String FILTER_KEY_PREFIX = "filter-";
 
     /**
      * A prefix for the keys used in the DEFS element.  This can be used to
@@ -109,6 +112,8 @@ public class SVGCanvas {
      * in the defs element.
      */
     private Map<SVGGradient, String> gradients = new HashMap<>();
+
+    private Map<SVGFilter, String> filters = new HashMap<>();
 
     /**
      * Units for the width and height of the SVG, if null then no
@@ -381,7 +386,7 @@ public class SVGCanvas {
         element.setAttribute("y", geomDP(y));
         element.setAttribute("width", geomDP(width));
         element.setAttribute("height", geomDP(height));
-        addBaseAttrToDrawElement(element, null, id);
+        addBaseAttrToDrawElement(element, paint, id);
         svgElement.appendChild(element);
     }
 
@@ -416,8 +421,29 @@ public class SVGCanvas {
         setElementId(element, id);
         if (paint != null)
             element.setAttribute("style", style(paint));
+        if (paint != null && paint.getFilter() != null) {
+            addFilterToElement(element, paint.getFilter());
+        }
         addTransformToElement(element);
         addClipToElement(element);
+    }
+
+    private void addFilterToElement(Element element, SVGFilter filter) {
+        String filterId = null;
+        if (filters.containsKey(filter)) {
+            filterId = filters.get(filter);
+        } else {
+            filterId = FILTER_KEY_PREFIX + filters.size();
+            filters.put(filter, filterId);
+            addFilterElementToDef(filter, filterId);
+        }
+        element.setAttribute("filter", "url(#" + filterId + ")");
+    }
+
+    private void addFilterElementToDef(SVGFilter filter, String id) {
+        Element element = filter.convertToSVGElement(this, document, geomDoubleConverter);
+        element.setAttribute("id", id);
+        addElementToDef(element);
     }
 
     private void addClipToElement(Element element) {

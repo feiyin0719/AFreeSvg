@@ -5,6 +5,7 @@ import android.graphics.Paint;
 import androidx.annotation.ColorLong;
 import androidx.annotation.StringDef;
 
+import com.yf.afreesvg.filter.SVGFilter;
 import com.yf.afreesvg.font.SVGFont;
 import com.yf.afreesvg.gradient.SVGGradient;
 
@@ -30,6 +31,8 @@ public class SVGPaint extends Paint {
     String textDecoration = TEXT_DECORATION_NONE;
 
     protected float wordSpacing = 0;
+
+    protected SVGFilter filter;
 
     public static final String FILL_RULE_DEFAULT = "nonzero";
     public static final String FILL_RULE_EVENODD = "evenodd";
@@ -156,5 +159,13 @@ public class SVGPaint extends Paint {
     @Override
     public void setWordSpacing(float wordSpacing) {
         this.wordSpacing = wordSpacing;
+    }
+
+    public SVGFilter getFilter() {
+        return filter;
+    }
+
+    public void setFilter(SVGFilter filter) {
+        this.filter = filter;
     }
 }

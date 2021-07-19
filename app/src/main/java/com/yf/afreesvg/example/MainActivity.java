@@ -12,6 +12,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.yf.afreesvg.SVGCanvas;
 import com.yf.afreesvg.SVGModes;
 import com.yf.afreesvg.SVGPaint;
+import com.yf.afreesvg.filter.SVGBaseFilter;
+import com.yf.afreesvg.filter.SVGFilterGroup;
+import com.yf.afreesvg.filter.SVGGaussianBlurFilter;
+import com.yf.afreesvg.filter.SVGOffsetFilter;
 import com.yf.afreesvg.font.SVGFont;
 import com.yf.afreesvg.gradient.SVGLinearGradient;
 import com.yf.afreesvg.gradient.SVGRadialGradient;
@@ -146,7 +150,32 @@ public class MainActivity extends AppCompatActivity {
 
             //绘制图片
             String url = "https://raw.githubusercontent.com/feiyin0719/AFreeSvg/dev/dog.jpg";
-            svgCanvas.drawImage(url, 200, 250, 100, 100, null);
+            SVGPaint imagePaint = new SVGPaint();
+            SVGFilterGroup filterGroup = new SVGFilterGroup();
+            filterGroup.setFilterUnits(SVGModes.MODE_BOX);
+            filterGroup.setX(-0.2f);
+            filterGroup.setY(-0.2f);
+            filterGroup.setWidth(1.5f);
+            filterGroup.setHeight(1.5f);
+            SVGOffsetFilter.SVGOffsetFilterEffect offsetFilterEffect = new SVGOffsetFilter.SVGOffsetFilterEffect(0.05f, 0.05f);
+            offsetFilterEffect.setIn(SVGBaseFilter.ALPHA_VALUE);
+            offsetFilterEffect.setResult("offset");
+            SVGGaussianBlurFilter.SVGGaussianBlurFilterEffect gaussianBlurFilterEffect = new SVGGaussianBlurFilter.SVGGaussianBlurFilterEffect(3, 3);
+            gaussianBlurFilterEffect.setIn("offset");
+            gaussianBlurFilterEffect.setResult("blur");
+            SVGFilterGroup.SVGBlendFilterEffect blendFilterEffect = new SVGFilterGroup.SVGBlendFilterEffect();
+            blendFilterEffect.setIn(SVGBaseFilter.GRAPHIC_VALUE);
+            blendFilterEffect.setIn2("blur");
+
+            filterGroup.addEffect(offsetFilterEffect);
+            filterGroup.addEffect(gaussianBlurFilterEffect);
+            filterGroup.addEffect(blendFilterEffect);
+
+            imagePaint.setFilter(filterGroup);
+
+            paint1.setFilter(filterGroup);
+            svgCanvas.drawOval(new RectF(300, 20, 380, 100), paint1);
+            svgCanvas.drawImage(url, 200, 250, 100, 100, imagePaint);
             SVGPath path1 = new SVGPath();
             path1.rect(200, 450, 100, 50);
             SVGTextPath svgTextPath1 = new SVGTextPath.Builder()
@@ -157,7 +186,7 @@ public class MainActivity extends AppCompatActivity {
                     .build();
             svgCanvas.save();
             svgCanvas.clip(new SVGClipShape(svgTextPath1, SVGModes.MODE_USERSPACE));
-            svgCanvas.drawImage(url, 200, 400, 100, 100, null);
+            svgCanvas.drawImage(url, 200, 400, 100, 100, paint);
             svgCanvas.restore();
             String s = svgCanvas.getSVGXmlString();
             Log.i("myyf", s);

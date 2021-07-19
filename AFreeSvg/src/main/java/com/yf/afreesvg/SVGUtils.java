@@ -238,4 +238,8 @@ public class SVGUtils {
         return alpha / 255.0f;
     }
 
+    public static boolean isTextEmpty(String str) {
+        return str == null || str.equals("");
+    }
+
 }
