@@ -53,6 +53,8 @@ import javax.xml.transform.stream.StreamResult;
  * You can use it to generate svg file,the api refer to {@link android.graphics.Canvas}
  * When draw shape,use {@link SVGPaint} to set style
  *
+ * if you want to learn about the format and attrs of svg,plz refer to http://www.verydoc.net/svg/
+ *
  * @author iffly
  * @since 0.0.1
  */
