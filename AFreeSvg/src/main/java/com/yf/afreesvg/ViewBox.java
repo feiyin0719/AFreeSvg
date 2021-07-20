@@ -38,7 +38,7 @@ import com.yf.afreesvg.util.DoubleFunction;
 /**
  * Represents a view box in SVG.
  * 
- * @since 3.2
+ * @since 0.0.1
  */
 public class ViewBox {
 
