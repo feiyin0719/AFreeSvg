@@ -35,7 +35,7 @@ package com.yf.afreesvg;
 /**
  * An enumeration of the values for SVG units.
  * 
- * @since 3.2
+ * @since 0.0.1
  */
 public enum SVGUnits {
     

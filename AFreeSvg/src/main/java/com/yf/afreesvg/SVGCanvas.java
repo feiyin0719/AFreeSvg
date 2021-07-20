@@ -49,16 +49,25 @@ import javax.xml.transform.stream.StreamResult;
 
 
 /**
- * The type Svg canvas.
+ * The  Svg canvas.
+ * You can use it to generate svg file,the api refer to {@link android.graphics.Canvas}
+ * When draw shape,use {@link SVGPaint} to set style
+ *
+ * @author iffly
+ * @since 0.0.1
  */
 public class SVGCanvas {
     /**
      * The prefix for keys used to identify clip paths.
      */
     private static final String CLIP_KEY_PREFIX = "clip-";
-
+    /**
+     * The prefix for keys used to identify  paths.
+     */
     private static final String TEXT_PATH_KEY_PREFIX = "Path-";
-
+    /**
+     * The prefix for keys used to identify filters.
+     */
     private static final String FILTER_KEY_PREFIX = "filter-";
 
     /**
@@ -68,6 +77,9 @@ public class SVGCanvas {
      */
     private String defsKeyPrefix = "def_" + System.nanoTime();
 
+    /**
+     * The default stroke style
+     */
     private static final String DEFAULT_STROKE_CAP = "butt";
     private static final String DEFAULT_STROKE_JOIN = "miter";
     private static final float DEFAULT_MITER_LIMIT = 4.0f;
@@ -83,15 +95,25 @@ public class SVGCanvas {
     private final double height;
 
     /**
-     * The user clip (can be null).
+     * The clip shape (can be null).
+     * When use clip,it will only draw into the clip shape.
+     *
+     * @see #clip(SVGClipShape)
+     * @see #addClipToElement(Element)
      */
     private SVGClipShape clip;
 
     /**
      * The reference for the current clip.
+     *
+     * @see #registerClip(SVGClipShape)
      */
     private String clipRef;
-
+    /**
+     * The clipCount to generate clipRef
+     *
+     * @see #registerClip(SVGClipShape)
+     */
     private int clipCount = 0;
 
     /**
@@ -110,10 +132,26 @@ public class SVGCanvas {
      * A map of all the gradients used, and the corresponding id.  When
      * generating the SVG file, all the gradient paints used must be defined
      * in the defs element.
+     *
+     * @see #addGradient(SVGGradient)
      */
     private Map<SVGGradient, String> gradients = new HashMap<>();
-
+    /**
+     * A map of all the filters used, and the corresponding id.  When
+     * generating the SVG file, all the filters used must be defined
+     * in the defs element.
+     *
+     * @see #addFilterElementToDef(SVGFilter, String)
+     */
     private Map<SVGFilter, String> filters = new HashMap<>();
+    /**
+     * A map of all the paths used, and the corresponding id.  When
+     * generating the SVG file, all the path used must be defined
+     * in the defs element.
+     *
+     * @see #addPathElementToDef(SVGPath, String)
+     */
+    private Map<SVGPath, String> textPaths = new HashMap<>();
 
     /**
      * Units for the width and height of the SVG, if null then no
@@ -126,33 +164,109 @@ public class SVGCanvas {
 
     /**
      * A set of element IDs.
+     * It use to ensure id uniqueness
+     *
+     * @see #setElementId(Element, String)
      */
     private final Set<String> elementIDs;
 
-
+    /**
+     * The svg element,use dom to generate svg xml string
+     */
     private final Element svgElement;
 
+    /**
+     * The def element,when generate svg xml string,it will append to svgElement
+     */
     private Element defElement;
-
+    /**
+     * The dom document,use it to generate element
+     */
     private final Document document;
-
+    /**
+     * The transform of canvas.
+     * It is used for canvas coordinate transformation.
+     * <p>You can use {@link #translate(float, float)},{@link #rotate(float, float, float)},
+     * {@link #skew(float, float, float, float)},{@link #scale(float, float)} to transform canvas
+     * coordinate.
+     * </p>
+     * it will be save when use {@link #save()}
+     */
     private Matrix transform = new Matrix();
+
+    /**
+     * The clip save flags.
+     *
+     * @see #save(int)
+     */
     public static final int SAVE_FLAG_CLIP = 0x01;
+    /**
+     * The matrix save flags.
+     *
+     * @see #save(int)
+     */
     public static final int SAVE_FLAG_MATRIX = 0x02;
+    /**
+     * The all save flags.
+     *
+     * @see #save(int)
+     */
     public static final int SAVE_FLAG_ALL = 0xffff;
-
+    /**
+     * The save flags stack.
+     * Pop the flag when restore,and do some action to restore canvas
+     *
+     * @see #SAVE_FLAG_ALL {@link #SAVE_FLAG_CLIP} {@link #SAVE_FLAG_MATRIX}
+     * @see #save()  {@link #restore()}
+     */
     public Stack<Integer> saveFlags = new Stack<>();
-
+    /**
+     * The  matrix stack of save.
+     * When {@link #save()},it will push the current transform
+     * When {@link #restore()},it will pop the transform
+     *
+     * @see #save()  {@link #restore()}
+     */
     private Stack<Matrix> matrixList = new Stack<>();
+    /**
+     * The clips stack of save
+     * When {@link #save()},it will push the current clip shape
+     * When {@link #restore()},it will pop the clip shape
+     *
+     * @see #clip
+     * @see #save()  {@link #restore()}
+     */
     private Stack<SVGClipShape> clipShapes = new Stack<>();
+    /**
+     * The clipRef stack of save
+     * When {@link #save()},it will push the current clipRef
+     * When {@link #restore()},it will pop the clipRef
+     *
+     * @see #clipRef
+     * @see #save()  {@link #restore()}
+     */
     private Stack<String> clipRefs = new Stack<>();
 
-    private Map<SVGPath, String> textPaths = new HashMap<>();
+    /**
+     * Construct
+     *
+     * @param width  svg width
+     * @param height svg height
+     * @throws ParserConfigurationException
+     */
 
     public SVGCanvas(double width, double height) throws ParserConfigurationException {
         this(width, height, null);
     }
 
+    /**
+     * Construct
+     *
+     * @param width  svg width
+     * @param height svg height
+     * @param units  svg size units
+     * @throws ParserConfigurationException
+     */
     public SVGCanvas(double width, double height, SVGUnits units) throws ParserConfigurationException {
         this.width = width;
         this.height = height;
@@ -185,26 +299,78 @@ public class SVGCanvas {
         };
     }
 
+    /**
+     * Return the svg font size unit
+     *
+     * @return the svg font size unit
+     * @since 0.0.1
+     */
+
     public SVGUnits getFontSizeUnit() {
         return fontSizeUnit;
     }
 
+    /**
+     * Set font size unit.
+     *
+     * @param fontSizeUnit it will be used when drawText
+     * @see #drawTextOnPath(String, float, float, float, int, SVGPath, SVGPaint, String)
+     * @since 0.0.1
+     */
     public void setFontSizeUnit(SVGUnits fontSizeUnit) {
         this.fontSizeUnit = fontSizeUnit;
     }
 
+    /**
+     * Return the prefix of defs element id
+     *
+     * @return
+     * @since 0.0.1
+     */
     public String getDefsKeyPrefix() {
         return defsKeyPrefix;
     }
 
+    /**
+     * Set the prefix of defs element
+     *
+     * @param defsKeyPrefix
+     * @since 0.0.1
+     */
     public void setDefsKeyPrefix(@NonNull String defsKeyPrefix) {
         this.defsKeyPrefix = defsKeyPrefix;
     }
+
+    /**
+     * The method to draw line
+     *
+     * @param x1    The line start x
+     * @param y1    The line start y
+     * @param x2    The line end x
+     * @param y2    The line end y
+     * @param paint The line style paint {@link SVGPaint}
+     * @see #drawShape(SVGShape, SVGPaint, String)
+     * @see SVGLine
+     * @since 0.0.1
+     */
 
     public void drawLine(float x1, float y1, float x2, float y2, SVGPaint paint) {
         drawLine(x1, y1, x2, y2, paint, null);
     }
 
+    /**
+     * The method to draw line
+     *
+     * @param x1    The line start x
+     * @param y1    The line start y
+     * @param x2    The line end x
+     * @param y2    The line end y
+     * @param paint The line style paint {@link SVGPaint}
+     * @param id    The line id
+     * @see #drawShape(SVGShape, SVGPaint, String)
+     * @see SVGLine
+     * @since 0.0.1
+     */
 
     public void drawLine(float x1, float y1, float x2, float y2, SVGPaint paint, String id) {
         SVGLine svgLine = new SVGLine(x1, y1, x2, y2);
@@ -212,40 +378,119 @@ public class SVGCanvas {
 
     }
 
+    /**
+     * The method to drawRect
+     *
+     * @param rectF The rect area
+     * @param paint The paint {@link SVGPaint}
+     * @see #drawShape(SVGShape, SVGPaint, String)
+     * @see SVGRect
+     * @since 0.0.1
+     */
     public void drawRect(RectF rectF, SVGPaint paint) {
         drawRect(rectF, paint, null);
     }
 
-
+    /**
+     * The method to drawRect
+     *
+     * @param rectF The rect area
+     * @param paint The paint {@link SVGPaint}
+     * @param id    The element id
+     * @see #drawShape(SVGShape, SVGPaint, String)
+     * @see SVGRect
+     * @since 0.0.1
+     */
     public void drawRect(RectF rectF, SVGPaint paint, String id) {
         SVGRect rect = new SVGRect(rectF.left, rectF.top, rectF.width(), rectF.height());
         drawShape(rect, paint, id);
     }
 
+    /**
+     * The method to draw circle
+     *
+     * @param cx    The centerX of circle
+     * @param cy    The centerY of circle
+     * @param r     The radius of circle
+     * @param paint The paint {@link SVGPaint}
+     * @see #drawShape(SVGShape, SVGPaint, String)
+     * @see SVGCircle
+     * @since 0.0.1
+     */
     public void drawCircle(float cx, float cy, float r, SVGPaint paint) {
         drawCircle(cx, cy, r, paint, null);
     }
+
+    /**
+     * The method to draw circle
+     *
+     * @param cx    The centerX of circle
+     * @param cy    The centerY of circle
+     * @param r     The radius of circle
+     * @param paint The paint {@link SVGPaint}
+     * @param id    The element id
+     * @see #drawShape(SVGShape, SVGPaint, String)
+     * @see SVGCircle
+     * @since 0.0.1
+     */
 
     public void drawCircle(float cx, float cy, float r, SVGPaint paint, String id) {
         SVGCircle circle = new SVGCircle(cx, cy, r);
         drawShape(circle, paint, id);
     }
 
+    /**
+     * The method to draw oval
+     *
+     * @param rectF Circumscribed rectangle of ellipse
+     * @param paint The paint {@link SVGPaint}
+     * @see #drawShape(SVGShape, SVGPaint, String)
+     * @see SVGOval
+     * @since 0.0.1
+     */
     public void drawOval(RectF rectF, SVGPaint paint) {
         drawOval(rectF, paint, null);
     }
 
-
+    /**
+     * The method to draw oval
+     *
+     * @param rectF Circumscribed rectangle of ellipse
+     * @param paint The paint {@link SVGPaint}
+     * @param id    The element id
+     * @see #drawShape(SVGShape, SVGPaint, String)
+     * @see SVGOval
+     * @since 0.0.1
+     */
     public void drawOval(RectF rectF, SVGPaint paint, String id) {
         SVGOval oval = new SVGOval(rectF.centerX(), rectF.centerY(), rectF.width() / 2, rectF.height() / 2);
         drawShape(oval, paint, id);
     }
 
+    /**
+     * The method to draw Polygon
+     *
+     * @param points The points of Polygon,Arrange according to x1, y1, x2, y2...
+     * @param paint  The paint {@link SVGPaint}
+     * @see #drawPolygon(PointF[], SVGPaint, String)
+     * @see #convertPoints(float[])
+     * @since 0.0.1
+     */
     public void drawPolygon(float[] points, SVGPaint paint) {
         drawPolygon(points, paint, null);
 
     }
 
+    /**
+     * The method to draw Polygon
+     *
+     * @param points The points of Polygon,Arrange according to x1, y1, x2, y2...
+     * @param paint  The paint {@link SVGPaint}
+     * @param id     The element id
+     * @see #drawPolygon(PointF[], SVGPaint, String)
+     * @see #convertPoints(float[])
+     * @since 0.0.1
+     */
     public void drawPolygon(float[] points, SVGPaint paint, String id) {
         if (points == null || points.length < 6) {
             throw new IllegalArgumentException("points is null or points length < 6");
@@ -255,10 +500,29 @@ public class SVGCanvas {
 
     }
 
+    /**
+     * The method to draw Polygon
+     *
+     * @param points The points of Polygon
+     * @param paint  The paint {@link SVGPaint}
+     * @see #drawShape(SVGShape, SVGPaint, String)
+     * @see SVGPolygon
+     * @since 0.0.1
+     */
     public void drawPolygon(PointF points[], SVGPaint paint) {
         drawPolygon(points, paint, null);
     }
 
+    /**
+     * The method to draw Polygon
+     *
+     * @param points The points of Polygon
+     * @param paint  The paint {@link SVGPaint}
+     * @param id     The element id
+     * @see #drawShape(SVGShape, SVGPaint, String)
+     * @see SVGPolygon
+     * @since 0.0.1
+     */
     public void drawPolygon(PointF points[], SVGPaint paint, String id) {
         if (points == null || points.length < 3) {
             throw new IllegalArgumentException("points is null or points length <3");
@@ -267,18 +531,56 @@ public class SVGCanvas {
         drawShape(polygon, paint, id);
     }
 
+    /**
+     * The method to draw Polyline
+     *
+     * @param points The points of Polyline,Arrange according to x1, y1, x2, y2...
+     * @param paint  The paint {@link SVGPaint}
+     * @see #drawPolyline(PointF[], SVGPaint, String)
+     * @see #convertPoints(float[])
+     * @since 0.0.1
+     */
     public void drawPolyline(float points[], SVGPaint paint) {
         drawPolyline(points, paint, null);
     }
 
+    /**
+     * The method to draw Polyline
+     *
+     * @param points The points of Polyline,Arrange according to x1, y1, x2, y2...
+     * @param paint  The paint {@link SVGPaint}
+     * @param id     The element id
+     * @see #drawPolyline(PointF[], SVGPaint, String)
+     * @see #convertPoints(float[])
+     * @since 0.0.1
+     */
     public void drawPolyline(float points[], SVGPaint paint, String id) {
         drawPolyline(convertPoints(points), paint, id);
     }
 
+    /**
+     * The method to draw Polyline
+     *
+     * @param points The points of Polyline
+     * @param paint  The paint {@link SVGPaint}
+     * @see #drawShape(SVGShape, SVGPaint, String)
+     * @see SVGPolyline
+     * @since 0.0.1
+     */
     public void drawPolyline(PointF points[], SVGPaint paint) {
         drawPolyline(points, paint, null);
     }
 
+    /**
+     * The method to draw Polyline
+     *
+     * @param points The points of Polyline
+     * @param paint  The paint {@link SVGPaint}
+     * @param id     The element id
+     * @see #drawShape(SVGShape, SVGPaint, String)
+     * @see SVGPolyline
+     * @since 0.0.1
+     */
     public void drawPolyline(PointF points[], SVGPaint paint, String id) {
         if (points == null || points.length < 2) {
             throw new IllegalArgumentException("points is null or points length <2");
@@ -287,11 +589,40 @@ public class SVGCanvas {
         drawShape(polyline, paint, id);
     }
 
+    /**
+     * The method to draw Arc
+     *
+     * @param x          The centerX of Arc
+     * @param y          The centerY of Arc
+     * @param width      The width radius of Arc
+     * @param height     The height radius of Arc
+     * @param startAngle The start angle of Arc
+     * @param arcAngle   The start angle of Arc
+     * @param paint      The paint {@link SVGPaint}
+     * @see #drawShape(SVGShape, SVGPaint, String)
+     * @see SVGPath
+     * @since 0.0.1
+     */
     public void drawArc(float x, float y, float width, float height, float startAngle,
                         float arcAngle, SVGPaint paint) {
         drawArc(x, y, width, height, startAngle, arcAngle, paint, null);
     }
 
+    /**
+     * The method to draw Arc
+     *
+     * @param x          The centerX of Arc
+     * @param y          The centerY of Arc
+     * @param width      The width radius of Arc
+     * @param height     The height radius of Arc
+     * @param startAngle The start angle of Arc
+     * @param arcAngle   The start angle of Arc
+     * @param paint      The paint {@link SVGPaint}
+     * @param id         The element id
+     * @see #drawShape(SVGShape, SVGPaint, String)
+     * @see SVGPath
+     * @since 0.0.1
+     */
     public void drawArc(float x, float y, float width, float height, float startAngle,
                         float arcAngle, SVGPaint paint, String id) {
         SVGPath path = new SVGPath();
@@ -307,10 +638,40 @@ public class SVGCanvas {
 
     }
 
+    /**
+     * The method to draw Curve
+     *
+     * @param sx    The startX of Curve
+     * @param sy    The startY of Curve
+     * @param ex    The endX of Curve
+     * @param ey    The endY of Curve
+     * @param x     The centerX of Curve
+     * @param y     The centerX of Curve
+     * @param paint The paint {@link SVGPaint}
+     * @see #drawShape(SVGShape, SVGPaint, String)
+     * @see SVGPath
+     * @since 0.0.1
+     */
+
     public void drawCurve(float sx, float sy, float ex, float ey, float x, float y, SVGPaint paint) {
         drawCurve(sx, sy, ex, ey, x, y, paint, null);
     }
 
+    /**
+     * The method to draw Curve
+     *
+     * @param sx    The startX of Curve
+     * @param sy    The startY of Curve
+     * @param ex    The endX of Curve
+     * @param ey    The endY of Curve
+     * @param x     The centerX of Curve
+     * @param y     The centerX of Curve
+     * @param paint The paint {@link SVGPaint}
+     * @param id    The element id
+     * @see #drawShape(SVGShape, SVGPaint, String)
+     * @see SVGPath
+     * @since 0.0.1
+     */
     public void drawCurve(float sx, float sy, float ex, float ey, float x, float y, SVGPaint paint, String id) {
         SVGPath path = new SVGPath();
         path.moveTo(sx, sy);
@@ -318,49 +679,142 @@ public class SVGCanvas {
         drawPath(path, paint, id);
     }
 
+    /**
+     * The method to draw Path
+     *
+     * @param path  The path to draw {@link SVGPath}
+     * @param paint The paint {@link SVGPaint}
+     * @see #drawShape(SVGShape, SVGPaint, String)
+     * @since 0.0.1
+     */
     public void drawPath(SVGPath path, SVGPaint paint) {
         drawPath(path, paint, null);
     }
 
+    /**
+     * The method to draw Path
+     *
+     * @param path  The path to draw {@link SVGPath}
+     * @param paint The paint {@link SVGPaint}
+     * @param id    The element id
+     * @see #drawShape(SVGShape, SVGPaint, String)
+     * @since 0.0.1
+     */
     public void drawPath(SVGPath path, SVGPaint paint, String id) {
         drawShape(path, paint, id);
     }
 
-    public void drawShape(SVGShape shape, SVGPaint paint) {
-        drawShape(shape, paint, null);
-    }
-
-    public void drawShape(SVGShape shape, SVGPaint paint, String id) {
-        Element element = shape.convertToSVGElement(this, document, geomDoubleConverter);
-        addBaseAttrToDrawElement(element, paint, id);
-        svgElement.appendChild(element);
-    }
-
+    /**
+     * The method to draw Text
+     *
+     * @param text  The text to draw
+     * @param x     The x of text pos
+     * @param y     The Y of text pos
+     * @param paint The paint {@link SVGPaint}
+     * @see #drawTextOnPath(String, float, float, float, int, SVGPath, SVGPaint, String)
+     * @since 0.0.1
+     */
     public void drawText(String text, float x, float y, SVGPaint paint) {
         drawText(text, x, y, 0, paint, null);
     }
+
+    /**
+     * The method to draw Text
+     *
+     * @param text       The text to draw
+     * @param x          The x of text pos
+     * @param y          The Y of text pos
+     * @param textLength The draw length,it used to {@link SVGPaint#lengthAdjust}
+     * @param paint      The paint {@link SVGPaint}
+     * @see #drawTextOnPath(String, float, float, float, int, SVGPath, SVGPaint, String)
+     * @since 0.0.1
+     */
 
     public void drawText(String text, float x, float y, int textLength, SVGPaint paint) {
         drawText(text, x, y, textLength, paint, null);
     }
 
+    /**
+     * The method to draw Text
+     *
+     * @param text  The text to draw
+     * @param x     The x of text pos
+     * @param y     The Y of text pos
+     * @param paint The paint {@link SVGPaint}
+     * @param id    The element id
+     * @see #drawTextOnPath(String, float, float, float, int, SVGPath, SVGPaint, String)
+     * @since 0.0.1
+     */
     public void drawText(String text, float x, float y, SVGPaint paint, String id) {
         drawText(text, x, y, 0, paint, id);
     }
 
+    /**
+     * The method to draw Text
+     *
+     * @param text       The text to draw
+     * @param x          The x of text pos
+     * @param y          The Y of text pos
+     * @param textLength The draw length,it used to {@link SVGPaint#lengthAdjust}
+     * @param paint      The paint {@link SVGPaint}
+     * @param id         The element id
+     * @see #drawTextOnPath(String, float, float, float, int, SVGPath, SVGPaint, String)
+     * @since 0.0.1
+     */
     public void drawText(String text, float x, float y, int textLength, SVGPaint paint, String id) {
-        drawTextOnPath(text, x, y, 0, 0, null, paint, id);
+        drawTextOnPath(text, x, y, 0, textLength, null, paint, id);
     }
 
+    /**
+     * The method to draw Text on path
+     *
+     * @param text  The text to draw
+     * @param x     The x of text pos
+     * @param y     The Y of text pos
+     * @param path  The path of text attach,it can be null,{@link SVGPath}
+     * @param paint The paint {@link SVGPaint}
+     * @see #drawShape(SVGShape, SVGPaint, String)
+     * @see SVGTextPath
+     * @since 0.0.1
+     */
     public void drawTextOnPath(String text, float x, float y, SVGPath path, SVGPaint paint) {
         drawTextOnPath(text, x, y, 0, 0, path, paint, null);
 
     }
 
+    /**
+     * The method to draw Text on path
+     *
+     * @param text        The text to draw
+     * @param x           The x of text pos
+     * @param y           The Y of text pos
+     * @param startOffset The offset size of start
+     * @param path        The path of text attach,it can be null,{@link SVGPath}
+     * @param paint       The paint {@link SVGPaint}
+     * @param id          The element id
+     * @see #drawShape(SVGShape, SVGPaint, String)
+     * @see SVGTextPath
+     * @since 0.0.1
+     */
     public void drawTextOnPath(String text, float x, float y, float startOffset, SVGPath path, SVGPaint paint, String id) {
         drawTextOnPath(text, x, y, startOffset, 0, path, paint, id);
     }
 
+    /**
+     * The method to draw Text on path
+     *
+     * @param text        The text to draw
+     * @param x           The x of text pos
+     * @param y           The Y of text pos
+     * @param startOffset The offset size of start
+     * @param textLength  The draw length,it used to {@link SVGPaint#lengthAdjust}
+     * @param path        The path of text attach,it can be null,{@link SVGPath}
+     * @param paint       The paint {@link SVGPaint}
+     * @param id          The element id
+     * @see #drawShape(SVGShape, SVGPaint, String)
+     * @see SVGTextPath
+     * @since 0.0.1
+     */
     public void drawTextOnPath(String text, float x, float y, float startOffset, int textLength, SVGPath path, SVGPaint paint, String id) {
         SVGTextPath textPath = new SVGTextPath.Builder()
                 .setText(text)
@@ -375,10 +829,60 @@ public class SVGCanvas {
         drawShape(textPath, paint, id);
     }
 
+    /**
+     * The method to draw Shape
+     *
+     * @param shape The shape to draw {@link SVGShape}
+     * @param paint The paint {@link SVGPaint}
+     * @since 0.0.1
+     */
+    public void drawShape(SVGShape shape, SVGPaint paint) {
+        drawShape(shape, paint, null);
+    }
+
+    /**
+     * The method to draw Shape
+     *
+     * @param shape The shape to draw {@link SVGShape}
+     * @param paint The paint {@link SVGPaint}
+     * @param id    The element id
+     * @see #addBaseAttrToDrawElement(Element, SVGPaint, String)
+     * @since 0.0.1
+     */
+    public void drawShape(SVGShape shape, SVGPaint paint, String id) {
+        Element element = shape.convertToSVGElement(this, document, geomDoubleConverter);
+        addBaseAttrToDrawElement(element, paint, id);
+        svgElement.appendChild(element);
+    }
+
+    /**
+     * The method to draw Image
+     *
+     * @param uri    The image url
+     * @param x      The x of image pos
+     * @param y      The y of image pos
+     * @param width  The image draw width
+     * @param height The image draw height
+     * @param paint  The paint {@link SVGPaint}
+     * @since 0.0.1
+     */
     public void drawImage(String uri, float x, float y, float width, float height, SVGPaint paint) {
         drawImage(uri, x, y, width, height, paint, null);
     }
 
+    /**
+     * The method to draw Image
+     *
+     * @param uri    The image url
+     * @param x      The x of image pos
+     * @param y      The y of image pos
+     * @param width  The image draw width
+     * @param height The image draw height
+     * @param paint  The paint {@link SVGPaint}
+     * @param id     The element id
+     * @see #addBaseAttrToDrawElement(Element, SVGPaint, String)
+     * @since 0.0.1
+     */
     public void drawImage(String uri, float x, float y, float width, float height, SVGPaint paint, String id) {
         Element element = document.createElement("image");
         element.setAttribute("xlink:href", uri);
@@ -390,7 +894,19 @@ public class SVGCanvas {
         svgElement.appendChild(element);
     }
 
-
+    /**
+     * Add path element to defs
+     * <p>
+     * It used by {@link SVGTextPath#convertToSVGElement(SVGCanvas, Document, DoubleFunction)}
+     * When use {@link #drawTextOnPath(String, float, float, float, int, SVGPath, SVGPaint, String)},
+     * it need add path to defs
+     * </p>
+     *
+     * @param path The path{@link SVGPath}
+     * @return The path id
+     * @see #addPathElementToDef(SVGPath, String)
+     * @since 0.0.1
+     */
     public String addPathToDef(SVGPath path) {
         if (textPaths.containsKey(path)) {
             return textPaths.get(path);
@@ -403,13 +919,28 @@ public class SVGCanvas {
         return id;
     }
 
+    /**
+     * Add path element to {@link #defElement}
+     *
+     * @param path The path
+     * @param id   The path id
+     * @see #addElementToDef(Element)
+     * @since 0.0.1
+     */
+
     private void addPathElementToDef(SVGPath path, String id) {
         Element element = path.convertToSVGElement(this, document, geomDoubleConverter);
         element.setAttribute("id", id);
         addElementToDef(element);
     }
 
-
+    /**
+     * Convert points type float[] to PointF[]
+     *
+     * @param points The points
+     * @return The points of type PointF[]
+     * @since 0.0.1
+     */
     private PointF[] convertPoints(float points[]) {
         PointF pointF[] = new PointF[points.length / 2];
         for (int i = 0; i < points.length; i += 2)
@@ -417,6 +948,22 @@ public class SVGCanvas {
         return pointF;
     }
 
+    /**
+     * Add base common Attrs to draw element.
+     * <p>
+     * it will add id,style,clip,transform attrs to element
+     * </p>
+     *
+     * @param element The draw element
+     * @param paint   The paint {@link SVGPaint}
+     * @param id      The element id,can be null
+     * @see #setElementId(Element, String)
+     * @see #addTransformToElement(Element)
+     * @see #style(SVGPaint)
+     * @see #addClipToElement(Element)
+     * @see #addFilterToElement(Element, SVGFilter) it support since 0.0.2
+     * @since 0.0.1
+     */
     private void addBaseAttrToDrawElement(Element element, SVGPaint paint, String id) {
         setElementId(element, id);
         if (paint != null)
@@ -427,6 +974,15 @@ public class SVGCanvas {
         addTransformToElement(element);
         addClipToElement(element);
     }
+
+    /**
+     * Add filter to draw Element
+     *
+     * @param element The draw Element
+     * @param filter  The filter {@link SVGFilter}
+     * @see #addFilterElementToDef(SVGFilter, String)
+     * @since 0.0.2
+     */
 
     private void addFilterToElement(Element element, SVGFilter filter) {
         String filterId = null;
@@ -440,12 +996,27 @@ public class SVGCanvas {
         element.setAttribute("filter", "url(#" + filterId + ")");
     }
 
+    /**
+     * Add filter element to def
+     *
+     * @param filter The filter,{@link SVGFilter}
+     * @param id     The filter id
+     * @see #addElementToDef(Element)
+     * @since 0.0.2
+     */
     private void addFilterElementToDef(SVGFilter filter, String id) {
         Element element = filter.convertToSVGElement(this, document, geomDoubleConverter);
         element.setAttribute("id", id);
         addElementToDef(element);
     }
 
+    /**
+     * Add clip to draw Element
+     *
+     * @param element The draw Element
+     * @see #getClipRef()
+     * @since 0.0.1
+     */
     private void addClipToElement(Element element) {
         String clipId = getClipRef();
         if (!TextUtils.isEmpty(clipId)) {
@@ -453,11 +1024,56 @@ public class SVGCanvas {
         }
     }
 
+    /**
+     * Add clip area to canvas
+     * <p>
+     * When set clip,the draw element will only to draw in clip area
+     * The clip shape will not add to defs immediately，it will be add when it used,{@link #getClipRef()}
+     * </p>
+     * Example code
+     * <pre>
+     *     //Set clip path
+     *      SVGShapeGroup clipGroup = new SVGShapeGroup();
+     *      SVGPath clipPath = new SVGPath();
+     *      clipPath.oval(0.2f, 0.2f, 0.2f, 0.2f);
+     *      SVGPath clipPath1 = new SVGPath();
+     *      clipPath1.oval(0.6f, 0.2f, 0.2f, 0.2f);
+     *      clipGroup.addShape(clipPath);
+     *      clipGroup.addShape(clipPath1);
+     *      SVGClipShape clipShape = new SVGClipShape(clipGroup, SVGModes.MODE_BOX);
+     *      svgCanvas.save();
+     *      svgCanvas.clip(clipShape);
+     *
+     *     //set Text clip shape
+     *     SVGTextPath svgTextPath = new SVGTextPath.Builder()
+     *                     .setPath(textPath)
+     *                     .setPaint(textPaint)
+     *                     .setText("hello").build();
+     *     svgCanvas.clip(new SVGClipShape(svgTextPath, SVGModes.MODE_USERSPACE));
+     *
+     * </pre>
+     *
+     * @param clipShape The clip shape {@link SVGClipShape}
+     * @since 0.0.1
+     */
     public void clip(SVGClipShape clipShape) {
         this.clip = clipShape;
         clipRef = null;
     }
 
+    /**
+     * Get current clip shape id
+     * <p>
+     * When draw element,it will use getClipRef to get clipShape id,
+     * if it is null,it means that not have clip shape.
+     * And if it have a clip shape and not add to defs,it will add clip shape to defs
+     * {@link #addClipToElement(Element)}
+     * </p>
+     *
+     * @return The clip id,can be null
+     * @see #registerClip(SVGClipShape)
+     * @since 0.0.1
+     */
     public String getClipRef() {
         if (clip == null) {
             this.clipRef = null;
@@ -469,6 +1085,14 @@ public class SVGCanvas {
 
     }
 
+    /**
+     * Add clip element to defs
+     *
+     * @param clipShape The clip shape
+     * @return The clip element id
+     * @see #addElementToDef(Element)
+     * @since 0.0.1
+     */
     private String registerClip(SVGClipShape clipShape) {
         if (clipShape == null) {
             clipRef = null;
@@ -482,12 +1106,28 @@ public class SVGCanvas {
         return id;
     }
 
-
+    /**
+     * Get the svg dom element
+     *
+     * @return The svg element
+     * @see #getSVGElement(String, boolean, ViewBox, PreserveAspectRatio, MeetOrSlice)
+     * @since 0.0.1
+     */
     public Element getSVGElement() {
         return getSVGElement(null, true, null, null, null);
     }
 
-
+    /**
+     * Get the svg dom element
+     *
+     * @param id                  The svg id,can be null
+     * @param includeDimensions   true mean that include width and height
+     * @param viewBox             The svg view box,{@link ViewBox}
+     * @param preserveAspectRatio The svg preserveAspectRatio,only viewBox not null,it will useful{@link PreserveAspectRatio}
+     * @param meetOrSlice         The svg use meet or slice,{@link MeetOrSlice}
+     * @return The svg dom element
+     * @since 0.0.1
+     */
     public Element getSVGElement(String id, boolean includeDimensions,
                                  ViewBox viewBox, PreserveAspectRatio preserveAspectRatio,
                                  MeetOrSlice meetOrSlice) {
@@ -520,55 +1160,167 @@ public class SVGCanvas {
         return svgElement;
     }
 
+    /**
+     * Set the transform to canvas
+     * <p>
+     * Do not recommend the way,plz use {@link #translate(float, float)} ,{@link #scale(float, float)},
+     * {@link #rotate(float, float, float)} ,{@link #skew(float, float, float, float)} to change the transform.
+     * </p>
+     *
+     * @param matrix The transform matrix
+     * @since 0.0.1
+     */
+
     public void setTransform(Matrix matrix) {
         transform = matrix;
     }
 
+    /**
+     * Get the transform matrix of canvas
+     *
+     * @return The transform matrix
+     * @since 0.0.1
+     */
     public Matrix getTransform() {
         return transform;
     }
 
+    /**
+     * Reset the transform
+     *
+     * @since 0.0.1
+     */
     public void resetTransform() {
         transform.reset();
     }
 
+    /**
+     * Translate the canvas
+     *
+     * @param dx The distance of x
+     * @param dy The distance of Y
+     * @since 0.0.1
+     */
     public void translate(float dx, float dy) {
         transform.postTranslate(dx, dy);
     }
 
+    /**
+     * Scale the canvas
+     * Postconcats the matrix with the specified scale. M' = S(sx, sy, px, py) * M
+     *
+     * @param sx the scale of X-axis
+     * @param sy the scale of Y-axis
+     * @param px the scale centerX
+     * @param py the scale centerY
+     * @since 0.0.1
+     */
     public void scale(float sx, float sy, float px, float py) {
         transform.postScale(sx, sy, px, py);
     }
 
+    /**
+     * Scale the canvas
+     * Postconcats the matrix with the specified scale. M' = S(sx, sy) * M
+     *
+     * @param sx the scale of X-axis
+     * @param sy the scale of Y-axis
+     * @since 0.0.1
+     */
     public void scale(float sx, float sy) {
         transform.postScale(sx, sy);
     }
 
+    /**
+     * Rotate the canvas
+     * Postconcats the matrix with the specified rotation. M' = R(degrees, px, py) * M
+     *
+     * @param degree The rotate degree
+     * @param px     The rotate centerX
+     * @param py     The rotate centerY
+     * @since 0.0.1
+     */
     public void rotate(float degree, float px, float py) {
         transform.postRotate(degree, px, py);
     }
 
+    /**
+     * Skew the canvas
+     * Postconcats the matrix with the specified skew. M' = K(kx, ky, px, py) * M
+     *
+     * @param sx The skew of X-axis
+     * @param sy The skew of Y-axis
+     * @param px The skew centerX
+     * @param py The skew centerY
+     * @since 0.0.1
+     */
     public void skew(float sx, float sy, float px, float py) {
         transform.postSkew(sx, sy, px, py);
     }
 
+    /**
+     * Get doubleConvert
+     *
+     * @return The convert
+     * @since 0.0.1
+     */
     public DoubleFunction<String> getGeomDoubleConverter() {
         return geomDoubleConverter;
     }
+
+    /**
+     * Set double convert
+     *
+     * @param geomDoubleConverter the convert
+     * @since 0.0.1
+     */
 
     public void setGeomDoubleConverter(DoubleFunction<String> geomDoubleConverter) {
         this.geomDoubleConverter = geomDoubleConverter;
     }
 
+    /**
+     * Get doubleConvert
+     *
+     * @return The convert
+     * @since 0.0.1
+     */
     public DoubleFunction<String> getTransformDoubleConverter() {
         return transformDoubleConverter;
     }
 
-    public void save() {
-        save(SAVE_FLAG_ALL);
+    /**
+     * Set double convert
+     *
+     * @param transformDoubleConverter the convert
+     * @since 0.0.1
+     */
+    public void setTransformDoubleConverter(DoubleFunction<String> transformDoubleConverter) {
+        this.transformDoubleConverter = transformDoubleConverter;
     }
 
-    public void save(int flags) {
+    /**
+     * Saves the current matrix and clip onto a private stack.
+     *
+     * @return The value to {@link #restoreToCount(int)} to balance this save()
+     * @see #restore()
+     * @see #restoreToCount(int)
+     * @since 0.0.1
+     */
+    public int save() {
+        return save(SAVE_FLAG_ALL);
+    }
+
+    /**
+     * Saves the current matrix and clip onto a private stack.
+     *
+     * @param flags The save flags,refer to {@link #SAVE_FLAG_ALL} {@link #SAVE_FLAG_MATRIX} {@link #SAVE_FLAG_CLIP}
+     * @return The value to {@link #restoreToCount(int)} to balance this save()
+     * @see #restore()
+     * @see #restoreToCount(int)
+     * @since 0.0.1
+     */
+    public int save(int flags) {
         saveFlags.push(flags);
         if ((flags & SAVE_FLAG_MATRIX) == SAVE_FLAG_MATRIX) {
             Matrix matrix = new Matrix();
@@ -586,8 +1338,19 @@ public class SVGCanvas {
                 clipRefs.push(clipRef);
             else clipRefs.push(null);
         }
+        return saveFlags.size();
     }
 
+    /**
+     * Restore the matrix and clip from stack.
+     * <p>
+     * This call balances a previous call to save(), and is used to remove all
+     * modifications to the matrix/clip state since the last save call.
+     * </p>
+     *
+     * @see #save()
+     * @since 0.0.1
+     */
     public void restore() {
         if (saveFlags.size() > 0) {
             int flags = saveFlags.pop();
@@ -603,10 +1366,40 @@ public class SVGCanvas {
         }
     }
 
-    public void setTransformDoubleConverter(DoubleFunction<String> transformDoubleConverter) {
-        this.transformDoubleConverter = transformDoubleConverter;
+    /**
+     * Restore the matrix and clip from stack.
+     *
+     * @param count Restore to the count
+     * @see #save()
+     * @since 0.0.2
+     */
+    public void restoreToCount(int count) {
+        if (count < 0) count = 0;
+        while (saveFlags.size() > count) {
+            restore();
+        }
     }
 
+    /**
+     * Return the save count.
+     *
+     * @return The save count,
+     * @see #restore()
+     * @see #restoreToCount(int)
+     * @since 0.0.2
+     */
+    public int getSaveCount() {
+        return saveFlags.size();
+    }
+
+    /**
+     * Get svg xml string
+     *
+     * @return The svg xml string
+     * @throws TransformerException
+     * @see #getSVGXMLTransformer()
+     * @since 0.0.1
+     */
     public String getSVGXmlString() throws TransformerException {
 
         Transformer transformer = getSVGXMLTransformer();
@@ -617,6 +1410,14 @@ public class SVGCanvas {
         return stringWriter.toString();
     }
 
+    /**
+     * Write SVG xml string to outputStream
+     *
+     * @param outputStream The stream which output
+     * @throws TransformerException
+     * @see #getSVGXMLTransformer()
+     * @since 0.0.1
+     */
     public void writeSVGXMLToStream(OutputStream outputStream) throws TransformerException {
         Transformer transformer = getSVGXMLTransformer();
         DOMSource source = new DOMSource(document);
@@ -624,6 +1425,13 @@ public class SVGCanvas {
         transformer.transform(source, result);
     }
 
+    /**
+     * Get svg dom transformer to write xml string
+     *
+     * @return Svg dom transformer to write xml string,used by {@link #getSVGXmlString()},{@link #getSVGXMLTransformer()}
+     * @throws TransformerConfigurationException
+     * @since 0.0.1
+     */
     private Transformer getSVGXMLTransformer() throws TransformerConfigurationException {
         getSVGElement();
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
@@ -658,6 +1466,16 @@ public class SVGCanvas {
         return this.geomDoubleConverter.apply(d);
     }
 
+    /**
+     * Get the paint style string to element
+     *
+     * @param paint The style paint,{@link SVGPaint}
+     * @return The style string
+     * @see #addBaseAttrToDrawElement(Element, SVGPaint, String)
+     * @see #getSVGFillStyle(SVGPaint)
+     * @see #strokeStyle(SVGPaint, boolean)
+     * @since 0.0.1
+     */
     private String style(SVGPaint paint) {
         if (paint == null || paint.getStyle() == Paint.Style.STROKE) {
             return strokeStyle(paint, true);
@@ -668,53 +1486,13 @@ public class SVGCanvas {
     }
 
     /**
-     * Returns a fill style string based on the current paint and
-     * alpha settings.
+     * Get the strokeStyle of Paint
      *
-     * @return A fill style string.
+     * @param paint        The style paint,{@link SVGPaint}
+     * @param needFillNone true means that fill none
+     * @return the strokeStyle of Paint
+     * @since 0.0.1
      */
-    private String getSVGFillStyle(SVGPaint paint) {
-        StringBuilder b = new StringBuilder();
-        b.append("fill:").append(fillColor(paint)).append(';');
-
-        double opacity = SVGUtils.getColorAlpha(paint.getFillColorAlpha());
-        if (opacity < 1.0) {
-            b.append("fill-opacity:").append(opacity).append(';');
-        }
-        if (!paint.getFillRule().equals(SVGPaint.FILL_RULE_DEFAULT)) {
-            b.append("fill-rule:" + paint.getFillRule()).append(';');
-        }
-        return b.toString();
-    }
-
-    private String fillColor(SVGPaint paint) {
-        if (paint.getGradient() != null) {
-            String id = addGradient(paint.gradient);
-            return "url(#" + id + ")";
-        }
-
-        return SVGUtils.rgbColorStr(paint.getFillColor());
-    }
-
-    private String strokeColor(SVGPaint paint) {
-        if (paint.getGradient() != null && paint.isUseGradientStroke()) {
-            String id = addGradient(paint.gradient);
-            return "url(#" + id + ")";
-        }
-
-        return SVGUtils.rgbColorStr(paint.getColor());
-    }
-
-    private String addGradient(SVGGradient gradient) {
-        if (!gradients.containsKey(gradient)) {
-            String id = this.defsKeyPrefix + "gp" + gradients.size();
-            gradients.put(gradient, id);
-            addElementToDef(getGradientElement(id, gradient));
-            return id;
-        }
-        return gradients.get(gradient);
-    }
-
     private String strokeStyle(SVGPaint paint, boolean needFillNone) {
 
         double strokeWidth = 1.0f;
@@ -783,20 +1561,110 @@ public class SVGCanvas {
         return b.toString();
     }
 
+    /**
+     * Get svg fill style of Paint
+     *
+     * @param paint The style paint,{@link SVGPaint}
+     * @return The fill style
+     * @since 0.0.1
+     */
+    private String getSVGFillStyle(SVGPaint paint) {
+        StringBuilder b = new StringBuilder();
+        b.append("fill:").append(fillColor(paint)).append(';');
+
+        double opacity = SVGUtils.getColorAlpha(paint.getFillColorAlpha());
+        if (opacity < 1.0) {
+            b.append("fill-opacity:").append(opacity).append(';');
+        }
+        if (!paint.getFillRule().equals(SVGPaint.FILL_RULE_DEFAULT)) {
+            b.append("fill-rule:" + paint.getFillRule()).append(';');
+        }
+        return b.toString();
+    }
+
+    /**
+     * Get fillColor of paint
+     *
+     * @param paint The style paint,{@link SVGPaint}
+     * @return The fillColor
+     * @since 0.0.1
+     */
+    private String fillColor(SVGPaint paint) {
+        if (paint.getGradient() != null) {
+            String id = addGradient(paint.gradient);
+            return "url(#" + id + ")";
+        }
+
+        return SVGUtils.rgbColorStr(paint.getFillColor());
+    }
+
+    /**
+     * Get the strokeColor of Paint
+     *
+     * @param paint The style paint,{@link SVGPaint} ,if {@link SVGPaint#isUseGradientStroke()} true,means that stroke color use gradient
+     * @return the strokeColor of Paint
+     * @since 0.0.1
+     */
+    private String strokeColor(SVGPaint paint) {
+        if (paint.getGradient() != null && paint.isUseGradientStroke()) {
+            String id = addGradient(paint.gradient);
+            return "url(#" + id + ")";
+        }
+
+        return SVGUtils.rgbColorStr(paint.getColor());
+    }
+
+    /**
+     * Add gradient color to defs
+     *
+     * @param gradient The gradient,{@link SVGGradient}
+     * @return The gradient id
+     * @since 0.0.1
+     */
+    private String addGradient(SVGGradient gradient) {
+        if (!gradients.containsKey(gradient)) {
+            String id = this.defsKeyPrefix + "gp" + gradients.size();
+            gradients.put(gradient, id);
+            addElementToDef(getGradientElement(id, gradient));
+            return id;
+        }
+        return gradients.get(gradient);
+    }
+
+    /**
+     * Add gradient color to defs
+     *
+     * @param id       The gradient id
+     * @param gradient The gradient,{@link SVGGradient}
+     * @return The gradient doc element
+     * @since 0.0.1
+     */
 
     private Element getGradientElement(String id, SVGGradient gradient) {
         if (gradient == null) return null;
         Element element = gradient.convertToSVGElement(this, document, geomDoubleConverter);
-        setElementId(element, id);
+        element.setAttribute("id", id);
         return element;
     }
 
-
+    /**
+     * Add transform to draw element
+     *
+     * @param element The draw element
+     * @since 0.0.1
+     */
     private void addTransformToElement(Element element) {
         if (transform != null && !transform.isIdentity())
             element.setAttribute("transform", getSVGTransform(transform));
     }
 
+    /**
+     * Get canvas transform value
+     *
+     * @param t The transform matrix
+     * @return The value of matrix
+     * @since 0.0.1
+     */
     private String getSVGTransform(Matrix t) {
         float value[] = new float[9];
         t.getValues(value);
@@ -822,7 +1690,12 @@ public class SVGCanvas {
         return this.transformDoubleConverter.apply(d);
     }
 
-
+    /**
+     * Add element to defs
+     *
+     * @param element The dom element
+     * @since 0.0.1
+     */
     private void addElementToDef(Element element) {
         if (element == null) return;
         if (defElement == null) {
@@ -831,7 +1704,13 @@ public class SVGCanvas {
         defElement.appendChild(element);
     }
 
-
+    /**
+     * Set draw element id
+     *
+     * @param element   The draw element
+     * @param elementID The id
+     * @since 0.0.1
+     */
     private void setElementId(Element element, String elementID) {
 
         if (elementID != null) {
