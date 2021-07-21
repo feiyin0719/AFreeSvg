@@ -6,9 +6,24 @@ import com.yf.afreesvg.util.DoubleFunction;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+/**
+ * The circle shape
+ *
+ * @author iffly
+ * @since 0.0.1
+ */
 public class SVGCircle extends SVGBaseShape {
+    /**
+     * centerX
+     */
     private float cx;
+    /**
+     * centerY
+     */
     private float cy;
+    /**
+     * radius
+     */
     private float r;
 
     public SVGCircle(float cx, float cy, float r) {
@@ -16,6 +31,37 @@ public class SVGCircle extends SVGBaseShape {
         this.cy = cy;
         this.r = r;
     }
+
+    /**
+     * The centerX
+     *
+     * @return
+     * @since 0.0.2
+     */
+    public float getCx() {
+        return cx;
+    }
+
+    /**
+     * The centerY
+     *
+     * @return
+     * @since 0.0.2
+     */
+    public float getCy() {
+        return cy;
+    }
+
+    /**
+     * Radius
+     *
+     * @return
+     * @since 0.0.2
+     */
+    public float getR() {
+        return r;
+    }
+
 
     @Override
     public Element convertToSVGElement(SVGCanvas canvas, Document document, DoubleFunction<String> convert) {

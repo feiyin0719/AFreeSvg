@@ -11,10 +11,21 @@ import org.w3c.dom.Element;
 
 import java.util.Objects;
 
+/**
+ * LinearGradient
+ *
+ * @author iffly
+ * @since 0.0.1
+ */
 public class SVGLinearGradient extends SVGBaseGradient {
 
-
+    /**
+     * start point
+     */
     private PointF startPoint;
+    /**
+     * end point
+     */
     private PointF endPoint;
 
     public SVGLinearGradient(PointF startPoint, PointF endPoint) {
@@ -32,18 +43,42 @@ public class SVGLinearGradient extends SVGBaseGradient {
         this(new PointF(0, 0), new PointF(0, 0), SVGModes.MODE_BOX);
     }
 
+    /**
+     * Get start point
+     *
+     * @return
+     * @since 0.0.1
+     */
     public PointF getStartPoint() {
         return startPoint;
     }
 
+    /**
+     * set start point
+     *
+     * @param startPoint
+     * @since 0.0.1
+     */
     public void setStartPoint(PointF startPoint) {
         this.startPoint = startPoint;
     }
 
+    /**
+     * get end point
+     *
+     * @return
+     * @since 0.0.1
+     */
     public PointF getEndPoint() {
         return endPoint;
     }
 
+    /**
+     * set end point
+     *
+     * @param endPoint
+     * @since 0.0.1
+     */
     public void setEndPoint(PointF endPoint) {
         this.endPoint = endPoint;
     }

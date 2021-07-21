@@ -13,14 +13,45 @@ import org.w3c.dom.Element;
 
 import java.util.Objects;
 
+/**
+ * Text path shape
+ * It will generate a text path
+ *
+ * @author iffly
+ * @since 0.0.1
+ */
 public class SVGTextPath extends SVGBaseShape {
+    /**
+     * text string
+     */
     private String text;
+    /**
+     * x pos
+     */
     private float x;
+    /**
+     * y pos
+     */
     private float y;
+    /**
+     * The draw length,it used to {@link SVGPaint#getLengthAdjust()}
+     */
     private int textLength;
+    /**
+     * draw start offset
+     */
     private float startOffset;
+    /**
+     * The path of text draw attach,can be null
+     */
     private SVGPath path;
+    /**
+     * style paint,{@link SVGPaint}
+     */
     private SVGPaint paint;
+    /**
+     * font size units
+     */
     private SVGUnits fontSizeUnit = SVGUnits.PX;
 
     private SVGTextPath(String text, float x, float y, int textLength, float startOffset, SVGPath path, SVGPaint paint, SVGUnits fontSizeUnit) {
@@ -33,38 +64,93 @@ public class SVGTextPath extends SVGBaseShape {
         this.paint = paint;
     }
 
+    /**
+     * Text string
+     *
+     * @return
+     * @since 0.0.1
+     */
     public String getText() {
         return text;
     }
 
+    /**
+     * Pos x
+     *
+     * @return
+     * @since 0.0.1
+     */
     public float getX() {
         return x;
     }
 
+    /**
+     * Pos y
+     *
+     * @return
+     * @since 0.0.1
+     */
     public float getY() {
         return y;
     }
 
+    /**
+     * Get textLength
+     * The draw length,it used to {@link SVGPaint#getLengthAdjust()}
+     *
+     * @return
+     * @since 0.0.1
+     */
     public int getTextLength() {
         return textLength;
     }
 
+    /**
+     * The draw start offset
+     *
+     * @return
+     * @since 0.0.1
+     */
     public float getStartOffset() {
         return startOffset;
     }
 
+    /**
+     * The path of text draw attach
+     *
+     * @return
+     * @since 0.0.1
+     */
     public SVGPath getPath() {
         return path;
     }
 
+    /**
+     * style paint
+     *
+     * @return {@link SVGPaint}
+     * @since 0.0.1
+     */
     public SVGPaint getPaint() {
         return paint;
     }
 
+    /**
+     * font size unit
+     *
+     * @return {@link SVGUnits}
+     * @since 0.0.1
+     */
     public SVGUnits getFontSizeUnit() {
         return fontSizeUnit;
     }
 
+    /**
+     * The TextPath builder class
+     * Use it to build TextPath
+     *
+     * @since 0.0.1
+     */
     public static class Builder {
         private String text;
         private float x;

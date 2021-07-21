@@ -8,10 +8,28 @@ import org.w3c.dom.Element;
 
 import java.util.Objects;
 
+/**
+ * Rect shape
+ *
+ * @author iffly
+ * @since 0.0.1
+ */
 public class SVGRect extends SVGBaseShape {
+    /**
+     * left x pos
+     */
     private float x;
+    /**
+     * top y pos
+     */
     private float y;
+    /**
+     * width
+     */
     private float width;
+    /**
+     * height
+     */
     private float height;
 
     public SVGRect(float x, float y, float width, float height) {
@@ -21,18 +39,42 @@ public class SVGRect extends SVGBaseShape {
         this.height = height;
     }
 
+    /**
+     * Left x pos
+     *
+     * @return
+     * @since 0.0.1
+     */
     public float getX() {
         return x;
     }
 
+    /**
+     * Top y pos
+     *
+     * @return
+     * @since 0.0.1
+     */
     public float getY() {
         return y;
     }
 
+    /**
+     * Get width
+     *
+     * @return
+     * @since 0.0.1
+     */
     public float getWidth() {
         return width;
     }
 
+    /**
+     * Get height
+     *
+     * @return
+     * @since 0.0.1
+     */
     public float getHeight() {
         return height;
     }

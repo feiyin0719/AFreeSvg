@@ -10,7 +10,17 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * Shape group
+ * It will generate shape combinations with "<g></g>"
+ *
+ * @author iffly
+ * @since 0.0.1
+ */
 public class SVGShapeGroup implements SVGShape {
+    /**
+     * Shape list
+     */
     private List<SVGShape> list;
 
     public SVGShapeGroup() {
@@ -24,6 +34,12 @@ public class SVGShapeGroup implements SVGShape {
         }
     }
 
+    /**
+     * Add shape
+     *
+     * @param shape {@link SVGShape}
+     * @since 0.0.1
+     */
     public void addShape(SVGShape shape) {
         list.add(shape);
     }
