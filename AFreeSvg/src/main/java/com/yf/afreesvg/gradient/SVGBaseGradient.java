@@ -16,11 +16,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Base gradient
+ *
+ * @author iffly
+ * @since 0.0.1
+ */
 public abstract class SVGBaseGradient implements SVGGradient {
 
-
+    //not repeat,it will use end color fill other
     public static final String SPREAD_PAD = "pad";
+    //it will repeat fill
     public static final String SPREAD_REPEAT = "repeat";
+    //it will reverse fill and repeat
     public static final String SPREAD_REFLECT = "reflect";
 
 
@@ -29,14 +37,28 @@ public abstract class SVGBaseGradient implements SVGGradient {
     public @interface SPREAD_MODE {
     }
 
-
+    /**
+     * Coordinate mode
+     *
+     * @see SVGModes
+     */
     protected @SVGModes.POS_MODE
     String posMode = SVGModes.MODE_BOX;
-
+    /**
+     * Repeat method
+     * {@link #SPREAD_PAD} not repeat,it will use end color fill other
+     * {@link #SPREAD_REFLECT} it will reverse fill and repeat
+     * {@link #SPREAD_REPEAT} it will repeat fill
+     */
     protected @SPREAD_MODE
     String spreadMode = SPREAD_PAD;
-
+    /**
+     * The color offset pos
+     */
     protected List<Float> stopOffset = new ArrayList<>();
+    /**
+     * The offset color
+     */
     protected List<Long> stopColor = new ArrayList<>();
 
     public SVGBaseGradient(@SVGModes.POS_MODE String posMode) {
@@ -46,28 +68,67 @@ public abstract class SVGBaseGradient implements SVGGradient {
     public SVGBaseGradient() {
     }
 
+    /**
+     * Get Coordinate mode
+     *
+     * @return
+     * @since 0.0.1
+     */
     public @SVGModes.POS_MODE
     String getPosMode() {
         return posMode;
     }
 
+    /**
+     * set Coordinate mode
+     *
+     * @param posMode
+     * @since 0.0.1
+     */
     public void setPosMode(@SVGModes.POS_MODE String posMode) {
         this.posMode = posMode;
     }
 
+    /**
+     * Add offset colot
+     *
+     * @param offset
+     * @param color
+     * @since 0.0.1
+     */
     public void addStopColor(float offset, @ColorLong long color) {
         stopOffset.add(offset);
         stopColor.add(color);
     }
 
+    /**
+     * Get color count
+     *
+     * @return
+     * @since 0.0.1
+     */
     public int getStopCount() {
         return stopOffset.size();
     }
 
+    /**
+     * Get offset of index pos
+     *
+     * @param index
+     * @return
+     * @since 0.0.1
+     */
     public float getStopOffset(int index) {
         return stopOffset.get(index);
     }
 
+    /**
+     * Get color of index pos
+     *
+     * @param index
+     * @return
+     * @since 0.0.1
+     */
     public @ColorLong
     long getStopColor(int index) {
         return stopColor.get(index);
@@ -89,15 +150,35 @@ public abstract class SVGBaseGradient implements SVGGradient {
         return Objects.hash(posMode, spreadMode, stopOffset, stopColor);
     }
 
+    /**
+     * Get repeat mode
+     *
+     * @return
+     * @since 0.0.1
+     */
     public @SPREAD_MODE
     String getSpreadMode() {
         return spreadMode;
     }
 
+    /**
+     * Set repeat mode
+     *
+     * @param spreadMode
+     * @since 0.0.1
+     */
     public void setSpreadMode(String spreadMode) {
         this.spreadMode = spreadMode;
     }
 
+    /**
+     * Add base attr to gradient element
+     *
+     * @param element  The gradient element
+     * @param document The dom document,use it to create element {@link Document}
+     * @param convert  The double convert,convert double to string
+     * @since 0.0.1
+     */
     protected void initBaseGradientAttr(Element element, Document document, DoubleFunction<String> convert) {
         if (SVGModes.MODE_USERSPACE.equals(posMode))
             element.setAttribute("gradientUnits", posMode);

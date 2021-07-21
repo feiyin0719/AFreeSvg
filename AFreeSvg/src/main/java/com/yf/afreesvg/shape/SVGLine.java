@@ -8,10 +8,28 @@ import org.w3c.dom.Element;
 
 import java.util.Objects;
 
+/**
+ * The line shape
+ *
+ * @author iffly
+ * @since 0.0.1
+ */
 public class SVGLine extends SVGBaseShape {
+    /**
+     * StartX
+     */
     private float x1;
+    /**
+     * StartY
+     */
     private float y1;
+    /**
+     * EndX
+     */
     private float x2;
+    /**
+     * EndY
+     */
     private float y2;
 
     public SVGLine(float x1, float y1, float x2, float y2) {
@@ -21,18 +39,38 @@ public class SVGLine extends SVGBaseShape {
         this.y2 = y2;
     }
 
+    /**
+     * Get startX
+     *
+     * @return
+     */
     public float getX1() {
         return x1;
     }
 
+    /**
+     * Get startY
+     *
+     * @return
+     */
     public float getY1() {
         return y1;
     }
 
+    /**
+     * Get endX
+     *
+     * @return
+     */
     public float getX2() {
         return x2;
     }
 
+    /**
+     * Get endY
+     *
+     * @return
+     */
     public float getY2() {
         return y2;
     }

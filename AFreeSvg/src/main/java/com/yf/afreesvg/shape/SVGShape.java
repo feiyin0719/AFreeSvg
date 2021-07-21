@@ -1,7 +1,20 @@
 package com.yf.afreesvg.shape;
 
 import com.yf.afreesvg.ConvertToSVGElement;
+import com.yf.afreesvg.SVGCanvas;
 
-public interface SVGShape extends ConvertToSVGElement,Cloneable {
+/**
+ * The shape interface
+ *
+ * @author yinfei
+ * @since 0.0.1
+ */
+public interface SVGShape extends ConvertToSVGElement, Cloneable {
+    /**
+     * clone
+     * need deep clone when push in save stacks,{@link SVGCanvas#save()}
+     *
+     * @return
+     */
     public Object clone();
 }

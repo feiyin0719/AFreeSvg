@@ -58,62 +58,12 @@ public class SVGUtils {
     }
 
     /**
-     * Returns a new string where any special characters in the source string
-     * have been encoded.
-     *
-     * @param source the source string ({@code null} not permitted).
-     * @return A new string with special characters escaped for XML.
-     * @since 1.5
-     */
-    public static String escapeForXML(String source) {
-        Args.nullNotPermitted(source, "source");
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < source.length(); i++) {
-            char c = source.charAt(i);
-            switch (c) {
-                case '<': {
-                    sb.append("&lt;");
-                    break;
-                }
-                case '>': {
-                    sb.append("&gt;");
-                    break;
-                }
-                case '&': {
-                    String next = source.substring(i, Math.min(i + 6,
-                            source.length()));
-                    if (next.startsWith("&lt;") || next.startsWith("&gt;")
-                            || next.startsWith("&amp;")
-                            || next.startsWith("&apos;")
-                            || next.startsWith("&quot;")) {
-                        sb.append(c);
-                    } else {
-                        sb.append("&amp;");
-                    }
-                    break;
-                }
-                case '\'': {
-                    sb.append("&apos;");
-                    break;
-                }
-                case '\"': {
-                    sb.append("&quot;");
-                    break;
-                }
-                default:
-                    sb.append(c);
-            }
-        }
-        return sb.toString();
-    }
-
-    /**
      * Writes a file containing the SVG element.
      *
      * @param file       the file ({@code null} not permitted).
      * @param svgElement the SVG element ({@code null} not permitted).
      * @throws IOException if there is an I/O problem.
-     * @since 1.2
+     * @since 0.0.1
      */
     public static void writeToSVG(File file, String svgElement)
             throws IOException {
@@ -127,7 +77,7 @@ public class SVGUtils {
      * @param svgElement the SVG element ({@code null} not permitted).
      * @param zip        compress the output.
      * @throws IOException if there is an I/O problem.
-     * @since 3.0
+     * @since 0.0.1
      */
     public static void writeToSVG(File file, String svgElement, boolean zip)
             throws IOException {
@@ -198,7 +148,7 @@ public class SVGUtils {
      *
      * @param d the value.
      * @return A string representation of the double.
-     * @since 5.0
+     * @since 0.0.1
      */
     public static String doubleToString(double d) {
         return RyuDouble.doubleToString(d);
@@ -210,7 +160,7 @@ public class SVGUtils {
      *
      * @param dp the decimal places (required in the range 1 to 10).
      * @return The converter.
-     * @since 5.0
+     * @since 0.0.1
      */
     public static DoubleFunction<String> createDoubleConverter(int dp) {
         return new DoubleConverter(dp);
