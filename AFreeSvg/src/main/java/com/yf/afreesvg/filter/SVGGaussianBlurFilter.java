@@ -8,7 +8,16 @@ import org.w3c.dom.Element;
 
 import java.util.Objects;
 
+/**
+ * Gaussian blur filter
+ *
+ * @author iffly
+ * @since 0.0.2
+ */
 public class SVGGaussianBlurFilter extends SVGBaseFilter {
+    /**
+     * Gaussian blur filter effect
+     */
     protected SVGGaussianBlurFilterEffect gaussianBlurFilterEffect;
 
     public SVGGaussianBlurFilter(float stdDeviationX, float stdDeviationY) {
@@ -25,8 +34,19 @@ public class SVGGaussianBlurFilter extends SVGBaseFilter {
         addEffect(gaussianBlurFilterEffect);
     }
 
+    /**
+     * Gaussian blur filter effect
+     *
+     * @since 0.0.2
+     */
     public static class SVGGaussianBlurFilterEffect extends SVGBaseFilterEffect {
+        /**
+         * x-axis blur radius
+         */
         protected float stdDeviationX;
+        /**
+         * y-axis blur radius
+         */
         protected float stdDeviationY;
 
         public SVGGaussianBlurFilterEffect(float stdDeviationX, float stdDeviationY) {
@@ -37,18 +57,42 @@ public class SVGGaussianBlurFilter extends SVGBaseFilter {
         public SVGGaussianBlurFilterEffect() {
         }
 
+        /**
+         * Get x-axis blur radius
+         *
+         * @return
+         * @since 0.0.2
+         */
         public float getStdDeviationX() {
             return stdDeviationX;
         }
 
+        /**
+         * Set x-axis blur radius
+         *
+         * @param stdDeviationX
+         * @since 0.0.2
+         */
         public void setStdDeviationX(float stdDeviationX) {
             this.stdDeviationX = stdDeviationX;
         }
 
+        /**
+         * Get y-axis blur radius
+         *
+         * @return
+         * @since 0.0.2
+         */
         public float getStdDeviationY() {
             return stdDeviationY;
         }
 
+        /**
+         * Set y-axis blur radius
+         *
+         * @param stdDeviationY
+         * @since 0.0.2
+         */
         public void setStdDeviationY(float stdDeviationY) {
             this.stdDeviationY = stdDeviationY;
         }
@@ -92,18 +136,42 @@ public class SVGGaussianBlurFilter extends SVGBaseFilter {
         return Objects.hash(super.hashCode(), gaussianBlurFilterEffect);
     }
 
+    /**
+     * Get x-axis blur radius
+     *
+     * @return
+     * @since 0.0.2
+     */
     public float getStdDeviationX() {
         return gaussianBlurFilterEffect.getStdDeviationX();
     }
 
+    /**
+     * Set x-axis blur radius
+     *
+     * @param stdDeviationX
+     * @since 0.0.2
+     */
     public void setStdDeviationX(float stdDeviationX) {
         gaussianBlurFilterEffect.setStdDeviationX(stdDeviationX);
     }
 
+    /**
+     * Get y-axis blur radius
+     *
+     * @return
+     * @since 0.0.2
+     */
     public float getStdDeviationY() {
         return gaussianBlurFilterEffect.getStdDeviationY();
     }
 
+    /**
+     * Set y-axis blur radius
+     *
+     * @param stdDeviationY
+     * @since 0.0.2
+     */
     public void setStdDeviationY(float stdDeviationY) {
         gaussianBlurFilterEffect.setStdDeviationY(stdDeviationY);
     }

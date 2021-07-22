@@ -8,7 +8,16 @@ import org.w3c.dom.Element;
 
 import java.util.Objects;
 
+/**
+ * Offset filter
+ *
+ * @author iffly
+ * @since 0.0.2
+ */
 public class SVGOffsetFilter extends SVGBaseFilter {
+    /**
+     * Offset filter effect
+     */
     protected SVGOffsetFilterEffect offsetFilterEffect;
 
     public SVGOffsetFilter(float dx, float dy) {
@@ -22,23 +31,57 @@ public class SVGOffsetFilter extends SVGBaseFilter {
         addEffect(offsetFilterEffect);
     }
 
+    /**
+     * Offset filter effect
+     *
+     * @since 0.0.2
+     */
     public static class SVGOffsetFilterEffect extends SVGBaseFilterEffect {
-
+        /**
+         * offset dx
+         */
         private float dx;
+        /**
+         * offset dy
+         */
         private float dy;
 
+        /**
+         * Get offset dx
+         *
+         * @return
+         * @since 0.0.2
+         */
         public float getDx() {
             return dx;
         }
 
+        /**
+         * Set offset dx
+         *
+         * @param dx
+         * @since 0.0.2
+         */
         public void setDx(float dx) {
             this.dx = dx;
         }
 
+        /**
+         * Get offset dy
+         *
+         * @return
+         * @since 0.0.2
+         */
         public float getDy() {
             return dy;
         }
 
+        /**
+         * Set offset dy
+         *
+         * @param dy
+         * @since 0.0.2
+         */
         public void setDy(float dy) {
             this.dy = dy;
         }
@@ -73,19 +116,42 @@ public class SVGOffsetFilter extends SVGBaseFilter {
         }
     }
 
-
+    /**
+     * Get offset dx
+     *
+     * @return
+     * @since 0.0.2
+     */
     public float getDx() {
         return offsetFilterEffect.getDx();
     }
 
+    /**
+     * Set offset dx
+     *
+     * @param dx
+     * @since 0.0.2
+     */
     public void setDx(float dx) {
         offsetFilterEffect.setDx(dx);
     }
 
+    /**
+     * Get offset dy
+     *
+     * @return
+     * @since 0.0.2
+     */
     public float getDy() {
         return offsetFilterEffect.getDy();
     }
 
+    /**
+     * Set offset dy
+     *
+     * @param dy
+     * @since 0.0.2
+     */
     public void setDy(float dy) {
         offsetFilterEffect.setDy(dy);
     }

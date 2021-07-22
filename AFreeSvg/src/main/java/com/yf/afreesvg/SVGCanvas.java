@@ -52,7 +52,7 @@ import javax.xml.transform.stream.StreamResult;
  * The  Svg canvas.
  * You can use it to generate svg file,the api refer to {@link android.graphics.Canvas}
  * When draw shape,use {@link SVGPaint} to set style
- *
+ * <p>
  * if you want to learn about the format and attrs of svg,plz refer to http://www.verydoc.net/svg/
  *
  * @author iffly
@@ -77,7 +77,7 @@ public class SVGCanvas {
      * ensure that the keys are unique when creating more than one SVG element
      * for a single HTML page.
      */
-    private String defsKeyPrefix = "def_" + System.nanoTime();
+    private String defsKeyPrefix = "def_" + System.nanoTime() + "_";
 
     /**
      * The default stroke style
@@ -991,7 +991,7 @@ public class SVGCanvas {
         if (filters.containsKey(filter)) {
             filterId = filters.get(filter);
         } else {
-            filterId = FILTER_KEY_PREFIX + filters.size();
+            filterId = defsKeyPrefix + FILTER_KEY_PREFIX + filters.size();
             filters.put(filter, filterId);
             addFilterElementToDef(filter, filterId);
         }
