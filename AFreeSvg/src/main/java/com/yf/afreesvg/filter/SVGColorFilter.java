@@ -13,12 +13,24 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.Arrays;
 import java.util.Objects;
 
+/**
+ * Color filter
+ *
+ * @author iffly
+ * @since 0.0.2
+ */
 public class SVGColorFilter extends SVGBaseFilter {
-
+    /**
+     * Color filter effect
+     */
     protected SVGColorFilterEffect colorFilterEffect;
 
     public SVGColorFilter(float[] colorMatrix) {
         this(0, 0, 0, 0, colorMatrix, SVGColorFilterEffect.TYPE_MATRIX, GRAPHIC_VALUE);
+    }
+
+    public SVGColorFilter(float x, float y, float width, float height, float[] colorMatrix, @SVGColorFilterEffect.ColorFilterType String type) {
+        this(x, y, width, height, colorMatrix, type, GRAPHIC_VALUE);
     }
 
     public SVGColorFilter(float x, float y, float width, float height, float[] colorMatrix, @SVGColorFilterEffect.ColorFilterType String type, String in) {
@@ -28,9 +40,19 @@ public class SVGColorFilter extends SVGBaseFilter {
         addEffect(colorFilterEffect);
     }
 
+    /**
+     * Color filter effect
+     *
+     * @since 0.0.2
+     */
     public static class SVGColorFilterEffect extends SVGBaseFilterEffect {
+        /**
+         * The color filter matrix
+         */
         protected float[] colorMatrix;
-
+        /**
+         * The filter type
+         */
         protected @ColorFilterType
         String type;
 
@@ -44,11 +66,23 @@ public class SVGColorFilter extends SVGBaseFilter {
         public @interface ColorFilterType {
         }
 
+        /**
+         * Get filter type
+         *
+         * @return
+         * @since 0.0.2
+         */
         public @ColorFilterType
         String getType() {
             return type;
         }
 
+        /**
+         * Set filter type
+         *
+         * @param type
+         * @since 0.0.2
+         */
         public void setType(@ColorFilterType String type) {
             this.type = type;
         }
@@ -62,14 +96,33 @@ public class SVGColorFilter extends SVGBaseFilter {
             this.type = type;
         }
 
+        /**
+         * Get color matrix value
+         *
+         * @return
+         * @since 0.0.2
+         */
         public float[] getColorMatrix() {
             return colorMatrix;
         }
 
+        /**
+         * Set color matrix value
+         *
+         * @param colorMatrix
+         * @since 0.0.2
+         */
         public void setColorMatrix(float[] colorMatrix) {
             this.colorMatrix = colorMatrix;
         }
 
+        /**
+         * Get matrix value string
+         *
+         * @param convert double convert,convert double to string
+         * @return
+         * @since 0.0.2
+         */
         private String getValue(DoubleFunction<String> convert) {
             StringBuilder stringBuilder = new StringBuilder();
             for (float f : colorMatrix)
@@ -120,19 +173,43 @@ public class SVGColorFilter extends SVGBaseFilter {
         return Objects.hash(super.hashCode(), colorFilterEffect);
     }
 
+    /**
+     * Get color matrix value
+     *
+     * @return
+     * @since 0.0.2
+     */
     public float[] getColorMatrix() {
         return colorFilterEffect.getColorMatrix();
     }
 
+    /**
+     * Set color matrix value
+     *
+     * @param colorMatrix
+     * @since 0.0.2
+     */
     public void setColorMatrix(float[] colorMatrix) {
         colorFilterEffect.setColorMatrix(colorMatrix);
     }
 
+    /**
+     * Get filter type
+     *
+     * @return
+     * @since 0.0.2
+     */
     public @SVGColorFilterEffect.ColorFilterType
     String getType() {
         return colorFilterEffect.getType();
     }
 
+    /**
+     * Set filter type
+     *
+     * @param type
+     * @since 0.0.2
+     */
     public void setType(@SVGColorFilterEffect.ColorFilterType String type) {
         colorFilterEffect.setType(type);
     }

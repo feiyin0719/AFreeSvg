@@ -161,11 +161,11 @@ public class MainActivity extends AppCompatActivity {
             offsetFilterEffect.setIn(SVGBaseFilter.ALPHA_VALUE);
             offsetFilterEffect.setResult("offset");
             SVGGaussianBlurFilter.SVGGaussianBlurFilterEffect gaussianBlurFilterEffect = new SVGGaussianBlurFilter.SVGGaussianBlurFilterEffect(3, 3);
-            gaussianBlurFilterEffect.setIn("offset");
+            gaussianBlurFilterEffect.setIn(offsetFilterEffect.getResult());
             gaussianBlurFilterEffect.setResult("blur");
             SVGFilterGroup.SVGBlendFilterEffect blendFilterEffect = new SVGFilterGroup.SVGBlendFilterEffect();
             blendFilterEffect.setIn(SVGBaseFilter.GRAPHIC_VALUE);
-            blendFilterEffect.setIn2("blur");
+            blendFilterEffect.setIn2(gaussianBlurFilterEffect.getResult());
 
             filterGroup.addEffect(offsetFilterEffect);
             filterGroup.addEffect(gaussianBlurFilterEffect);
