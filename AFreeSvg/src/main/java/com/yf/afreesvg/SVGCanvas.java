@@ -221,7 +221,7 @@ public class SVGCanvas {
      * @see #SAVE_FLAG_ALL {@link #SAVE_FLAG_CLIP} {@link #SAVE_FLAG_MATRIX}
      * @see #save()  {@link #restore()}
      */
-    public Stack<Integer> saveFlags = new Stack<>();
+    private Stack<Integer> saveFlags = new Stack<>();
     /**
      * The  matrix stack of save.
      * When {@link #save()},it will push the current transform
