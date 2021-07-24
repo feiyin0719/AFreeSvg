@@ -1,21 +1,16 @@
 package com.yf.afreesvg.filter;
 
-import com.yf.afreesvg.SVGCanvas;
-import com.yf.afreesvg.TestConstant;
-import com.yf.afreesvg.util.DoubleConverter;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
-import org.junit.Before;
+import com.yf.afreesvg.TestConstant;
+
 import org.junit.Test;
-import org.w3c.dom.Document;
+import org.junit.runner.RunWith;
 import org.w3c.dom.Element;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+@RunWith(AndroidJUnit4.class)
 public class SVGGaussianBlurFilterTest extends SVGFilterBaseTest {
 
 

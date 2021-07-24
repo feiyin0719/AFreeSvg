@@ -1,14 +1,18 @@
 package com.yf.afreesvg.filter;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
 import com.yf.afreesvg.TestConstant;
 import com.yf.afreesvg.util.DoubleFunction;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.w3c.dom.Element;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+@RunWith(AndroidJUnit4.class)
 public class SVGColorFilterTest extends SVGFilterBaseTest {
 
 
