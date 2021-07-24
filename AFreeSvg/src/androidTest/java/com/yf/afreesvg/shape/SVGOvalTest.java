@@ -31,7 +31,8 @@ public class SVGOvalTest extends SVGShapeBaseTest {
                 new Object[][]{
                         {1f, 2f, 3f, 4f},
                         {0f, 0f, 0f, 0f},
-                        {5f, 2f, 4f, 0f}
+                        {5f, 2f, 4f, 0f},
+                        {0f, 2f, 4f, 0f}
                 }
         );
     }
