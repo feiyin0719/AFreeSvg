@@ -211,10 +211,12 @@ public class SVGFilterGroup extends SVGBaseFilter {
          * Add merge node
          *
          * @param in
+         * @return this
          * @since 0.0.2
          */
-        public void addMergeNode(String in) {
+        public SVGMergeFilterEffect addMergeNode(String in) {
             inList.add(in);
+            return this;
         }
 
         @Override
@@ -258,7 +260,7 @@ public class SVGFilterGroup extends SVGBaseFilter {
          * @see #OPERATE_ARITHMETIC
          */
         protected @OperateType
-        String operate;
+        String operate = OPERATE_IN;
         /**
          * only use when operate is arithmetic
          *

@@ -1,6 +1,7 @@
 package com.yf.afreesvg.filter;
 
 import com.yf.afreesvg.SVGCanvas;
+import com.yf.afreesvg.TestConstant;
 import com.yf.afreesvg.util.DoubleConverter;
 
 import org.junit.Before;
@@ -15,44 +16,27 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class SVGGaussianBlurFilterTest {
-    private SVGCanvas canvas;
-    private Document document;
-    private SVGGaussianBlurFilter filter;
-    private SVGGaussianBlurFilter.SVGGaussianBlurFilterEffect effect;
+public class SVGGaussianBlurFilterTest extends SVGFilterBaseTest {
 
-    @Before
-    public void setUp() throws Exception {
-        filter = new SVGGaussianBlurFilter(0.5f, 0.5f);
-        effect = new SVGGaussianBlurFilter.SVGGaussianBlurFilterEffect(0.5f, 0.5f);
-        DocumentBuilderFactory factory = DocumentBuilderFactory
-                .newInstance();
-        DocumentBuilder builder = null;
-
-        builder = factory.newDocumentBuilder();
-        document = builder.newDocument();
-        canvas = mock(SVGCanvas.class);
-        DoubleConverter doubleConverter = new DoubleConverter(1);
-        when(canvas.getGeomDoubleConverter()).thenReturn(doubleConverter);
-    }
 
     @Test
     public void convertToSVGElement() {
+        SVGGaussianBlurFilter filter = new SVGGaussianBlurFilter(0.5f, 0.5f);
         Element element = filter.convertToSVGElement(canvas, document, canvas.getGeomDoubleConverter());
         assertNotNull(element);
         assertEquals("filter", element.getTagName());
         assertNotNull(element.getFirstChild());
-        assertEquals(0, Float.valueOf(element.getAttribute("width")), 0.00001);
-        assertEquals(0, Float.valueOf(element.getAttribute("height")), 0.00001);
-        assertEquals(0, Float.valueOf(element.getAttribute("x")), 0.00001);
-        assertEquals(0, Float.valueOf(element.getAttribute("y")), 0.00001);
+        assertEquals(0, Float.valueOf(element.getAttribute("width")), TestConstant.DELTA_F);
+        assertEquals(0, Float.valueOf(element.getAttribute("height")), TestConstant.DELTA_F);
+        assertEquals(0, Float.valueOf(element.getAttribute("x")), TestConstant.DELTA_F);
+        assertEquals(0, Float.valueOf(element.getAttribute("y")), TestConstant.DELTA_F);
 
     }
 
     @Test
     public void effectConvertToSVGElement() {
-        effect.setIn("in");
-        effect.setResult("result");
+        SVGGaussianBlurFilter.SVGGaussianBlurFilterEffect effect = new SVGGaussianBlurFilter.SVGGaussianBlurFilterEffect(0.5f, 0.5f);
+
         Element element = effect.convertToSVGElement(canvas, document, canvas.getGeomDoubleConverter());
         assertNotNull(element);
 
@@ -61,33 +45,40 @@ public class SVGGaussianBlurFilterTest {
         assertEquals("" + canvas.getGeomDoubleConverter().apply(0.5f) +
                         "," + canvas.getGeomDoubleConverter().apply(0.5f)
                 , element.getAttribute("stdDeviation"));
-        assertEquals("in", element.getAttribute("in"));
-        assertEquals("result", element.getAttribute("result"));
+        effectBaseTest(effect);
 
     }
 
 
     @Test
     public void getStdDeviationX() {
+        SVGGaussianBlurFilter filter = new SVGGaussianBlurFilter(0.5f, 0.5f);
+
         filter.setStdDeviationX(5f);
-        assertEquals(5, filter.getStdDeviationX(), 0.00001);
+        assertEquals(5, filter.getStdDeviationX(), TestConstant.DELTA_F);
     }
 
     @Test
     public void setStdDeviationX() {
+        SVGGaussianBlurFilter filter = new SVGGaussianBlurFilter(0.5f, 0.5f);
+
         filter.setStdDeviationX(10f);
-        assertEquals(10, filter.getStdDeviationX(), 0.00001);
+        assertEquals(10, filter.getStdDeviationX(), TestConstant.DELTA_F);
     }
 
     @Test
     public void getStdDeviationY() {
+        SVGGaussianBlurFilter filter = new SVGGaussianBlurFilter(0.5f, 0.5f);
+
         filter.setStdDeviationY(5f);
-        assertEquals(5, filter.getStdDeviationY(), 0.00001);
+        assertEquals(5, filter.getStdDeviationY(), TestConstant.DELTA_F);
     }
 
     @Test
     public void setStdDeviationY() {
+        SVGGaussianBlurFilter filter = new SVGGaussianBlurFilter(0.5f, 0.5f);
+
         filter.setStdDeviationY(10f);
-        assertEquals(10, filter.getStdDeviationY(), 0.00001);
+        assertEquals(10, filter.getStdDeviationY(), TestConstant.DELTA_F);
     }
 }

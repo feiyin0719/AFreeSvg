@@ -1,70 +1,76 @@
 package com.yf.afreesvg.filter;
 
-import com.yf.afreesvg.SVGCanvas;
-import com.yf.afreesvg.util.DoubleConverter;
+import com.yf.afreesvg.TestConstant;
+import com.yf.afreesvg.util.DoubleFunction;
 
-import org.junit.Before;
 import org.junit.Test;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
-public class SVGColorFilterTest {
-    private SVGCanvas canvas;
-    private Document document;
-    private SVGColorFilter filter;
+public class SVGColorFilterTest extends SVGFilterBaseTest {
 
 
-    @Before
-    public void setUp() throws Exception {
-        filter = new SVGColorFilter(new float[]{0, 1, 2, 3, 4, 5, 6, 7, 8});
-        DocumentBuilderFactory factory = DocumentBuilderFactory
-                .newInstance();
-        DocumentBuilder builder = null;
+    @Test
+    public void effectConvertToSVGElement() {
+        float f1[] = new float[]{0, 1, 2, 3, 4, 5, 6, 7, 8};
+        float f2[] = new float[]{1, 2, 3};
+        SVGColorFilter.SVGColorFilterEffect effect = new SVGColorFilter.SVGColorFilterEffect(f1);
+        effect.setType(SVGColorFilter.SVGColorFilterEffect.TYPE_HUEROTATE);
+        assertEquals(SVGColorFilter.SVGColorFilterEffect.TYPE_HUEROTATE, effect.getType());
 
-        builder = factory.newDocumentBuilder();
-        document = builder.newDocument();
-        canvas = mock(SVGCanvas.class);
-        DoubleConverter doubleConverter = new DoubleConverter(1);
-        when(canvas.getGeomDoubleConverter()).thenReturn(doubleConverter);
+        assertArrayEquals(f1, effect.getColorMatrix(), TestConstant.DELTA_F);
+
+        effect.setColorMatrix(f2);
+        assertArrayEquals(f2, effect.getColorMatrix(), TestConstant.DELTA_F);
+
+        Element element = effect.convertToSVGElement(canvas, document, canvas.getGeomDoubleConverter());
+        assertNotNull(element);
+        assertEquals("feColorMatrix", element.getTagName());
+        assertEquals(SVGColorFilter.SVGColorFilterEffect.TYPE_HUEROTATE, element.getAttribute("type"));
+        assertNotNull(element.getAttribute("value"));
+        DoubleFunction function = canvas.getGeomDoubleConverter();
+        StringBuilder sb = new StringBuilder();
+        for (float f : f2) {
+            sb.append(function.apply(f)).append(" ");
+        }
+        assertEquals(sb.toString(), element.getAttribute("value"));
+        effectBaseTest(effect);
+
+
     }
 
     @Test
     public void convertToSVGElement() {
+        SVGColorFilter filter = new SVGColorFilter(new float[]{0, 1, 2, 3, 4, 5, 6, 7, 8});
         Element element = filter.convertToSVGElement(canvas, document, canvas.getGeomDoubleConverter());
-        assertNotNull(element);
-        assertNotNull(element.getFirstChild());
-        assertEquals(0, Float.valueOf(element.getAttribute("width")), 0.00001);
-        assertEquals(0, Float.valueOf(element.getAttribute("height")), 0.00001);
-        assertEquals(0, Float.valueOf(element.getAttribute("x")), 0.00001);
-        assertEquals(0, Float.valueOf(element.getAttribute("y")), 0.00001);
+        filterBaseTest(element);
     }
 
     @Test
     public void getColorMatrix() {
-        assertArrayEquals(new float[]{0, 1, 2, 3, 4, 5, 6, 7, 8}, filter.getColorMatrix(), 0.000001f);
+        SVGColorFilter filter = new SVGColorFilter(new float[]{0, 1, 2, 3, 4, 5, 6, 7, 8});
+        assertArrayEquals(new float[]{0, 1, 2, 3, 4, 5, 6, 7, 8}, filter.getColorMatrix(), TestConstant.DELTA_F);
     }
 
     @Test
     public void setColorMatrix() {
+        SVGColorFilter filter = new SVGColorFilter(new float[]{0, 1, 2, 3, 4, 5, 6, 7, 8});
         filter.setColorMatrix(new float[]{1, 2, 3});
-        assertArrayEquals(new float[]{1, 2, 3}, filter.getColorMatrix(), 0.000001f);
+        assertArrayEquals(new float[]{1, 2, 3}, filter.getColorMatrix(), TestConstant.DELTA_F);
 
     }
 
     @Test
     public void getType() {
+        SVGColorFilter filter = new SVGColorFilter(new float[]{0, 1, 2, 3, 4, 5, 6, 7, 8});
         assertEquals(SVGColorFilter.SVGColorFilterEffect.TYPE_MATRIX, filter.getType());
     }
 
     @Test
     public void setType() {
+        SVGColorFilter filter = new SVGColorFilter(new float[]{0, 1, 2, 3, 4, 5, 6, 7, 8});
         filter.setType(SVGColorFilter.SVGColorFilterEffect.TYPE_HUEROTATE);
         assertEquals(SVGColorFilter.SVGColorFilterEffect.TYPE_HUEROTATE, filter.getType());
     }
