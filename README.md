@@ -216,18 +216,68 @@ transform clip 操作api
       6. SVGOval
       7. SVGPolygon
       8. SVGPolyline
+  
+- **SVGFilter**
+
+ 滤镜操作
+
+      1. SVGColorFilter //通过matrix 对图像进行颜色进行变换
+      2. SVGConvolveMatrixFilter //对图像进行卷机滤波
+      3. SVGGaussianBlurFilter //对图像进行高斯模糊
+      4. SVGOffsetFilter //对图像进行偏移滤镜
+      5. SVGFilterGroup //组合多个滤镜效果
+      
+ **SVGBaseFilterEffect** 图像滤镜效果，可配合SVGFilterGroup 组合多个滤镜效果，参考代码
+ 
+ ```java
+ SVGFilterGroup filterGroup = new SVGFilterGroup();
+ filterGroup.setFilterUnits(SVGModes.MODE_BOX);
+ filterGroup.setX(-0.2f);
+ filterGroup.setY(-0.2f);
+ filterGroup.setWidth(1.5f);
+ filterGroup.setHeight(1.5f);
+ SVGOffsetFilter.SVGOffsetFilterEffect offsetFilterEffect = new SVGOffsetFilter.SVGOffsetFilterEffect(0.05f, 0.05f);
+ offsetFilterEffect.setIn(SVGBaseFilter.ALPHA_VALUE);
+ offsetFilterEffect.setResult("offset");
+ SVGGaussianBlurFilter.SVGGaussianBlurFilterEffect gaussianBlurFilterEffect = new SVGGaussianBlurFilter.SVGGaussianBlurFilterEffect(3, 3);
+ gaussianBlurFilterEffect.setIn(offsetFilterEffect.getResult());
+ gaussianBlurFilterEffect.setResult("blur");
+ SVGFilterGroup.SVGBlendFilterEffect blendFilterEffect = new SVGFilterGroup.SVGBlendFilterEffect();
+ blendFilterEffect.setIn(SVGBaseFilter.GRAPHIC_VALUE);
+ blendFilterEffect.setIn2(gaussianBlurFilterEffect.getResult());
+
+ filterGroup.addEffect(offsetFilterEffect);
+ filterGroup.addEffect(gaussianBlurFilterEffect);
+ filterGroup.addEffect(blendFilterEffect);
+ ```
+ 
+     1. SVGColorFilterEffect //颜色滤镜效果类
+     2. SVGConvolveMatrixFilterEffect //卷积滤镜效果
+     3. SVGGaussianBlurFilterEffect //高斯模糊滤镜效果
+     4. SVGOffsetFilterEffect  //偏移滤镜效果
+     5. SVGBlendFilterEffect //混合滤镜效果 混合两个输入
+     6. SVGMergeFilterEffect //可以同时应用多个滤镜效果
+     7. SVGCompositeFilterEffect //组合滤镜效果 将两个输入以一定方式组合
+      
 
 - **SVGClipShape**
 
 设置裁剪区域
 
-public SVGClipShape(SVGShape shape, @SVGModes.POS_MODE String posMode)//posMode设置坐标空间。MODE_BOX  相对绘制元素坐标。MODE_USERSPACE绝对坐标，即相对于画布的坐标
+    1.public SVGClipShape(SVGShape shape, @SVGModes.POS_MODE String posMode)//posMode设置坐标空间。MODE_BOX  相对绘制元素坐标。MODE_USERSPACE绝对坐标，即相对于画布的坐标
 
 - **SVGFont**
 
   font信息，绘制文本时使用
   
 ## 版本日志
+- **0.0.2**
+
+ 1. 新增滤镜效果支持
+ 2. 修复一些bug
+ 3. 新增单元测试用例
+ 4. 完善文档注释
+ 
 - **0.0.1**
 
 第一个正式版
