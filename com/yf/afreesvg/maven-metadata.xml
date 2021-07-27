@@ -3,7 +3,7 @@
   <groupId>com.yf</groupId>
   <artifactId>afreesvg</artifactId>
   <versioning>
-    <release>0.0.1</release>
+    <release>0.0.2</release>
     <versions>
       <version>0.0.1-beta1</version>
       <version>0.0.1-beta2</version>
@@ -13,7 +13,8 @@
       <version>0.0.1-beta6</version>
       <version>0.0.1-beta7</version>
       <version>0.0.1</version>
+      <version>0.0.2</version>
     </versions>
-    <lastUpdated>20210627122150</lastUpdated>
+    <lastUpdated>20210727120353</lastUpdated>
   </versioning>
 </metadata>
