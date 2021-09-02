@@ -151,25 +151,7 @@ public class MainActivity extends AppCompatActivity {
             //绘制图片
             String url = "https://raw.githubusercontent.com/feiyin0719/AFreeSvg/dev/dog.jpg";
             SVGPaint imagePaint = new SVGPaint();
-            SVGFilterGroup filterGroup = new SVGFilterGroup();
-            filterGroup.setFilterUnits(PosMode.MODE_BOX);
-            filterGroup.setX(-0.2f);
-            filterGroup.setY(-0.2f);
-            filterGroup.setWidth(1.5f);
-            filterGroup.setHeight(1.5f);
-            SVGOffsetFilter.SVGOffsetFilterEffect offsetFilterEffect = new SVGOffsetFilter.SVGOffsetFilterEffect(0.05f, 0.05f);
-            offsetFilterEffect.setIn(SVGBaseFilter.ALPHA_VALUE);
-            offsetFilterEffect.setResult("offset");
-            SVGGaussianBlurFilter.SVGGaussianBlurFilterEffect gaussianBlurFilterEffect = new SVGGaussianBlurFilter.SVGGaussianBlurFilterEffect(3, 3);
-            gaussianBlurFilterEffect.setIn(offsetFilterEffect.getResult());
-            gaussianBlurFilterEffect.setResult("blur");
-            SVGFilterGroup.SVGBlendFilterEffect blendFilterEffect = new SVGFilterGroup.SVGBlendFilterEffect();
-            blendFilterEffect.setIn(SVGBaseFilter.GRAPHIC_VALUE);
-            blendFilterEffect.setIn2(gaussianBlurFilterEffect.getResult());
-
-            filterGroup.addEffect(offsetFilterEffect);
-            filterGroup.addEffect(gaussianBlurFilterEffect);
-            filterGroup.addEffect(blendFilterEffect);
+            SVGFilterGroup filterGroup = CreateFilterKt.createFilterGroup();
 
             imagePaint.setFilter(filterGroup);
 
