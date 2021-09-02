@@ -8,7 +8,7 @@ inline fun filterGroup(init: SVGFilterGroup.() -> Unit): SVGFilterGroup {
     return svgFilterGroup
 }
 
-private inline fun <T : SVGBaseFilter.SVGBaseFilterEffect> SVGBaseFilter.initFilterNode(
+inline fun <T : SVGBaseFilter.SVGBaseFilterEffect> SVGBaseFilter.initFilterNode(
     filterEffect: T,
     init: T.() -> Unit
 ) {
@@ -17,10 +17,10 @@ private inline fun <T : SVGBaseFilter.SVGBaseFilterEffect> SVGBaseFilter.initFil
 }
 
 
-fun SVGBaseFilter.blendFilterNode(init: SVGFilterGroup.SVGBlendFilterEffect.() -> Unit) =
+inline fun SVGBaseFilter.blendFilterNode(init: SVGFilterGroup.SVGBlendFilterEffect.() -> Unit) =
     initFilterNode(SVGFilterGroup.SVGBlendFilterEffect(), init)
 
-fun SVGBaseFilter.mergeFilterNode(init: SVGFilterGroup.SVGMergeFilterEffect.() -> Unit) =
+inline fun SVGBaseFilter.mergeFilterNode(init: SVGFilterGroup.SVGMergeFilterEffect.() -> Unit) =
     initFilterNode(SVGFilterGroup.SVGMergeFilterEffect(), init)
 
 
@@ -28,18 +28,18 @@ fun SVGFilterGroup.SVGMergeFilterEffect.mergeNode(init: () -> String) {
     addMergeNode(init())
 }
 
-fun SVGBaseFilter.compositeFilterNode(init: SVGFilterGroup.SVGCompositeFilterEffect.() -> Unit) =
+inline fun SVGBaseFilter.compositeFilterNode(init: SVGFilterGroup.SVGCompositeFilterEffect.() -> Unit) =
     initFilterNode(SVGFilterGroup.SVGCompositeFilterEffect(), init)
 
-fun SVGBaseFilter.colorFilterNode(init: SVGColorFilter.SVGColorFilterEffect.() -> Unit) =
+inline fun SVGBaseFilter.colorFilterNode(init: SVGColorFilter.SVGColorFilterEffect.() -> Unit) =
     initFilterNode(SVGColorFilter.SVGColorFilterEffect(floatArrayOf()), init)
 
-fun SVGBaseFilter.gaussianFilterNode(init: SVGGaussianBlurFilter.SVGGaussianBlurFilterEffect.() -> Unit) =
+inline fun SVGBaseFilter.gaussianFilterNode(init: SVGGaussianBlurFilter.SVGGaussianBlurFilterEffect.() -> Unit) =
     initFilterNode(SVGGaussianBlurFilter.SVGGaussianBlurFilterEffect(), init)
 
-fun SVGBaseFilter.convolveMatrixFilterNode(init: SVGConvolveMatrixFilter.SVGConvolveMatrixFilterEffect.() -> Unit) =
+inline fun SVGBaseFilter.convolveMatrixFilterNode(init: SVGConvolveMatrixFilter.SVGConvolveMatrixFilterEffect.() -> Unit) =
     initFilterNode(SVGConvolveMatrixFilter.SVGConvolveMatrixFilterEffect(floatArrayOf()), init)
 
-fun SVGBaseFilter.offsetFilterNode(init: SVGOffsetFilter.SVGOffsetFilterEffect.() -> Unit) =
+inline fun SVGBaseFilter.offsetFilterNode(init: SVGOffsetFilter.SVGOffsetFilterEffect.() -> Unit) =
     initFilterNode(SVGOffsetFilter.SVGOffsetFilterEffect(0f, 0f), init)
 

@@ -3,10 +3,9 @@ package com.yf.afreesvg.example
 import com.yf.afreesvg.PosMode
 import com.yf.afreesvg.filter.SVGBaseFilter
 import com.yf.afreesvg.filter.SVGFilterGroup
-import com.yf.afreesvg.ktx.blendFilterNode
-import com.yf.afreesvg.ktx.filterGroup
-import com.yf.afreesvg.ktx.gaussianFilterNode
-import com.yf.afreesvg.ktx.offsetFilterNode
+import com.yf.afreesvg.gradient.SVGLinearGradient
+import com.yf.afreesvg.ktx.*
+import com.yf.afreesvg.shape.SVGClipShape
 
 /**
  *             SVGFilterGroup filterGroup = new SVGFilterGroup();
@@ -53,5 +52,45 @@ fun createFilterGroup(): SVGFilterGroup {
             `in` = SVGBaseFilter.GRAPHIC_VALUE
             in2 = "blur"
         }
+    }
+}
+
+
+fun createClipShape(): SVGClipShape {
+    return clipShape {
+        shape = shapeGroup {
+            path {
+                oval(0.2f, 0.2f, 0.2f, 0.2f)
+            }
+            path {
+                oval(0.6f, 0.2f, 0.2f, 0.2f)
+            }
+        }
+        posMode = PosMode.MODE_BOX
+    }
+}
+
+fun createClipShape1(): SVGClipShape {
+    return clipShape {
+        shape = shapeGroup {
+            path {
+                oval(0.2f, 0.2f, 0.2f, 0.2f)
+            }
+
+        }
+        posMode = PosMode.MODE_BOX
+    }
+}
+
+fun createLinearGradient(): SVGLinearGradient {
+    return linearGradient {
+        startX(0f)
+        startY(0f)
+        endX(1f)
+        endY(0f)
+        color(0xffff0000, 0f)
+        color(0xff00ff00, 0.5f)
+        color(0xff00eeee, 0.75f)
+        color(0xff0000ff, 1f)
     }
 }

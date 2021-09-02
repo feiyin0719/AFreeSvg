@@ -2,7 +2,6 @@ package com.yf.afreesvg.example;
 
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PointF;
 import android.graphics.RectF;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,10 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.yf.afreesvg.PosMode;
 import com.yf.afreesvg.SVGCanvas;
 import com.yf.afreesvg.SVGPaint;
-import com.yf.afreesvg.filter.SVGBaseFilter;
 import com.yf.afreesvg.filter.SVGFilterGroup;
-import com.yf.afreesvg.filter.SVGGaussianBlurFilter;
-import com.yf.afreesvg.filter.SVGOffsetFilter;
 import com.yf.afreesvg.font.SVGFont;
 import com.yf.afreesvg.gradient.SVGLinearGradient;
 import com.yf.afreesvg.gradient.SVGRadialGradient;
@@ -50,11 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
             SVGPaint paint1 = new SVGPaint();
             //线性渐变
-            SVGLinearGradient svgLinearGradient = new SVGLinearGradient(new PointF(0, 0), new PointF(1, 0));
-            svgLinearGradient.addStopColor(0, 0xffff0000);
-            svgLinearGradient.addStopColor(0.5f, 0xff00ff00);
-            svgLinearGradient.addStopColor(0.75f, 0xff00eeee);
-            svgLinearGradient.addStopColor(1, 0xff0000ff);
+            SVGLinearGradient svgLinearGradient = SVGKtTestKt.createLinearGradient();
             paint1.setGradient(svgLinearGradient);
             paint1.setStyle(Paint.Style.FILL_AND_STROKE);
             paint1.setStrokeWidth(2);
@@ -75,20 +67,13 @@ public class MainActivity extends AppCompatActivity {
             svgCanvas.save();
             svgCanvas.translate(10, 10);
             //clipShape创建
-            SVGShapeGroup clipGroup = new SVGShapeGroup();
-            SVGPath clipPath = new SVGPath();
-            clipPath.oval(0.2f, 0.2f, 0.2f, 0.2f);
-            SVGPath clipPath1 = new SVGPath();
-            clipPath1.oval(0.6f, 0.2f, 0.2f, 0.2f);
-            clipGroup.addShape(clipPath);
-            clipGroup.addShape(clipPath1);
-            SVGClipShape clipShape = new SVGClipShape(clipGroup, PosMode.MODE_BOX);
+            SVGClipShape clipShape = SVGKtTestKt.createClipShape();
             svgCanvas.save();
             //clipShape设置
             svgCanvas.clip(clipShape);
             svgCanvas.drawRect(new RectF(300, 300, 400, 450), paint2);
             svgCanvas.save();
-            SVGClipShape clipShape1 = new SVGClipShape(clipPath, PosMode.MODE_BOX);
+            SVGClipShape clipShape1 = SVGKtTestKt.createClipShape1();
             svgCanvas.clip(clipShape1);
             svgCanvas.restore();
             //绘制多条线段
@@ -151,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
             //绘制图片
             String url = "https://raw.githubusercontent.com/feiyin0719/AFreeSvg/dev/dog.jpg";
             SVGPaint imagePaint = new SVGPaint();
-            SVGFilterGroup filterGroup = CreateFilterKt.createFilterGroup();
+            SVGFilterGroup filterGroup = SVGKtTestKt.createFilterGroup();
 
             imagePaint.setFilter(filterGroup);
 
