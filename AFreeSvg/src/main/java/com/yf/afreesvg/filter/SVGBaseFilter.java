@@ -96,7 +96,7 @@ public abstract class SVGBaseFilter implements SVGFilter {
      *
      * @since 0.0.2
      */
-    protected static abstract class SVGBaseFilterEffect implements ConvertToSVGElement {
+    public static abstract class SVGBaseFilterEffect implements ConvertToSVGElement {
         /**
          * The effect input
          * The value can be {@link #GRAPHIC_VALUE},{@link #ALPHA_VALUE},and other effect {@link #result}
