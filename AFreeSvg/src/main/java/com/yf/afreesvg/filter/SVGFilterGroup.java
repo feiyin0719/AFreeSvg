@@ -87,23 +87,19 @@ public class SVGFilterGroup extends SVGBaseFilter {
         /**
          * The blend mode
          *
-         * @see #MODE_NORMAL
-         * @see #MODE_MULTIPLY
-         * @see #MODE_DARKEN
-         * @see #MODE_SCREEN
-         * @see #MODE_LIGHTEN
+         * @see BlendMode
          */
         protected @BlendMode
-        String mode = MODE_NORMAL;
-        public static final String MODE_NORMAL = "normal";
-        public static final String MODE_MULTIPLY = "multiply";
-        public static final String MODE_SCREEN = "screen";
-        public static final String MODE_DARKEN = "darken";
-        public static final String MODE_LIGHTEN = "lighten";
+        String mode = BlendMode.MODE_NORMAL;
 
-        @StringDef({MODE_NORMAL, MODE_MULTIPLY, MODE_SCREEN, MODE_DARKEN, MODE_LIGHTEN})
+        @StringDef({BlendMode.MODE_NORMAL, BlendMode.MODE_MULTIPLY, BlendMode.MODE_SCREEN, BlendMode.MODE_DARKEN, BlendMode.MODE_LIGHTEN})
         @Retention(RetentionPolicy.SOURCE)
         public @interface BlendMode {
+            String MODE_NORMAL = "normal";
+            String MODE_MULTIPLY = "multiply";
+            String MODE_SCREEN = "screen";
+            String MODE_DARKEN = "darken";
+            String MODE_LIGHTEN = "lighten";
         }
 
         /**
@@ -152,7 +148,7 @@ public class SVGFilterGroup extends SVGBaseFilter {
             Element element = document.createElement("feBlend");
             addBaseAttr(element);
             element.setAttribute("in2", in2);
-            if (!MODE_NORMAL.equals(mode))
+            if (!BlendMode.MODE_NORMAL.equals(mode))
                 element.setAttribute("mode", mode);
             return element;
         }
@@ -251,57 +247,50 @@ public class SVGFilterGroup extends SVGBaseFilter {
         /**
          * The operate to point combines certain rule
          *
-         * @see #OPERATE_IN
-         * @see #OPERATE_ATOP
-         * @see #OPERATE_OUT
-         * @see #OPERATE_OVER
-         * @see #OPERATE_XOR
-         * @see #OPERATE_LIGHTER
-         * @see #OPERATE_ARITHMETIC
+         * @see OperateType
          */
         protected @OperateType
-        String operate = OPERATE_IN;
+        String operate = OperateType.OPERATE_IN;
         /**
          * only use when operate is arithmetic
          *
-         * @see #OPERATE_ARITHMETIC
+         * @see OperateType#OPERATE_ARITHMETIC
          */
         protected float k1;
         /**
          * only use when operate is arithmetic
          *
-         * @see #OPERATE_ARITHMETIC
+         * @see OperateType#OPERATE_ARITHMETIC
          */
         protected float k2;
         /**
          * only use when operate is arithmetic
          *
-         * @see #OPERATE_ARITHMETIC
+         * @see OperateType#OPERATE_ARITHMETIC
          */
         protected float k3;
         /**
          * only use when operate is arithmetic
          *
-         * @see #OPERATE_ARITHMETIC
+         * @see OperateType#OPERATE_ARITHMETIC
          */
         protected float k4;
 
-        @StringDef({OPERATE_IN, OPERATE_ATOP, OPERATE_OUT, OPERATE_OVER, OPERATE_XOR, OPERATE_LIGHTER, OPERATE_ARITHMETIC})
+        @StringDef({OperateType.OPERATE_IN, OperateType.OPERATE_ATOP, OperateType.OPERATE_OUT, OperateType.OPERATE_OVER, OperateType.OPERATE_XOR, OperateType.OPERATE_LIGHTER, OperateType.OPERATE_ARITHMETIC})
         public @interface OperateType {
 
+            String OPERATE_OVER = "over";
+            String OPERATE_IN = "in";
+            String OPERATE_ATOP = "atop";
+            String OPERATE_OUT = "out";
+            String OPERATE_XOR = "xor";
+            String OPERATE_LIGHTER = "lighter";
+            /**
+             * When operate is arithmetic,it will use the rule to generate result
+             * result = k1*i1*i2 + k2*i1 + k3*i2 + k4
+             */
+            String OPERATE_ARITHMETIC = "arithmetic";
         }
-
-        public static final String OPERATE_OVER = "over";
-        public static final String OPERATE_IN = "in";
-        public static final String OPERATE_ATOP = "atop";
-        public static final String OPERATE_OUT = "out";
-        public static final String OPERATE_XOR = "xor";
-        public static final String OPERATE_LIGHTER = "lighter";
-        /**
-         * When operate is arithmetic,it will use the rule to generate result
-         * result = k1*i1*i2 + k2*i1 + k3*i2 + k4
-         */
-        public static final String OPERATE_ARITHMETIC = "arithmetic";
 
         /**
          * Get second input
@@ -328,13 +317,7 @@ public class SVGFilterGroup extends SVGBaseFilter {
          * Get operate type
          *
          * @return
-         * @see #OPERATE_IN
-         * @see #OPERATE_ATOP
-         * @see #OPERATE_OUT
-         * @see #OPERATE_OVER
-         * @see #OPERATE_XOR
-         * @see #OPERATE_LIGHTER
-         * @see #OPERATE_ARITHMETIC
+         * @see OperateType
          * @since 0.0.2
          */
         public @OperateType
@@ -346,13 +329,7 @@ public class SVGFilterGroup extends SVGBaseFilter {
          * Set operate type
          *
          * @return
-         * @see #OPERATE_IN
-         * @see #OPERATE_ATOP
-         * @see #OPERATE_OUT
-         * @see #OPERATE_OVER
-         * @see #OPERATE_XOR
-         * @see #OPERATE_LIGHTER
-         * @see #OPERATE_ARITHMETIC
+         * @see OperateType
          * @since 0.0.2
          */
         public void setOperate(@OperateType String operate) {
@@ -364,7 +341,7 @@ public class SVGFilterGroup extends SVGBaseFilter {
          * only use when operate is arithmetic
          *
          * @return
-         * @see #OPERATE_ARITHMETIC
+         * @see OperateType#OPERATE_ARITHMETIC
          * @since 0.0.2
          */
         public float getK1() {
@@ -376,7 +353,7 @@ public class SVGFilterGroup extends SVGBaseFilter {
          * only use when operate is arithmetic
          *
          * @param k1
-         * @see #OPERATE_ARITHMETIC
+         * @see OperateType#OPERATE_ARITHMETIC
          * @since 0.0.2
          */
         public void setK1(float k1) {
@@ -388,7 +365,7 @@ public class SVGFilterGroup extends SVGBaseFilter {
          * only use when operate is arithmetic
          *
          * @return
-         * @see #OPERATE_ARITHMETIC
+         * @see OperateType#OPERATE_ARITHMETIC
          * @since 0.0.2
          */
         public float getK2() {
@@ -400,7 +377,7 @@ public class SVGFilterGroup extends SVGBaseFilter {
          * only use when operate is arithmetic
          *
          * @param k2
-         * @see #OPERATE_ARITHMETIC
+         * @see OperateType#OPERATE_ARITHMETIC
          * @since 0.0.2
          */
         public void setK2(float k2) {
@@ -412,7 +389,7 @@ public class SVGFilterGroup extends SVGBaseFilter {
          * only use when operate is arithmetic
          *
          * @return
-         * @see #OPERATE_ARITHMETIC
+         * @see OperateType#OPERATE_ARITHMETIC
          * @since 0.0.2
          */
         public float getK3() {
@@ -424,7 +401,7 @@ public class SVGFilterGroup extends SVGBaseFilter {
          * only use when operate is arithmetic
          *
          * @param k3
-         * @see #OPERATE_ARITHMETIC
+         * @see OperateType#OPERATE_ARITHMETIC
          * @since 0.0.2
          */
         public void setK3(float k3) {
@@ -436,7 +413,7 @@ public class SVGFilterGroup extends SVGBaseFilter {
          * only use when operate is arithmetic
          *
          * @return
-         * @see #OPERATE_ARITHMETIC
+         * @see OperateType#OPERATE_ARITHMETIC
          * @since 0.0.2
          */
         public float getK4() {
@@ -448,7 +425,7 @@ public class SVGFilterGroup extends SVGBaseFilter {
          * only use when operate is arithmetic
          *
          * @param k4
-         * @see #OPERATE_ARITHMETIC
+         * @see OperateType#OPERATE_ARITHMETIC
          * @since 0.0.2
          */
         public void setK4(float k4) {
@@ -461,7 +438,7 @@ public class SVGFilterGroup extends SVGBaseFilter {
             addBaseAttr(element);
             element.setAttribute("in2", in2);
             element.setAttribute("operate", operate);
-            if (OPERATE_ARITHMETIC.equals(operate)) {
+            if (OperateType.OPERATE_ARITHMETIC.equals(operate)) {
                 element.setAttribute("k1", convert.apply(k1));
                 element.setAttribute("k2", convert.apply(k2));
                 element.setAttribute("k3", convert.apply(k3));

@@ -1578,7 +1578,7 @@ public class SVGCanvas {
         if (opacity < 1.0) {
             b.append("fill-opacity:").append(opacity).append(';');
         }
-        if (!paint.getFillRule().equals(SVGPaint.FILL_RULE_DEFAULT)) {
+        if (!paint.getFillRule().equals(SVGPaint.FillRule.FILL_RULE_DEFAULT)) {
             b.append("fill-rule:" + paint.getFillRule()).append(';');
         }
         return b.toString();

@@ -21,8 +21,8 @@ public class SVGColorFilterTest extends SVGFilterBaseTest {
         float f1[] = new float[]{0, 1, 2, 3, 4, 5, 6, 7, 8};
         float f2[] = new float[]{1, 2, 3};
         SVGColorFilter.SVGColorFilterEffect effect = new SVGColorFilter.SVGColorFilterEffect(f1);
-        effect.setType(SVGColorFilter.SVGColorFilterEffect.TYPE_HUEROTATE);
-        assertEquals(SVGColorFilter.SVGColorFilterEffect.TYPE_HUEROTATE, effect.getType());
+        effect.setType(SVGColorFilter.SVGColorFilterEffect.ColorFilterType.TYPE_HUEROTATE);
+        assertEquals(SVGColorFilter.SVGColorFilterEffect.ColorFilterType.TYPE_HUEROTATE, effect.getType());
 
         assertArrayEquals(f1, effect.getColorMatrix(), TestConstant.DELTA_F);
 
@@ -32,7 +32,7 @@ public class SVGColorFilterTest extends SVGFilterBaseTest {
         Element element = effect.convertToSVGElement(canvas, document, canvas.getGeomDoubleConverter());
         assertNotNull(element);
         assertEquals("feColorMatrix", element.getTagName());
-        assertEquals(SVGColorFilter.SVGColorFilterEffect.TYPE_HUEROTATE, element.getAttribute("type"));
+        assertEquals(SVGColorFilter.SVGColorFilterEffect.ColorFilterType.TYPE_HUEROTATE, element.getAttribute("type"));
         assertNotNull(element.getAttribute("value"));
         DoubleFunction function = canvas.getGeomDoubleConverter();
         StringBuilder sb = new StringBuilder();
@@ -69,13 +69,13 @@ public class SVGColorFilterTest extends SVGFilterBaseTest {
     @Test
     public void getType() {
         SVGColorFilter filter = new SVGColorFilter(new float[]{0, 1, 2, 3, 4, 5, 6, 7, 8});
-        assertEquals(SVGColorFilter.SVGColorFilterEffect.TYPE_MATRIX, filter.getType());
+        assertEquals(SVGColorFilter.SVGColorFilterEffect.ColorFilterType.TYPE_MATRIX, filter.getType());
     }
 
     @Test
     public void setType() {
         SVGColorFilter filter = new SVGColorFilter(new float[]{0, 1, 2, 3, 4, 5, 6, 7, 8});
-        filter.setType(SVGColorFilter.SVGColorFilterEffect.TYPE_HUEROTATE);
-        assertEquals(SVGColorFilter.SVGColorFilterEffect.TYPE_HUEROTATE, filter.getType());
+        filter.setType(SVGColorFilter.SVGColorFilterEffect.ColorFilterType.TYPE_HUEROTATE);
+        assertEquals(SVGColorFilter.SVGColorFilterEffect.ColorFilterType.TYPE_HUEROTATE, filter.getType());
     }
 }

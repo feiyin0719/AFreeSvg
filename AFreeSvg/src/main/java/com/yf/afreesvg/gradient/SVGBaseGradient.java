@@ -24,17 +24,16 @@ import java.util.Objects;
  */
 public abstract class SVGBaseGradient implements SVGGradient {
 
-    //not repeat,it will use end color fill other
-    public static final String SPREAD_PAD = "pad";
-    //it will repeat fill
-    public static final String SPREAD_REPEAT = "repeat";
-    //it will reverse fill and repeat
-    public static final String SPREAD_REFLECT = "reflect";
 
-
-    @StringDef({SPREAD_PAD, SPREAD_REPEAT, SPREAD_REFLECT})
+    @StringDef({SpreadMode.SPREAD_PAD, SpreadMode.SPREAD_REPEAT, SpreadMode.SPREAD_REFLECT})
     @Retention(RetentionPolicy.SOURCE)
-    public @interface SPREAD_MODE {
+    public @interface SpreadMode {
+        //not repeat,it will use end color fill other
+        String SPREAD_PAD = "pad";
+        //it will repeat fill
+        String SPREAD_REPEAT = "repeat";
+        //it will reverse fill and repeat
+        String SPREAD_REFLECT = "reflect";
     }
 
     /**
@@ -46,12 +45,12 @@ public abstract class SVGBaseGradient implements SVGGradient {
     String posMode = PosMode.MODE_BOX;
     /**
      * Repeat method
-     * {@link #SPREAD_PAD} not repeat,it will use end color fill other
-     * {@link #SPREAD_REFLECT} it will reverse fill and repeat
-     * {@link #SPREAD_REPEAT} it will repeat fill
+     * {@link SpreadMode#SPREAD_PAD} not repeat,it will use end color fill other
+     * {@link SpreadMode#SPREAD_REFLECT} it will reverse fill and repeat
+     * {@link SpreadMode#SPREAD_REPEAT} it will repeat fill
      */
-    protected @SPREAD_MODE
-    String spreadMode = SPREAD_PAD;
+    protected @SpreadMode
+    String spreadMode = SpreadMode.SPREAD_PAD;
     /**
      * The color offset pos
      */
@@ -156,7 +155,7 @@ public abstract class SVGBaseGradient implements SVGGradient {
      * @return
      * @since 0.0.1
      */
-    public @SPREAD_MODE
+    public @SpreadMode
     String getSpreadMode() {
         return spreadMode;
     }
@@ -182,7 +181,7 @@ public abstract class SVGBaseGradient implements SVGGradient {
     protected void initBaseGradientAttr(Element element, Document document, DoubleFunction<String> convert) {
         if (PosMode.MODE_USERSPACE.equals(posMode))
             element.setAttribute("gradientUnits", posMode);
-        if (!getSpreadMode().equals(SVGBaseGradient.SPREAD_PAD))
+        if (!getSpreadMode().equals(SpreadMode.SPREAD_PAD))
             element.setAttribute("spreadMethod", getSpreadMode());
         for (int i = 0; i < getStopCount(); ++i) {
             Element stop = document.createElement("stop");

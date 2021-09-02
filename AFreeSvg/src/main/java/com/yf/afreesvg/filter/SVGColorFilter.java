@@ -26,7 +26,7 @@ public class SVGColorFilter extends SVGBaseFilter {
     protected SVGColorFilterEffect colorFilterEffect;
 
     public SVGColorFilter(float[] colorMatrix) {
-        this(0, 0, 0, 0, colorMatrix, SVGColorFilterEffect.TYPE_MATRIX, GRAPHIC_VALUE);
+        this(0, 0, 0, 0, colorMatrix, SVGColorFilterEffect.ColorFilterType.TYPE_MATRIX, GRAPHIC_VALUE);
     }
 
     public SVGColorFilter(float x, float y, float width, float height, float[] colorMatrix, @SVGColorFilterEffect.ColorFilterType String type) {
@@ -56,14 +56,13 @@ public class SVGColorFilter extends SVGBaseFilter {
         protected @ColorFilterType
         String type;
 
-        public static final String TYPE_MATRIX = "matrix";
-        public static final String TYPE_SATURATE = "saturate";
-        public static final String TYPE_HUEROTATE = "hueRotate";
-        public static final String TYPE_LUMINANCETOALPHA = "luminanceToAlpha";
-
-        @StringDef({TYPE_MATRIX, TYPE_SATURATE, TYPE_HUEROTATE, TYPE_LUMINANCETOALPHA})
+        @StringDef({ColorFilterType.TYPE_MATRIX, ColorFilterType.TYPE_SATURATE, ColorFilterType.TYPE_HUEROTATE, ColorFilterType.TYPE_LUMINANCETOALPHA})
         @Retention(RetentionPolicy.SOURCE)
         public @interface ColorFilterType {
+            String TYPE_MATRIX = "matrix";
+            String TYPE_SATURATE = "saturate";
+            String TYPE_HUEROTATE = "hueRotate";
+            String TYPE_LUMINANCETOALPHA = "luminanceToAlpha";
         }
 
         /**
@@ -88,7 +87,7 @@ public class SVGColorFilter extends SVGBaseFilter {
         }
 
         public SVGColorFilterEffect(float[] colorMatrix) {
-            this(colorMatrix, TYPE_MATRIX);
+            this(colorMatrix, ColorFilterType.TYPE_MATRIX);
         }
 
         public SVGColorFilterEffect(float[] colorMatrix, @ColorFilterType String type) {
@@ -135,7 +134,7 @@ public class SVGColorFilter extends SVGBaseFilter {
             Element element = document.createElement("feColorMatrix");
             addBaseAttr(element);
             element.setAttribute("value", getValue(convert));
-            if (!TYPE_MATRIX.equals(type)) {
+            if (!ColorFilterType.TYPE_MATRIX.equals(type)) {
                 element.setAttribute("type", type);
             }
             return element;

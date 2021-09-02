@@ -102,12 +102,10 @@ public class SVGConvolveMatrixFilter extends SVGBaseFilter {
          * Edge mode
          * Convolution boundary position repetition pattern
          *
-         * @see #EDGE_MODE_DUPLICATE
-         * @see #EDGE_MODE_WRAP
-         * @see #EDGE_MODE_NONE
+         * @see EdgeMode
          */
         protected @EdgeMode
-        String edgeMode = EDGE_MODE_DUPLICATE;
+        String edgeMode = EdgeMode.EDGE_MODE_DUPLICATE;
         /**
          * The kernel unit of X-axis
          */
@@ -123,13 +121,12 @@ public class SVGConvolveMatrixFilter extends SVGBaseFilter {
         protected boolean preserveAlpha = false;
 
 
-        public static final String EDGE_MODE_DUPLICATE = "duplicate";
-        public static final String EDGE_MODE_WRAP = "wrap";
-        public static final String EDGE_MODE_NONE = "none";
-
-        @StringDef({EDGE_MODE_DUPLICATE, EDGE_MODE_WRAP, EDGE_MODE_NONE})
+        @StringDef({EdgeMode.EDGE_MODE_DUPLICATE, EdgeMode.EDGE_MODE_WRAP, EdgeMode.EDGE_MODE_NONE})
         @Retention(RetentionPolicy.SOURCE)
         public @interface EdgeMode {
+            String EDGE_MODE_DUPLICATE = "duplicate";
+            String EDGE_MODE_WRAP = "wrap";
+            String EDGE_MODE_NONE = "none";
         }
 
         public SVGConvolveMatrixFilterEffect(float[] kernelMatrix) {
@@ -371,7 +368,7 @@ public class SVGConvolveMatrixFilter extends SVGBaseFilter {
                 element.setAttribute("targetX", "" + targetX);
             if (targetY != 0)
                 element.setAttribute("targetY", "" + targetY);
-            if (!EDGE_MODE_DUPLICATE.equals(edgeMode))
+            if (!EdgeMode.EDGE_MODE_DUPLICATE.equals(edgeMode))
                 element.setAttribute("edgeMode", edgeMode);
             if (kernelUnitLengthX != 0 || kernelUnitLengthY != 0) {
                 if (kernelUnitLengthX == kernelUnitLengthY) {

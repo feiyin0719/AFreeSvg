@@ -32,9 +32,9 @@ public class SVGConvolveMatrixFilterTest extends SVGFilterBaseTest {
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
-                {3, new float[]{1, 2, 3, 4, 5, 6, 7, 8, 9}, SVGConvolveMatrixFilter.SVGConvolveMatrixFilterEffect.EDGE_MODE_DUPLICATE, false},
-                {4, new float[]{1, 2, 3, 4, 5, 6, 7, 8, 9}, SVGConvolveMatrixFilter.SVGConvolveMatrixFilterEffect.EDGE_MODE_NONE, true},
-                {4, new float[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}, SVGConvolveMatrixFilter.SVGConvolveMatrixFilterEffect.EDGE_MODE_WRAP, true},
+                {3, new float[]{1, 2, 3, 4, 5, 6, 7, 8, 9}, SVGConvolveMatrixFilter.SVGConvolveMatrixFilterEffect.EdgeMode.EDGE_MODE_DUPLICATE, false},
+                {4, new float[]{1, 2, 3, 4, 5, 6, 7, 8, 9}, SVGConvolveMatrixFilter.SVGConvolveMatrixFilterEffect.EdgeMode.EDGE_MODE_NONE, true},
+                {4, new float[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}, SVGConvolveMatrixFilter.SVGConvolveMatrixFilterEffect.EdgeMode.EDGE_MODE_WRAP, true},
 
         });
     }
@@ -63,7 +63,7 @@ public class SVGConvolveMatrixFilterTest extends SVGFilterBaseTest {
             Assert.assertEquals(order, Integer.parseInt(element.getAttribute("order")));
         else
             Assert.assertFalse(element.hasAttribute("order"));
-        if (edgeMode.equals(SVGConvolveMatrixFilter.SVGConvolveMatrixFilterEffect.EDGE_MODE_DUPLICATE))
+        if (edgeMode.equals(SVGConvolveMatrixFilter.SVGConvolveMatrixFilterEffect.EdgeMode.EDGE_MODE_DUPLICATE))
             Assert.assertFalse(element.hasAttribute("edgeMode"));
         else
             Assert.assertEquals(edgeMode, element.getAttribute("edgeMode"));

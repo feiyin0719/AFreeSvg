@@ -34,36 +34,31 @@ public class SVGFont {
     /**
      * Font style
      *
-     * @see #STYLE_NORMAL
-     * @see #STYLE_ITALIC
-     * @see #STYLE_OBLIQUE
+     * @see FontStyle
      */
     private @FontStyle
     String fontStyle;
     /**
      * Font variant
      *
-     * @see #VARIANT_NORMAL
-     * @see #VARIANT_SMALL
+     * @see FontVariant
      */
     private @FontVariant
     String fontVariant;
 
-    public static final String STYLE_NORMAL = "normal";
-    public static final String STYLE_ITALIC = "italic";
-    public static final String STYLE_OBLIQUE = "oblique";
-
-    public static final String VARIANT_NORMAL = "normal";
-    public static final String VARIANT_SMALL = "small-caps";
-
-    @StringDef({STYLE_NORMAL, STYLE_ITALIC, STYLE_OBLIQUE})
+    @StringDef({FontStyle.STYLE_NORMAL, FontStyle.STYLE_ITALIC, FontStyle.STYLE_OBLIQUE})
     @Retention(RetentionPolicy.SOURCE)
     public @interface FontStyle {
+        String STYLE_NORMAL = "normal";
+        String STYLE_ITALIC = "italic";
+        String STYLE_OBLIQUE = "oblique";
     }
 
-    @StringDef({VARIANT_NORMAL, VARIANT_SMALL})
+    @StringDef({FontVariant.VARIANT_NORMAL, FontVariant.VARIANT_SMALL})
     @Retention(RetentionPolicy.SOURCE)
     public @interface FontVariant {
+        String VARIANT_NORMAL = "normal";
+        String VARIANT_SMALL = "small-caps";
     }
 
 
@@ -153,9 +148,9 @@ public class SVGFont {
         @NonNull
         private String fontWeight = "normal";
         private @FontStyle
-        String fontStyle = STYLE_NORMAL;
+        String fontStyle = FontStyle.STYLE_NORMAL;
         private @FontVariant
-        String fontVariant = VARIANT_NORMAL;
+        String fontVariant = FontVariant.VARIANT_NORMAL;
 
         public Builder setFontFamily(@NonNull String fontFamily) {
             this.fontFamily = fontFamily;

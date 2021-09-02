@@ -251,9 +251,9 @@ public class SVGTextPath extends SVGBaseShape {
         if (paint.getWordSpacing() > 0) {
             element.setAttribute("word-spacing", convert.apply(paint.getWordSpacing()));
         }
-        if (!SVGPaint.TEXT_DECORATION_NONE.equals(paint.getTextDecoration()))
+        if (!SVGPaint.TextDecoration.TEXT_DECORATION_NONE.equals(paint.getTextDecoration()))
             element.setAttribute("text-decoration", paint.getTextDecoration());
-        if (!SVGPaint.LENGTH_ADJUST_SPACING.equals(paint.getLengthAdjust()) && element.hasAttribute("textLength"))
+        if (!SVGPaint.LengthAdjust.LENGTH_ADJUST_SPACING.equals(paint.getLengthAdjust()) && element.hasAttribute("textLength"))
             element.setAttribute("lengthAdjust", paint.getLengthAdjust());
     }
 

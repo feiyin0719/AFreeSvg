@@ -87,23 +87,23 @@ public class SVGPath extends SVGBaseShape {
      * @since 0.0.1
      */
     public static class SVGPathElement {
-        /**
-         * Path command
-         */
-        public static final String M = "M";
-        public static final String L = "L";
-        public static final String H = "H";
-        public static final String V = "V";
-        public static final String C = "C";
-        public static final String S = "S";
-        public static final String Q = "Q";
-        public static final String T = "T";
-        public static final String A = "A";
-        public static final String Z = "Z";
 
-        @StringDef({M, L, H, V, C, S, Q, T, A, Z})
+        @StringDef({PathElementType.M, PathElementType.L, PathElementType.H, PathElementType.V, PathElementType.C, PathElementType.S, PathElementType.Q, PathElementType.T, PathElementType.A, PathElementType.Z})
         @Retention(RetentionPolicy.SOURCE)
         public @interface PathElementType {
+            /**
+             * Path command
+             */
+            String M = "M";
+            String L = "L";
+            String H = "H";
+            String V = "V";
+            String C = "C";
+            String S = "S";
+            String Q = "Q";
+            String T = "T";
+            String A = "A";
+            String Z = "Z";
         }
 
         /**
@@ -192,7 +192,7 @@ public class SVGPath extends SVGBaseShape {
         public String valueStr(DoubleFunction convert) {
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append(isRelative ? type.toLowerCase() : type).append(" ");
-            if (type != A) {
+            if (type != PathElementType.A) {
                 if (data != null)
                     for (float f : data)
                         stringBuilder.append(convert.apply(f)).append(" ");
@@ -247,7 +247,7 @@ public class SVGPath extends SVGBaseShape {
      * @since 0.0.1
      */
     public void moveTo(float x, float y, boolean isRelative) {
-        pathElements.add(new SVGPathElement(SVGPathElement.M, new float[]{x, y}, isRelative));
+        pathElements.add(new SVGPathElement(SVGPathElement.PathElementType.M, new float[]{x, y}, isRelative));
     }
 
     /**
@@ -270,7 +270,7 @@ public class SVGPath extends SVGBaseShape {
      * @since 0.0.1
      */
     public void lineTo(float x, float y, boolean isRelative) {
-        pathElements.add(new SVGPathElement(SVGPathElement.L, new float[]{x, y}, isRelative));
+        pathElements.add(new SVGPathElement(SVGPathElement.PathElementType.L, new float[]{x, y}, isRelative));
     }
 
     /**
@@ -291,7 +291,7 @@ public class SVGPath extends SVGBaseShape {
      * @since 0.0.1
      */
     public void horizontalLineTo(float x, boolean isRelative) {
-        pathElements.add(new SVGPathElement(SVGPathElement.H, new float[]{x}, isRelative));
+        pathElements.add(new SVGPathElement(SVGPathElement.PathElementType.H, new float[]{x}, isRelative));
     }
 
     /**
@@ -312,7 +312,7 @@ public class SVGPath extends SVGBaseShape {
      * @since 0.0.1
      */
     public void verticalLineTo(float y, boolean isRelative) {
-        pathElements.add(new SVGPathElement(SVGPathElement.V, new float[]{y}, isRelative));
+        pathElements.add(new SVGPathElement(SVGPathElement.PathElementType.V, new float[]{y}, isRelative));
     }
 
     /**
@@ -345,7 +345,7 @@ public class SVGPath extends SVGBaseShape {
      * @since 0.0.1
      */
     public void curveTo(float x1, float y1, float x2, float y2, float ex, float ey, boolean isRelative) {
-        pathElements.add(new SVGPathElement(SVGPathElement.C,
+        pathElements.add(new SVGPathElement(SVGPathElement.PathElementType.C,
                 new float[]{x1, y1, x2, y2, ex, ey},
                 isRelative));
     }
@@ -384,7 +384,7 @@ public class SVGPath extends SVGBaseShape {
      * @since 0.0.1
      */
     public void smoothCurveTo(float x2, float y2, float ex, float ey, boolean isRelative) {
-        pathElements.add(new SVGPathElement(SVGPathElement.C,
+        pathElements.add(new SVGPathElement(SVGPathElement.PathElementType.C,
                 new float[]{x2, y2, ex, ey},
                 isRelative));
     }
@@ -415,7 +415,7 @@ public class SVGPath extends SVGBaseShape {
      * @since 0.0.1
      */
     public void quadraticBelzierCurve(float x1, float y1, float ex, float ey, boolean isRelative) {
-        pathElements.add(new SVGPathElement(SVGPathElement.Q,
+        pathElements.add(new SVGPathElement(SVGPathElement.PathElementType.Q,
                 new float[]{x1, y1, ex, ey},
                 isRelative));
     }
@@ -442,7 +442,7 @@ public class SVGPath extends SVGBaseShape {
      * @since 0.0.1
      */
     public void smoothQuadraticBelzierCurve(float x, float y, boolean isRelative) {
-        pathElements.add(new SVGPathElement(SVGPathElement.T, new float[]{x, y}, isRelative));
+        pathElements.add(new SVGPathElement(SVGPathElement.PathElementType.T, new float[]{x, y}, isRelative));
     }
 
     /**
@@ -475,7 +475,7 @@ public class SVGPath extends SVGBaseShape {
      * @since 0.0.1
      */
     public void ellipticalArc(float rx, float ry, float rotation, int isLarge, int sweepFlag, float x, float y, boolean isRelative) {
-        pathElements.add(new SVGPathElement(SVGPathElement.A,
+        pathElements.add(new SVGPathElement(SVGPathElement.PathElementType.A,
                 new float[]{rx, ry, rotation, isLarge, sweepFlag, x, y},
                 isRelative));
     }
@@ -521,7 +521,7 @@ public class SVGPath extends SVGBaseShape {
      * @since 0.0.1
      */
     public void closePath() {
-        pathElements.add(new SVGPathElement(SVGPathElement.Z, null));
+        pathElements.add(new SVGPathElement(SVGPathElement.PathElementType.Z, null));
     }
 
     /**

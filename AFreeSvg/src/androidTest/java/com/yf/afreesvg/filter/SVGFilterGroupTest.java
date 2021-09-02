@@ -50,14 +50,14 @@ public class SVGFilterGroupTest extends SVGFilterBaseTest {
         blendFilterEffect.setIn("in1");
         blendFilterEffect.setIn2("in2");
         assertNotNull(blendFilterEffect.getMode());
-        assertEquals(SVGFilterGroup.SVGBlendFilterEffect.MODE_NORMAL, blendFilterEffect.getMode());
-        blendFilterEffect.setMode(SVGFilterGroup.SVGBlendFilterEffect.MODE_DARKEN);
-        assertEquals(SVGFilterGroup.SVGBlendFilterEffect.MODE_DARKEN, blendFilterEffect.getMode());
+        assertEquals(SVGFilterGroup.SVGBlendFilterEffect.BlendMode.MODE_NORMAL, blendFilterEffect.getMode());
+        blendFilterEffect.setMode(SVGFilterGroup.SVGBlendFilterEffect.BlendMode.MODE_DARKEN);
+        assertEquals(SVGFilterGroup.SVGBlendFilterEffect.BlendMode.MODE_DARKEN, blendFilterEffect.getMode());
         Element element = blendFilterEffect.convertToSVGElement(canvas, document, canvas.getGeomDoubleConverter());
         assertEquals("feBlend", element.getTagName());
         assertEquals("in1", element.getAttribute("in"));
         assertEquals("in2", element.getAttribute("in2"));
-        assertEquals(SVGFilterGroup.SVGBlendFilterEffect.MODE_DARKEN, element.getAttribute("mode"));
+        assertEquals(SVGFilterGroup.SVGBlendFilterEffect.BlendMode.MODE_DARKEN, element.getAttribute("mode"));
         effectBaseTest(blendFilterEffect);
     }
 
@@ -67,8 +67,8 @@ public class SVGFilterGroupTest extends SVGFilterBaseTest {
         compositeFilterEffect.setIn2("in2");
         compositeFilterEffect.setIn("in");
         assertNotNull(compositeFilterEffect.getOperate());
-        compositeFilterEffect.setOperate(SVGFilterGroup.SVGCompositeFilterEffect.OPERATE_IN);
-        assertEquals(SVGFilterGroup.SVGCompositeFilterEffect.OPERATE_IN, compositeFilterEffect.getOperate());
+        compositeFilterEffect.setOperate(SVGFilterGroup.SVGCompositeFilterEffect.OperateType.OPERATE_IN);
+        assertEquals(SVGFilterGroup.SVGCompositeFilterEffect.OperateType.OPERATE_IN, compositeFilterEffect.getOperate());
         compositeFilterEffect.setK1(0.1f);
         compositeFilterEffect.setK2(0.1f);
         compositeFilterEffect.setK3(0.1f);
@@ -76,9 +76,9 @@ public class SVGFilterGroupTest extends SVGFilterBaseTest {
         Element element = compositeFilterEffect.convertToSVGElement(canvas, document, canvas.getGeomDoubleConverter());
         assertEquals("in", element.getAttribute("in"));
         assertEquals("in2", element.getAttribute("in2"));
-        assertEquals(SVGFilterGroup.SVGCompositeFilterEffect.OPERATE_IN, element.getAttribute("operate"));
+        assertEquals(SVGFilterGroup.SVGCompositeFilterEffect.OperateType.OPERATE_IN, element.getAttribute("operate"));
         assertEquals(false, element.hasAttribute("k1"));
-        compositeFilterEffect.setOperate(SVGFilterGroup.SVGCompositeFilterEffect.OPERATE_ARITHMETIC);
+        compositeFilterEffect.setOperate(SVGFilterGroup.SVGCompositeFilterEffect.OperateType.OPERATE_ARITHMETIC);
         Element element1 = compositeFilterEffect.convertToSVGElement(canvas, document, canvas.getGeomDoubleConverter());
         assertEquals(canvas.getGeomDoubleConverter().apply(0.1f), element1.getAttribute("k1"));
         assertEquals(canvas.getGeomDoubleConverter().apply(0.1f), element1.getAttribute("k2"));

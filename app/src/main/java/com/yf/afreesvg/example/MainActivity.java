@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
             gradient.addStopColor(0.5f, 0xffff0000);
             gradient.addStopColor(1f, 0xff0000ff);
             paint2.setGradient(gradient);
-            paint2.setFillRule(SVGPaint.FILL_RULE_EVENODD);
+            paint2.setFillRule(SVGPaint.FillRule.FILL_RULE_EVENODD);
             //save功能
             svgCanvas.save();
             svgCanvas.translate(10, 10);
@@ -127,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
 
             textPaint.setGradient(svgLinearGradient);
             textPaint.setFont(new SVGFont.Builder().setFontFamily("sans-serif")
-                    .setFontStyle(SVGFont.STYLE_ITALIC)
+                    .setFontStyle(SVGFont.FontStyle.STYLE_ITALIC)
                     .setFontWeight("bold")
                     .setFontSize(24)
                     .build());

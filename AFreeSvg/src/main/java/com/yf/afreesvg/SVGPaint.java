@@ -32,11 +32,10 @@ public class SVGPaint extends Paint {
     /**
      * The fillRule
      *
-     * @see #FILL_RULE_DEFAULT
-     * @see #FILL_RULE_EVENODD
+     * @see FillRule
      */
     protected @FillRule
-    String fillRule = FILL_RULE_DEFAULT;
+    String fillRule = FillRule.FILL_RULE_DEFAULT;
     /**
      * The fill color
      * Use it can different of strokeColor
@@ -58,16 +57,15 @@ public class SVGPaint extends Paint {
     /**
      * The text lengthAdjust
      *
-     * @see #LENGTH_ADJUST_SPACING
-     * @see #LENGTH_ADJUST_SPACINGANDGLYPHS
+     * @see LengthAdjust
      */
     protected @LengthAdjust
-    String lengthAdjust = LENGTH_ADJUST_SPACING;
+    String lengthAdjust = LengthAdjust.LENGTH_ADJUST_SPACING;
     /**
      * The text Decoration
      */
     protected @TextDecoration
-    String textDecoration = TEXT_DECORATION_NONE;
+    String textDecoration = TextDecoration.TEXT_DECORATION_NONE;
     /**
      * The text word space
      */
@@ -80,34 +78,31 @@ public class SVGPaint extends Paint {
      */
     protected SVGFilter filter;
 
-    public static final String FILL_RULE_DEFAULT = "nonzero";
-    public static final String FILL_RULE_EVENODD = "evenodd";
 
-
-    public static final String LENGTH_ADJUST_SPACING = "spacing";
-    public static final String LENGTH_ADJUST_SPACINGANDGLYPHS = "spacingAndGlyphs";
-
-    public static final String TEXT_DECORATION_NONE = "none";
-    public static final String TEXT_DECORATION_UNDERLINE = "underline";
-    public static final String TEXT_DECORATION_OVERLINE = "overline";
-    public static final String TEXT_DECORATION_LINETHROUGH = "line-through";
-    public static final String TEXT_DECORATION_BLINK = "blink";
-
-    @StringDef({LENGTH_ADJUST_SPACING, LENGTH_ADJUST_SPACINGANDGLYPHS})
+    @StringDef({LengthAdjust.LENGTH_ADJUST_SPACING, LengthAdjust.LENGTH_ADJUST_SPACINGANDGLYPHS})
     @Retention(RetentionPolicy.SOURCE)
     public @interface LengthAdjust {
+        String LENGTH_ADJUST_SPACING = "spacing";
+        String LENGTH_ADJUST_SPACINGANDGLYPHS = "spacingAndGlyphs";
     }
 
-    @StringDef({FILL_RULE_DEFAULT, FILL_RULE_EVENODD})
+    @StringDef({FillRule.FILL_RULE_DEFAULT, FillRule.FILL_RULE_EVENODD})
     @Retention(RetentionPolicy.SOURCE)
     public @interface FillRule {
+        String FILL_RULE_DEFAULT = "nonzero";
+        String FILL_RULE_EVENODD = "evenodd";
     }
 
-    @StringDef({TEXT_DECORATION_NONE, TEXT_DECORATION_UNDERLINE,
-            TEXT_DECORATION_OVERLINE, TEXT_DECORATION_LINETHROUGH, TEXT_DECORATION_BLINK})
+    @StringDef({TextDecoration.TEXT_DECORATION_NONE, TextDecoration.TEXT_DECORATION_UNDERLINE,
+            TextDecoration.TEXT_DECORATION_OVERLINE, TextDecoration.TEXT_DECORATION_LINETHROUGH, TextDecoration.TEXT_DECORATION_BLINK})
     @Retention(RetentionPolicy.SOURCE)
     public @interface TextDecoration {
 
+        String TEXT_DECORATION_NONE = "none";
+        String TEXT_DECORATION_UNDERLINE = "underline";
+        String TEXT_DECORATION_OVERLINE = "overline";
+        String TEXT_DECORATION_LINETHROUGH = "line-through";
+        String TEXT_DECORATION_BLINK = "blink";
     }
 
     /**
@@ -197,9 +192,9 @@ public class SVGPaint extends Paint {
     }
 
     /**
-     * Set fullRule
+     * Set fillRule
      *
-     * @param fillRule The fill rule,{@link #FILL_RULE_DEFAULT} {@link #FILL_RULE_EVENODD}
+     * @param fillRule The fill rule,{@link FillRule}
      */
     public void setFillRule(String fillRule) {
         this.fillRule = fillRule;
