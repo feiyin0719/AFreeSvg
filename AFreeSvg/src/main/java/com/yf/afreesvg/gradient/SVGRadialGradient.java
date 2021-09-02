@@ -1,7 +1,7 @@
 package com.yf.afreesvg.gradient;
 
 import com.yf.afreesvg.SVGCanvas;
-import com.yf.afreesvg.SVGModes;
+import com.yf.afreesvg.PosMode;
 import com.yf.afreesvg.util.DoubleFunction;
 
 import org.w3c.dom.Document;
@@ -46,7 +46,7 @@ public class SVGRadialGradient extends SVGBaseGradient {
     public SVGRadialGradient() {
     }
 
-    public SVGRadialGradient(float cx, float cy, float r, float fx, float fy, @SVGModes.POS_MODE String posMode) {
+    public SVGRadialGradient(float cx, float cy, float r, float fx, float fy, @PosMode String posMode) {
         super(posMode);
         this.cx = cx;
         this.cy = cy;
@@ -56,7 +56,7 @@ public class SVGRadialGradient extends SVGBaseGradient {
     }
 
     public SVGRadialGradient(float cx, float cy, float r, float fx, float fy) {
-        this(cx, cy, r, fx, fy, SVGModes.MODE_BOX);
+        this(cx, cy, r, fx, fy, PosMode.MODE_BOX);
     }
 
     /**

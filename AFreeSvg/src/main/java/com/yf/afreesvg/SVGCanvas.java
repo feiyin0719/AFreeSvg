@@ -1042,7 +1042,7 @@ public class SVGCanvas {
      *      clipPath1.oval(0.6f, 0.2f, 0.2f, 0.2f);
      *      clipGroup.addShape(clipPath);
      *      clipGroup.addShape(clipPath1);
-     *      SVGClipShape clipShape = new SVGClipShape(clipGroup, SVGModes.MODE_BOX);
+     *      SVGClipShape clipShape = new SVGClipShape(clipGroup, POS_MODE.MODE_BOX);
      *      svgCanvas.save();
      *      svgCanvas.clip(clipShape);
      *
@@ -1051,7 +1051,7 @@ public class SVGCanvas {
      *                     .setPath(textPath)
      *                     .setPaint(textPaint)
      *                     .setText("hello").build();
-     *     svgCanvas.clip(new SVGClipShape(svgTextPath, SVGModes.MODE_USERSPACE));
+     *     svgCanvas.clip(new SVGClipShape(svgTextPath, POS_MODE.MODE_USERSPACE));
      *
      * </pre>
      *

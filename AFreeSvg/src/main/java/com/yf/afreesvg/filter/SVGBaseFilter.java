@@ -2,7 +2,7 @@ package com.yf.afreesvg.filter;
 
 import com.yf.afreesvg.ConvertToSVGElement;
 import com.yf.afreesvg.SVGCanvas;
-import com.yf.afreesvg.SVGModes;
+import com.yf.afreesvg.PosMode;
 import com.yf.afreesvg.SVGUtils;
 import com.yf.afreesvg.util.DoubleFunction;
 
@@ -46,10 +46,10 @@ public abstract class SVGBaseFilter implements SVGFilter {
     /**
      * Coordinate mode
      *
-     * @see SVGModes
+     * @see PosMode
      */
-    protected @SVGModes.POS_MODE
-    String filterUnits = SVGModes.MODE_BOX;
+    protected @PosMode
+    String filterUnits = PosMode.MODE_BOX;
     /**
      * filter id
      */
@@ -275,10 +275,10 @@ public abstract class SVGBaseFilter implements SVGFilter {
     /**
      * Get Coordinate mode
      *
-     * @return {@link SVGModes}
+     * @return {@link PosMode}
      * @since 0.0.2
      */
-    public @SVGModes.POS_MODE
+    public @PosMode
     String getFilterUnits() {
         return filterUnits;
     }
@@ -289,7 +289,7 @@ public abstract class SVGBaseFilter implements SVGFilter {
      * @param filterUnits
      * @since 0.0.2
      */
-    public void setFilterUnits(@SVGModes.POS_MODE String filterUnits) {
+    public void setFilterUnits(@PosMode String filterUnits) {
         this.filterUnits = filterUnits;
     }
 

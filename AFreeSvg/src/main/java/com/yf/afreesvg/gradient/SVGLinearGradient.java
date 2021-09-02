@@ -3,7 +3,7 @@ package com.yf.afreesvg.gradient;
 import android.graphics.PointF;
 
 import com.yf.afreesvg.SVGCanvas;
-import com.yf.afreesvg.SVGModes;
+import com.yf.afreesvg.PosMode;
 import com.yf.afreesvg.util.DoubleFunction;
 
 import org.w3c.dom.Document;
@@ -29,10 +29,10 @@ public class SVGLinearGradient extends SVGBaseGradient {
     private PointF endPoint;
 
     public SVGLinearGradient(PointF startPoint, PointF endPoint) {
-        this(startPoint, endPoint, SVGModes.MODE_BOX);
+        this(startPoint, endPoint, PosMode.MODE_BOX);
     }
 
-    public SVGLinearGradient(PointF startPoint, PointF endPoint, @SVGModes.POS_MODE String mode) {
+    public SVGLinearGradient(PointF startPoint, PointF endPoint, @PosMode String mode) {
         super(mode);
         this.startPoint = startPoint;
         this.endPoint = endPoint;
@@ -40,7 +40,7 @@ public class SVGLinearGradient extends SVGBaseGradient {
     }
 
     public SVGLinearGradient() {
-        this(new PointF(0, 0), new PointF(0, 0), SVGModes.MODE_BOX);
+        this(new PointF(0, 0), new PointF(0, 0), PosMode.MODE_BOX);
     }
 
     /**

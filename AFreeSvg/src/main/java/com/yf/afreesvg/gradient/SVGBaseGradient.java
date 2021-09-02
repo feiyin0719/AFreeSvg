@@ -3,7 +3,7 @@ package com.yf.afreesvg.gradient;
 import androidx.annotation.ColorLong;
 import androidx.annotation.StringDef;
 
-import com.yf.afreesvg.SVGModes;
+import com.yf.afreesvg.PosMode;
 import com.yf.afreesvg.SVGUtils;
 import com.yf.afreesvg.util.DoubleFunction;
 
@@ -40,10 +40,10 @@ public abstract class SVGBaseGradient implements SVGGradient {
     /**
      * Coordinate mode
      *
-     * @see SVGModes
+     * @see PosMode
      */
-    protected @SVGModes.POS_MODE
-    String posMode = SVGModes.MODE_BOX;
+    protected @PosMode
+    String posMode = PosMode.MODE_BOX;
     /**
      * Repeat method
      * {@link #SPREAD_PAD} not repeat,it will use end color fill other
@@ -61,7 +61,7 @@ public abstract class SVGBaseGradient implements SVGGradient {
      */
     protected List<Long> stopColor = new ArrayList<>();
 
-    public SVGBaseGradient(@SVGModes.POS_MODE String posMode) {
+    public SVGBaseGradient(@PosMode String posMode) {
         this.posMode = posMode;
     }
 
@@ -74,7 +74,7 @@ public abstract class SVGBaseGradient implements SVGGradient {
      * @return
      * @since 0.0.1
      */
-    public @SVGModes.POS_MODE
+    public @PosMode
     String getPosMode() {
         return posMode;
     }
@@ -85,7 +85,7 @@ public abstract class SVGBaseGradient implements SVGGradient {
      * @param posMode
      * @since 0.0.1
      */
-    public void setPosMode(@SVGModes.POS_MODE String posMode) {
+    public void setPosMode(@PosMode String posMode) {
         this.posMode = posMode;
     }
 
@@ -180,7 +180,7 @@ public abstract class SVGBaseGradient implements SVGGradient {
      * @since 0.0.1
      */
     protected void initBaseGradientAttr(Element element, Document document, DoubleFunction<String> convert) {
-        if (SVGModes.MODE_USERSPACE.equals(posMode))
+        if (PosMode.MODE_USERSPACE.equals(posMode))
             element.setAttribute("gradientUnits", posMode);
         if (!getSpreadMode().equals(SVGBaseGradient.SPREAD_PAD))
             element.setAttribute("spreadMethod", getSpreadMode());

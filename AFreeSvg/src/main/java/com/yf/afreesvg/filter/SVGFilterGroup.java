@@ -21,7 +21,7 @@ import java.util.Objects;
  * <pre>
  *
  *             SVGFilterGroup filterGroup = new SVGFilterGroup();
- *             filterGroup.setFilterUnits(SVGModes.MODE_BOX);
+ *             filterGroup.setFilterUnits(POS_MODE.MODE_BOX);
  *             filterGroup.setX(-0.2f);
  *             filterGroup.setY(-0.2f);
  *             filterGroup.setWidth(1.5f);

@@ -1,9 +1,8 @@
 package com.yf.afreesvg.shape;
 
 import com.yf.afreesvg.ConvertToSVGElement;
+import com.yf.afreesvg.PosMode;
 import com.yf.afreesvg.SVGCanvas;
-import com.yf.afreesvg.SVGModes;
-import com.yf.afreesvg.SVGPaint;
 import com.yf.afreesvg.util.DoubleFunction;
 
 import org.w3c.dom.Document;
@@ -29,12 +28,12 @@ public class SVGClipShape implements ConvertToSVGElement, Cloneable {
     /**
      * Pos mode
      *
-     * @see SVGModes
+     * @see PosMode
      */
-    private @SVGModes.POS_MODE
-    String posMode = SVGModes.MODE_USERSPACE;
+    private @PosMode
+    String posMode = PosMode.MODE_USERSPACE;
 
-    public SVGClipShape(SVGShape shape, @SVGModes.POS_MODE String posMode) {
+    public SVGClipShape(SVGShape shape, @PosMode String posMode) {
         this.shape = shape;
         this.posMode = posMode;
     }
@@ -70,7 +69,7 @@ public class SVGClipShape implements ConvertToSVGElement, Cloneable {
      * @return
      * @since 0.0.1
      */
-    public @SVGModes.POS_MODE
+    public @PosMode
     String getPosMode() {
         return posMode;
     }
@@ -81,7 +80,7 @@ public class SVGClipShape implements ConvertToSVGElement, Cloneable {
      * @param posMode
      * @since 0.0.1
      */
-    public void setPosMode(@SVGModes.POS_MODE String posMode) {
+    public void setPosMode(@PosMode String posMode) {
         this.posMode = posMode;
     }
 

@@ -55,13 +55,13 @@ gradle添加jitpack仓库和依赖
             clipPath1.oval(0.6f, 0.2f, 0.2f, 0.2f);
             clipGroup.addShape(clipPath);
             clipGroup.addShape(clipPath1);
-            SVGClipShape clipShape = new SVGClipShape(clipGroup, SVGModes.MODE_BOX);
+            SVGClipShape clipShape = new SVGClipShape(clipGroup, POS_MODE.MODE_BOX);
             svgCanvas.save();
             //clipShape设置
             svgCanvas.clip(clipShape);
             svgCanvas.drawRect(new RectF(300, 300, 400, 450), paint2);
             svgCanvas.save();
-            SVGClipShape clipShape1 = new SVGClipShape(clipPath, SVGModes.MODE_BOX);
+            SVGClipShape clipShape1 = new SVGClipShape(clipPath, POS_MODE.MODE_BOX);
             svgCanvas.clip(clipShape1);
             svgCanvas.restore();
             //绘制多条线段
@@ -116,7 +116,7 @@ gradle添加jitpack仓库和依赖
                     .setPath(textPath)
                     .setPaint(textPaint)
                     .setText("hello").build();
-            svgCanvas.clip(new SVGClipShape(svgTextPath, SVGModes.MODE_USERSPACE));
+            svgCanvas.clip(new SVGClipShape(svgTextPath, POS_MODE.MODE_USERSPACE));
             svgCanvas.drawPath(textPath, paint2);
             svgCanvas.restore();
             svgCanvas.drawPath(textPath, paint);
@@ -133,7 +133,7 @@ gradle添加jitpack仓库和依赖
                     .setTextLength(200)
                     .build();
             svgCanvas.save();
-            svgCanvas.clip(new SVGClipShape(svgTextPath1, SVGModes.MODE_USERSPACE));
+            svgCanvas.clip(new SVGClipShape(svgTextPath1, POS_MODE.MODE_USERSPACE));
             svgCanvas.drawImage(url, 200, 400, 100, 100, null);
             svgCanvas.restore();
             String s = svgCanvas.getSVGXmlString();
@@ -264,7 +264,11 @@ transform clip 操作api
 
 设置裁剪区域
 
+<<<<<<< Updated upstream
     1.public SVGClipShape(SVGShape shape, @SVGModes.POS_MODE String posMode)//posMode设置坐标空间。MODE_BOX  相对绘制元素坐标。MODE_USERSPACE绝对坐标，即相对于画布的坐标
+=======
+public SVGClipShape(SVGShape shape, @POS_MODE String posMode)//posMode设置坐标空间。MODE_BOX  相对绘制元素坐标。MODE_USERSPACE绝对坐标，即相对于画布的坐标
+>>>>>>> Stashed changes
 
 - **SVGFont**
 

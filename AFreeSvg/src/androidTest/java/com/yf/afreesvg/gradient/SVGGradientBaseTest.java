@@ -1,7 +1,8 @@
 package com.yf.afreesvg.gradient;
 
+import com.yf.afreesvg.PosMode;
 import com.yf.afreesvg.SVGBaseTest;
-import com.yf.afreesvg.SVGModes;
+
 
 import org.w3c.dom.Element;
 
@@ -15,11 +16,11 @@ public class SVGGradientBaseTest extends SVGBaseTest {
         assertEquals(SVGBaseGradient.SPREAD_PAD, gradient.getSpreadMode());
         gradient.setSpreadMode(SVGBaseGradient.SPREAD_REFLECT);
         assertEquals(SVGBaseGradient.SPREAD_REFLECT, gradient.getSpreadMode());
-        assertEquals(SVGModes.MODE_BOX, gradient.getPosMode());
-        gradient.setPosMode(SVGModes.MODE_USERSPACE);
-        assertEquals(SVGModes.MODE_USERSPACE, gradient.getPosMode());
+        assertEquals(PosMode.MODE_BOX, gradient.getPosMode());
+        gradient.setPosMode(PosMode.MODE_USERSPACE);
+        assertEquals(PosMode.MODE_USERSPACE, gradient.getPosMode());
         Element element = gradient.convertToSVGElement(canvas, document, canvas.getGeomDoubleConverter());
-        assertEquals(SVGModes.MODE_USERSPACE, element.getAttribute("gradientUnits"));
+        assertEquals(PosMode.MODE_USERSPACE, element.getAttribute("gradientUnits"));
         assertEquals(SVGBaseGradient.SPREAD_REFLECT, element.getAttribute("spreadMethod"));
         assertEquals(2, element.getChildNodes().getLength());
     }

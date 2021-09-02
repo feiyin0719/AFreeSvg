@@ -9,8 +9,8 @@ import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.yf.afreesvg.PosMode;
 import com.yf.afreesvg.SVGCanvas;
-import com.yf.afreesvg.SVGModes;
 import com.yf.afreesvg.SVGPaint;
 import com.yf.afreesvg.filter.SVGBaseFilter;
 import com.yf.afreesvg.filter.SVGFilterGroup;
@@ -82,13 +82,13 @@ public class MainActivity extends AppCompatActivity {
             clipPath1.oval(0.6f, 0.2f, 0.2f, 0.2f);
             clipGroup.addShape(clipPath);
             clipGroup.addShape(clipPath1);
-            SVGClipShape clipShape = new SVGClipShape(clipGroup, SVGModes.MODE_BOX);
+            SVGClipShape clipShape = new SVGClipShape(clipGroup, PosMode.MODE_BOX);
             svgCanvas.save();
             //clipShape设置
             svgCanvas.clip(clipShape);
             svgCanvas.drawRect(new RectF(300, 300, 400, 450), paint2);
             svgCanvas.save();
-            SVGClipShape clipShape1 = new SVGClipShape(clipPath, SVGModes.MODE_BOX);
+            SVGClipShape clipShape1 = new SVGClipShape(clipPath, PosMode.MODE_BOX);
             svgCanvas.clip(clipShape1);
             svgCanvas.restore();
             //绘制多条线段
@@ -143,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
                     .setPath(textPath)
                     .setPaint(textPaint)
                     .setText("hello").build();
-            svgCanvas.clip(new SVGClipShape(svgTextPath, SVGModes.MODE_USERSPACE));
+            svgCanvas.clip(new SVGClipShape(svgTextPath, PosMode.MODE_USERSPACE));
             svgCanvas.drawPath(textPath, paint2);
             svgCanvas.restore();
             svgCanvas.drawPath(textPath, paint);
@@ -152,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
             String url = "https://raw.githubusercontent.com/feiyin0719/AFreeSvg/dev/dog.jpg";
             SVGPaint imagePaint = new SVGPaint();
             SVGFilterGroup filterGroup = new SVGFilterGroup();
-            filterGroup.setFilterUnits(SVGModes.MODE_BOX);
+            filterGroup.setFilterUnits(PosMode.MODE_BOX);
             filterGroup.setX(-0.2f);
             filterGroup.setY(-0.2f);
             filterGroup.setWidth(1.5f);
@@ -185,7 +185,7 @@ public class MainActivity extends AppCompatActivity {
                     .setTextLength(200)
                     .build();
             svgCanvas.save();
-            svgCanvas.clip(new SVGClipShape(svgTextPath1, SVGModes.MODE_USERSPACE));
+            svgCanvas.clip(new SVGClipShape(svgTextPath1, PosMode.MODE_USERSPACE));
             svgCanvas.drawImage(url, 200, 400, 100, 100, paint);
             svgCanvas.restore();
             String s = svgCanvas.getSVGXmlString();
