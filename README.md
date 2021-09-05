@@ -1,4 +1,7 @@
 # AFreeSvg
+
+[![](https://jitpack.io/v/feiyin0719/AFreeSvg.svg)](https://jitpack.io/#feiyin0719/AFreeSvg)
+
 一个可以在安卓上绘制svg图片的库
 用法类似安卓canvas，通过SVGCanvas绘制图形，然后可以导出svg文件
 
@@ -6,7 +9,7 @@
 gradle添加jitpack仓库和依赖
 ```
  maven { url 'https://jitpack.io' }
- implementation 'com.github.feiyin0719:AFreeSvg:0.0.1'
+ implementation 'com.github.feiyin0719:AFreeSvg:0.0.3'
 ```
 
 ## 参考代码
@@ -264,17 +267,92 @@ transform clip 操作api
 
 设置裁剪区域
 
-<<<<<<< Updated upstream
     1.public SVGClipShape(SVGShape shape, @SVGModes.POS_MODE String posMode)//posMode设置坐标空间。MODE_BOX  相对绘制元素坐标。MODE_USERSPACE绝对坐标，即相对于画布的坐标
-=======
-public SVGClipShape(SVGShape shape, @POS_MODE String posMode)//posMode设置坐标空间。MODE_BOX  相对绘制元素坐标。MODE_USERSPACE绝对坐标，即相对于画布的坐标
->>>>>>> Stashed changes
+
 
 - **SVGFont**
 
   font信息，绘制文本时使用
   
+## kotlin dsl支持（需0.0.3以上版本支持）
+
+为了便捷创建 filter shape gradient类，基于kotlin实现dsl，[AFreeSvgKtx](https://github.com/feiyin0719/AFreeSvgKtx.git)，需引入
+```
+ implementation 'com.github.feiyin0719:AFreeSvgKtx:0.0.3'
+```
+参考代码如下
+
+创建filter
+```kotlin
+fun createFilterGroup(): SVGFilterGroup {
+    return filterGroup {
+        filterUnits = PosMode.MODE_BOX
+        x = -0.2f
+        y = -0.2f
+        width = 1.5f
+        height = 1.5f
+        offsetFilterNode {
+            `in` = SVGBaseFilter.ALPHA_VALUE
+            result = "offset"
+            dx = 0.05f
+            dy = 0.05f
+        }
+        gaussianFilterNode {
+            `in` = "offset"
+            result = "blur"
+            stdDeviationX = 3f
+            stdDeviationY = 3f
+        }
+
+        blendFilterNode {
+            `in` = SVGBaseFilter.GRAPHIC_VALUE
+            in2 = "blur"
+        }
+    }
+}
+
+```
+创建 shape
+```kotlin
+
+fun createClipShape(): SVGClipShape {
+    return clipShape {
+        shape = shapeGroup {
+            path {
+                oval(0.2f, 0.2f, 0.2f, 0.2f)
+            }
+            path {
+                oval(0.6f, 0.2f, 0.2f, 0.2f)
+            }
+        }
+        posMode = PosMode.MODE_BOX
+    }
+}
+```
+创建gradient
+
+```kotlin
+fun createLinearGradient(): SVGLinearGradient {
+    return linearGradient {
+        startX(0f)
+        startY(0f)
+        endX(1f)
+        endY(0f)
+        color(0xffff0000, 0f)
+        color(0xff00ff00, 0.5f)
+        color(0xff00eeee, 0.75f)
+        color(0xff0000ff, 1f)
+    }
+}
+```
+
+  
 ## 版本日志
+- **0.0.3**
+ 1. 支持kotlin dsl，可以更加简洁明了的创建filter shape gradient（需配合[AFreeSvgKtx](https://github.com/feiyin0719/AFreeSvgKtx.git)使用）
+ 2. 重构内部代码实现
+ 3. 修复部分bug
+
 - **0.0.2**
 
  1. 新增滤镜效果支持
