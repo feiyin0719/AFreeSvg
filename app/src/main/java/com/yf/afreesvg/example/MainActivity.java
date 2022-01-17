@@ -157,8 +157,11 @@ public class MainActivity extends AppCompatActivity {
             svgCanvas.restore();
             String s = svgCanvas.getSVGXmlString();
             Log.i("myyf", s);
-            File file = new File(getExternalCacheDir(), "test.svg");
+            File file = new File(getCacheDir(), "test.svg");
             svgCanvas.writeSVGXMLToStream(new FileOutputStream(file));
+
+            File file1 = new File(getCacheDir(), "test1.svg");
+            svgCanvas.writeSVGXMLToStream(new FileOutputStream(file1));
 
 
         } catch (ParserConfigurationException e) {

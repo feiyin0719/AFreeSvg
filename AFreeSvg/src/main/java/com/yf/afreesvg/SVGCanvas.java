@@ -1138,7 +1138,6 @@ public class SVGCanvas {
         }
         svgElement.setAttribute("xmlns", "http://www.w3.org/2000/svg");
         svgElement.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
-        svgElement.setAttribute("xmlns:jfreesvg", "http://www.jfree.org/jfreesvg/svg");
 
         if (includeDimensions) {
             String unitStr = this.units != null ? this.units.toString() : "";
@@ -1153,12 +1152,12 @@ public class SVGCanvas {
 
             }
         }
-        if (defElement != null) {
-            NodeList list = svgElement.getElementsByTagName("defs");
-            if (list != null && list.getLength() > 0)
-                svgElement.removeChild(defElement);
-            svgElement.appendChild(defElement);
-        }
+//        if (defElement != null) {
+//            NodeList list = svgElement.getElementsByTagName("defs");
+//            if (list != null && list.getLength() > 0)
+//                svgElement.removeChild(defElement);
+//            svgElement.appendChild(defElement);
+//        }
         return svgElement;
     }
 
@@ -1702,6 +1701,7 @@ public class SVGCanvas {
         if (element == null) return;
         if (defElement == null) {
             defElement = document.createElement("defs");
+            svgElement.insertBefore(defElement, svgElement.getFirstChild());
         }
         defElement.appendChild(element);
     }
