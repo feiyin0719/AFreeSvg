@@ -132,7 +132,6 @@ public class MainActivity extends AppCompatActivity {
             svgCanvas.drawPath(textPath, paint2);
             svgCanvas.restore();
             svgCanvas.drawPath(textPath, paint);
-
             //绘制图片
             String url = "https://raw.githubusercontent.com/feiyin0719/AFreeSvg/dev/dog.jpg";
             SVGPaint imagePaint = new SVGPaint();

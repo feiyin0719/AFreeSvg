@@ -175,7 +175,7 @@ public class SVGCanvas {
     /**
      * The svg element,use dom to generate svg xml string
      */
-    private final Element svgElement;
+    private Element svgElement;
 
     /**
      * The def element,when generate svg xml string,it will append to svgElement
@@ -855,6 +855,39 @@ public class SVGCanvas {
         Element element = shape.convertToSVGElement(this, document, geomDoubleConverter);
         addBaseAttrToDrawElement(element, paint, id);
         svgElement.appendChild(element);
+    }
+
+    /**
+     * Clear the elements in SVG
+     *
+     * @since 0.0.4
+     */
+    public void clear() {
+        if (svgElement != null) {
+            document.removeChild(svgElement);
+            svgElement = document.createElement("svg");
+            document.appendChild(svgElement);
+        }
+
+        if (defElement != null) {
+            defElement = null;
+        }
+
+        if (elementIDs != null) {
+            elementIDs.clear();
+        }
+
+        if (gradients != null) {
+            gradients.clear();
+        }
+
+        if (filters != null) {
+            filters.clear();
+        }
+
+        if (textPaths != null) {
+            textPaths.clear();
+        }
     }
 
     /**
