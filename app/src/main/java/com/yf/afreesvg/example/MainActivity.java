@@ -81,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
             svgCanvas.restore();
             //绘制多边形
             svgCanvas.drawPolygon(new float[]{100, 10, 40, 198, 190, 78, 10, 78, 160, 198}, paint2);
+//            svgCanvas.saveLayer(0, 0, 500, 500);
             //创建path
             SVGPath svgPath = new SVGPath();
             svgPath.moveTo(200, 200);
@@ -105,6 +106,9 @@ public class MainActivity extends AppCompatActivity {
             group.addShape(svgPath);
             //绘制shape
             svgCanvas.drawShape(group, paint);
+
+
+//            svgCanvas.saveLayer(0, 0, 500, 500);
 
             //绘制文字
             SVGPaint textPaint = new SVGPaint();
@@ -154,6 +158,14 @@ public class MainActivity extends AppCompatActivity {
             svgCanvas.clip(new SVGClipShape(svgTextPath1, PosMode.MODE_USERSPACE));
             svgCanvas.drawImage(url, 200, 400, 100, 100, paint);
             svgCanvas.restore();
+            svgCanvas.saveLayer(0, 0, 500, 500);
+            svgCanvas.saveLayer(0, 0, 500, 500);
+            svgCanvas.drawOval(new RectF(320, 20, 380, 100), paint1);
+            svgCanvas.drawImage(url, 220, 250, 100, 100, imagePaint);
+            svgCanvas.clearLayer();
+            svgCanvas.restore();
+            svgCanvas.drawOval(new RectF(340, 20, 380, 100), paint1);
+            svgCanvas.drawImage(url, 240, 250, 100, 100, imagePaint);
             String s = svgCanvas.getSVGXmlString();
             Log.i("myyf", s);
             File file = new File(getCacheDir(), "test.svg");

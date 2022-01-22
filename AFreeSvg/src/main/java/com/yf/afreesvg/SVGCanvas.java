@@ -27,6 +27,8 @@ import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentType;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import java.io.OutputStream;
 import java.io.StringWriter;
@@ -73,6 +75,9 @@ public class SVGCanvas {
      * The prefix for keys used to identify filters.
      */
     private static final String FILTER_KEY_PREFIX = "filter-";
+
+    private static final String SVG_NAME = "svg";
+    private static final String DEFS_NAME = "defs";
 
     /**
      * A prefix for the keys used in the DEFS element.  This can be used to
@@ -175,7 +180,10 @@ public class SVGCanvas {
     private final Set<String> elementIDs;
 
     /**
-     * The svg element,use dom to generate svg xml string
+     * The current layer svg element,the drawop will add to the element
+     * if have not created new layer, it is {@link #rootSvgElement}
+     * if create a new layer, it will create a new element
+     * if restore,it will add now layer to the prev layer element and restore it to the prev layer
      */
     private Element svgElement;
 
@@ -183,6 +191,13 @@ public class SVGCanvas {
      * The def element,when generate svg xml string,it will append to svgElement
      */
     private Element defElement;
+
+    /**
+     * The root svg element,use dom to generate svg xml string
+     *
+     * @since 0.0.4
+     */
+    private Element rootSvgElement;
 
 
     /**
@@ -203,15 +218,24 @@ public class SVGCanvas {
     /**
      * The clip save flags.
      *
+     * @see Saveflags
      * @see #save(int)
      */
     public static final int SAVE_FLAG_CLIP = 0x01;
     /**
      * The matrix save flags.
      *
+     * @see Saveflags
      * @see #save(int)
      */
     public static final int SAVE_FLAG_MATRIX = 0x02;
+
+    /**
+     * The layer save flags.
+     *
+     * @see #saveLayer(float, float, float, float)
+     */
+    public static final int SAVE_FLAG_LAYER = 0x04;
 
     @IntDef(flag = true,
             value = {
@@ -265,6 +289,17 @@ public class SVGCanvas {
     private Stack<String> clipRefs = new Stack<>();
 
     /**
+     * The layer stack of save
+     * when {@link #saveLayer(float, float, float, float)} it will push the current layer
+     * when {@link #restore()}  it will pop the saved layer
+     *
+     * @see #svgElement
+     * @see #saveLayer(float, float, float, float)
+     */
+    private Stack<Element> layerStack = new Stack<>();
+
+
+    /**
      * Construct
      *
      * @param width  svg width
@@ -299,8 +334,7 @@ public class SVGCanvas {
         document = builder.newDocument();
 
         initXmlVersion();
-        svgElement = document.createElement("svg");
-        document.appendChild(svgElement);
+        initRootSvgElement();
 
         geomDoubleConverter = new DoubleFunction<String>() {
             @Override
@@ -314,6 +348,13 @@ public class SVGCanvas {
                 return SVGUtils.doubleToString(value);
             }
         };
+    }
+
+    private void initRootSvgElement() {
+        rootSvgElement = document.createElement(SVG_NAME);
+        document.appendChild(rootSvgElement);
+
+        svgElement = rootSvgElement;
     }
 
     /**
@@ -873,15 +914,14 @@ public class SVGCanvas {
     }
 
     /**
-     * Clear the elements in SVG
+     * Clear all elements in SVG, reset it
      *
      * @since 0.0.4
      */
     public void clear() {
-        if (svgElement != null) {
-            document.removeChild(svgElement);
-            svgElement = document.createElement("svg");
-            document.appendChild(svgElement);
+        if (rootSvgElement != null) {
+            document.removeChild(rootSvgElement);
+            initRootSvgElement();
         }
 
         if (defElement != null) {
@@ -903,6 +943,13 @@ public class SVGCanvas {
         if (textPaths != null) {
             textPaths.clear();
         }
+
+        saveFlags.clear();
+        matrixList.clear();
+        clipShapes.clear();
+        clipRefs.clear();
+        layerStack.clear();
+        transform.reset();
     }
 
     /**
@@ -1182,31 +1229,27 @@ public class SVGCanvas {
                                  ViewBox viewBox, PreserveAspectRatio preserveAspectRatio,
                                  MeetOrSlice meetOrSlice) {
         if (id != null) {
-            svgElement.setAttribute("id", id);
+            rootSvgElement.setAttribute("id", id);
         }
-        svgElement.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-        svgElement.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
+        rootSvgElement.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+        rootSvgElement.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
 
         if (includeDimensions) {
             String unitStr = this.units != null ? this.units.toString() : "";
-            svgElement.setAttribute("width", geomDP(width) + unitStr);
-            svgElement.setAttribute("height", geomDP(height) + unitStr);
+            rootSvgElement.setAttribute("width", geomDP(width) + unitStr);
+            rootSvgElement.setAttribute("height", geomDP(height) + unitStr);
 
         }
         if (viewBox != null) {
-            svgElement.setAttribute("viewBox", viewBox.valueStr(this.geomDoubleConverter));
+            rootSvgElement.setAttribute("viewBox", viewBox.valueStr(this.geomDoubleConverter));
             if (preserveAspectRatio != null) {
-                svgElement.setAttribute("preserveAspectRatio", preserveAspectRatio.toString() + (meetOrSlice == null ? "" : " " + meetOrSlice.toString()));
+                rootSvgElement.setAttribute("preserveAspectRatio", preserveAspectRatio.toString() + (meetOrSlice == null ? "" : " " + meetOrSlice.toString()));
 
             }
         }
-//        if (defElement != null) {
-//            NodeList list = svgElement.getElementsByTagName("defs");
-//            if (list != null && list.getLength() > 0)
-//                svgElement.removeChild(defElement);
-//            svgElement.appendChild(defElement);
-//        }
-        return svgElement;
+
+        restoreToCount(0);
+        return rootSvgElement;
     }
 
     /**
@@ -1370,6 +1413,10 @@ public class SVGCanvas {
      * @since 0.0.1
      */
     public int save(@Saveflags int flags) {
+        return saveFlagInternal(flags);
+    }
+
+    private int saveFlagInternal(int flags) {
         saveFlags.push(flags);
         if ((flags & SAVE_FLAG_MATRIX) == SAVE_FLAG_MATRIX) {
             Matrix matrix = new Matrix();
@@ -1388,6 +1435,47 @@ public class SVGCanvas {
             else clipRefs.push(null);
         }
         return saveFlags.size();
+    }
+
+    /**
+     * create a new layer and save the current layer
+     * it will generate <svg></svg> element
+     * when {@link #restore() } {@link #restoreToCount(int)} the element will be added to the prev layer
+     *
+     * @param x      the layer x pos
+     * @param y      the layer y pos
+     * @param width  the layer width
+     * @param height the layer height
+     * @return The value to {@link #restoreToCount(int)} to balance this saveLayer()
+     */
+
+    public int saveLayer(float x, float y, float width, float height) {
+        int saveCount = saveFlagInternal(SAVE_FLAG_ALL);
+        layerStack.push(svgElement);
+        svgElement = initLayer(x, y, width, height);
+        return saveCount;
+    }
+
+    /**
+     * Clear all elements in the current layer
+     */
+    public void clearLayer() {
+        NodeList childList = svgElement.getChildNodes();
+        for (int i = 0; i < childList.getLength(); ++i) {
+            Node node = childList.item(i);
+            if (svgElement != rootSvgElement || !node.getNodeName().equals(DEFS_NAME)) {
+                svgElement.removeChild(childList.item(i));
+            }
+        }
+    }
+
+    private Element initLayer(float x, float y, float width, float height) {
+        Element layer = document.createElement(SVG_NAME);
+        layer.setAttribute("x", geomDP(x));
+        layer.setAttribute("y", geomDP(y));
+        layer.setAttribute("width", geomDP(width));
+        layer.setAttribute("height", geomDP(height));
+        return layer;
     }
 
     /**
@@ -1410,6 +1498,14 @@ public class SVGCanvas {
             if ((flags & SAVE_FLAG_CLIP) == SAVE_FLAG_CLIP) {
                 clipRef = clipRefs.pop();
                 clip = clipShapes.pop();
+            }
+
+            if ((flags & SAVE_FLAG_LAYER) == SAVE_FLAG_LAYER) {
+                Element nowElement = svgElement;
+                svgElement = layerStack.pop();
+                if (nowElement.hasChildNodes()) {
+                    svgElement.appendChild(nowElement);
+                }
             }
 
         }
@@ -1748,8 +1844,8 @@ public class SVGCanvas {
     private void addElementToDef(Element element) {
         if (element == null) return;
         if (defElement == null) {
-            defElement = document.createElement("defs");
-            svgElement.insertBefore(defElement, svgElement.getFirstChild());
+            defElement = document.createElement(DEFS_NAME);
+            rootSvgElement.insertBefore(defElement, rootSvgElement.getFirstChild());
         }
         defElement.appendChild(element);
     }
