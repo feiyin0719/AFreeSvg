@@ -6,6 +6,7 @@ import android.graphics.PointF;
 import android.graphics.RectF;
 import android.text.TextUtils;
 
+import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 
 import com.yf.afreesvg.filter.SVGFilter;
@@ -26,10 +27,11 @@ import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentType;
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 import java.io.OutputStream;
 import java.io.StringWriter;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -181,6 +183,8 @@ public class SVGCanvas {
      * The def element,when generate svg xml string,it will append to svgElement
      */
     private Element defElement;
+
+
     /**
      * The dom document,use it to generate element
      */
@@ -208,6 +212,17 @@ public class SVGCanvas {
      * @see #save(int)
      */
     public static final int SAVE_FLAG_MATRIX = 0x02;
+
+    @IntDef(flag = true,
+            value = {
+                    SAVE_FLAG_CLIP,
+                    SAVE_FLAG_MATRIX,
+                    SAVE_FLAG_CLIP | SAVE_FLAG_MATRIX
+            })
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface Saveflags {
+    }
+
     /**
      * The all save flags.
      *
@@ -1342,19 +1357,19 @@ public class SVGCanvas {
      * @since 0.0.1
      */
     public int save() {
-        return save(SAVE_FLAG_ALL);
+        return save(SAVE_FLAG_MATRIX | SAVE_FLAG_CLIP);
     }
 
     /**
      * Saves the current matrix and clip onto a private stack.
      *
-     * @param flags The save flags,refer to {@link #SAVE_FLAG_ALL} {@link #SAVE_FLAG_MATRIX} {@link #SAVE_FLAG_CLIP}
+     * @param flags The save flags,refer to {@link Saveflags}
      * @return The value to {@link #restoreToCount(int)} to balance this save()
      * @see #restore()
      * @see #restoreToCount(int)
      * @since 0.0.1
      */
-    public int save(int flags) {
+    public int save(@Saveflags int flags) {
         saveFlags.push(flags);
         if ((flags & SAVE_FLAG_MATRIX) == SAVE_FLAG_MATRIX) {
             Matrix matrix = new Matrix();
