@@ -33,6 +33,7 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation project(path: ':AFreeSvg')
     implementation 'com.github.feiyin0719:AFreeSvgKtx:0.0.3'
+    implementation 'com.github.japgolly.android:svg-android:2.0.6'
 //    implementation project(path: ':AFreeSVGKtx')
 //    implementation 'com.github.feiyin0719:AFreeSvg:0.0.2'
 //    testImplementation 'junit:junit:4.12'

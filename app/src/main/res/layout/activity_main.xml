@@ -7,10 +7,20 @@
     tools:context=".MainActivity">
 
    <com.yf.afreesvg.example.CustomView
+       android:id="@+id/custom"
        android:layout_width="match_parent"
        android:layout_height="match_parent"
        app:layout_constraintEnd_toEndOf="parent"
        app:layout_constraintStart_toStartOf="parent"
        app:layout_constraintTop_toTopOf="parent" />
+
+   <ImageView
+       android:id="@+id/image"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:src="@mipmap/ic_launcher"
+       app:layout_constraintEnd_toEndOf="parent"
+       app:layout_constraintStart_toStartOf="parent"
+       app:layout_constraintTop_toBottomOf="@+id/custom" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

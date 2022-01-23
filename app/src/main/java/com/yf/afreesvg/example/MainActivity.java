@@ -3,11 +3,15 @@ package com.yf.afreesvg.example;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.larvalabs.svgandroid.SVG;
+import com.larvalabs.svgandroid.SVGBuilder;
 import com.yf.afreesvg.PosMode;
 import com.yf.afreesvg.SVGCanvas;
 import com.yf.afreesvg.SVGPaint;
@@ -162,11 +166,15 @@ public class MainActivity extends AppCompatActivity {
             svgCanvas.saveLayer(0, 0, 500, 500);
             svgCanvas.drawOval(new RectF(320, 20, 380, 100), paint1);
             svgCanvas.drawImage(url, 220, 250, 100, 100, imagePaint);
-            svgCanvas.clearLayer();
+//            svgCanvas.clearLayer();
             svgCanvas.restore();
             svgCanvas.drawOval(new RectF(340, 20, 380, 100), paint1);
             svgCanvas.drawImage(url, 240, 250, 100, 100, imagePaint);
             String s = svgCanvas.getSVGXmlString();
+//            SVG svg = new SVGBuilder().readFromString(s).build();
+//            Drawable d = svg.getDrawable();
+//            ImageView imageView = findViewById(R.id.image);
+//            imageView.setImageDrawable(d);
             Log.i("myyf", s);
             File file = new File(getCacheDir(), "test.svg");
             svgCanvas.writeSVGXMLToStream(new FileOutputStream(file));
