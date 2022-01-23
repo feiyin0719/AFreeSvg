@@ -78,6 +78,7 @@ public class SVGCanvas {
 
     private static final String SVG_NAME = "svg";
     private static final String DEFS_NAME = "defs";
+    private static final String G_NAME = "g";
 
     /**
      * A prefix for the keys used in the DEFS element.  This can be used to
@@ -185,7 +186,7 @@ public class SVGCanvas {
      * if create a new layer, it will create a new element
      * if restore,it will add now layer to the prev layer element and restore it to the prev layer
      */
-    private Element svgElement;
+    private Element layerElement;
 
     /**
      * The def element,when generate svg xml string,it will append to svgElement
@@ -293,10 +294,18 @@ public class SVGCanvas {
      * when {@link #saveLayer(float, float, float, float)} it will push the current layer
      * when {@link #restore()}  it will pop the saved layer
      *
-     * @see #svgElement
+     * @see #layerElement
      * @see #saveLayer(float, float, float, float)
      */
     private Stack<Element> layerStack = new Stack<>();
+
+    /**
+     * enable it to compatible with android
+     * because of android vector cannot support all svg format,
+     * you can set it true to compatible with android
+     * when it is true, when {@link #saveLayer(float, float, float, float)} }, it will use <g></g> replace <svg></svg>
+     */
+    private final boolean compatibleWithAndroid;
 
 
     /**
@@ -308,20 +317,22 @@ public class SVGCanvas {
      */
 
     public SVGCanvas(double width, double height) throws ParserConfigurationException {
-        this(width, height, null);
+        this(width, height, null, true);
     }
 
     /**
      * Construct
      *
-     * @param width  svg width
-     * @param height svg height
-     * @param units  svg size units
+     * @param width                 svg width
+     * @param height                svg height
+     * @param units                 svg size units
+     * @param compatibleWithAndroid {@link #compatibleWithAndroid}
      * @throws ParserConfigurationException
      */
-    public SVGCanvas(double width, double height, SVGUnits units) throws ParserConfigurationException {
+    public SVGCanvas(double width, double height, SVGUnits units, boolean compatibleWithAndroid) throws ParserConfigurationException {
         this.width = width;
         this.height = height;
+        this.compatibleWithAndroid = compatibleWithAndroid;
 
         this.units = units;
         elementIDs = new TreeSet<>();
@@ -354,7 +365,7 @@ public class SVGCanvas {
         rootSvgElement = document.createElement(SVG_NAME);
         document.appendChild(rootSvgElement);
 
-        svgElement = rootSvgElement;
+        layerElement = rootSvgElement;
     }
 
     /**
@@ -910,7 +921,7 @@ public class SVGCanvas {
     public void drawShape(SVGShape shape, SVGPaint paint, String id) {
         Element element = shape.convertToSVGElement(this, document, geomDoubleConverter);
         addBaseAttrToDrawElement(element, paint, id);
-        svgElement.appendChild(element);
+        layerElement.appendChild(element);
     }
 
     /**
@@ -988,7 +999,7 @@ public class SVGCanvas {
         element.setAttribute("width", geomDP(width));
         element.setAttribute("height", geomDP(height));
         addBaseAttrToDrawElement(element, paint, id);
-        svgElement.appendChild(element);
+        layerElement.appendChild(element);
     }
 
     /**
@@ -1439,43 +1450,46 @@ public class SVGCanvas {
 
     /**
      * create a new layer and save the current layer
-     * it will generate <svg></svg> element
-     * when {@link #restore() } {@link #restoreToCount(int)} the element will be added to the prev layer
+     * it will generate <svg></svg> or <g></g> element
      *
      * @param x      the layer x pos
      * @param y      the layer y pos
      * @param width  the layer width
      * @param height the layer height
      * @return The value to {@link #restoreToCount(int)} to balance this saveLayer()
+     * @see #compatibleWithAndroid ,when set {@link #compatibleWithAndroid} true, it will use <g></g> to create layer, otherwise use <svg></svg>
+     * when {@link #restore() } {@link #restoreToCount(int)} the element will be added to the prev layer
      */
 
     public int saveLayer(float x, float y, float width, float height) {
         int saveCount = saveFlagInternal(SAVE_FLAG_ALL);
-        layerStack.push(svgElement);
-        svgElement = initLayer(x, y, width, height);
+        layerStack.push(layerElement);
+        layerElement = initLayer(x, y, width, height);
         return saveCount;
+    }
+
+    private Element initLayer(float x, float y, float width, float height) {
+        Element layer = document.createElement(compatibleWithAndroid ? G_NAME : SVG_NAME);
+        if (!compatibleWithAndroid) {
+            layer.setAttribute("x", geomDP(x));
+            layer.setAttribute("y", geomDP(y));
+            layer.setAttribute("width", geomDP(width));
+            layer.setAttribute("height", geomDP(height));
+        }
+        return layer;
     }
 
     /**
      * Clear all elements in the current layer
      */
     public void clearLayer() {
-        NodeList childList = svgElement.getChildNodes();
+        NodeList childList = layerElement.getChildNodes();
         for (int i = 0; i < childList.getLength(); ++i) {
             Node node = childList.item(i);
-            if (svgElement != rootSvgElement || !node.getNodeName().equals(DEFS_NAME)) {
-                svgElement.removeChild(childList.item(i));
+            if (layerElement != rootSvgElement || !node.getNodeName().equals(DEFS_NAME)) {
+                layerElement.removeChild(childList.item(i));
             }
         }
-    }
-
-    private Element initLayer(float x, float y, float width, float height) {
-        Element layer = document.createElement(SVG_NAME);
-        layer.setAttribute("x", geomDP(x));
-        layer.setAttribute("y", geomDP(y));
-        layer.setAttribute("width", geomDP(width));
-        layer.setAttribute("height", geomDP(height));
-        return layer;
     }
 
     /**
@@ -1501,10 +1515,10 @@ public class SVGCanvas {
             }
 
             if ((flags & SAVE_FLAG_LAYER) == SAVE_FLAG_LAYER) {
-                Element nowElement = svgElement;
-                svgElement = layerStack.pop();
+                Element nowElement = layerElement;
+                layerElement = layerStack.pop();
                 if (nowElement.hasChildNodes()) {
-                    svgElement.appendChild(nowElement);
+                    layerElement.appendChild(nowElement);
                 }
             }
 
