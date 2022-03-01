@@ -3,15 +3,11 @@ package com.yf.afreesvg.example;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.larvalabs.svgandroid.SVG;
-import com.larvalabs.svgandroid.SVGBuilder;
 import com.yf.afreesvg.PosMode;
 import com.yf.afreesvg.SVGCanvas;
 import com.yf.afreesvg.SVGPaint;
@@ -27,6 +23,8 @@ import com.yf.afreesvg.shape.SVGTextPath;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -39,7 +37,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         SVGCanvas svgCanvas = null;
         try {
-            svgCanvas = new SVGCanvas(500, 500);
+            InputStream inputStream = getAssets().open("test.xml");
+            svgCanvas = new SVGCanvas(500, 500, null, true, inputStream);
             SVGPaint paint = new SVGPaint();
             paint.setStyle(Paint.Style.STROKE);
             paint.setFillColor(0xff0000ff);
@@ -188,6 +187,8 @@ public class MainActivity extends AppCompatActivity {
         } catch (TransformerException e) {
             e.printStackTrace();
         } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

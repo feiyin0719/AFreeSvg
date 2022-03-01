@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+<svg   xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="500.0" height="500.0"  >
+    <defs>
+        <linearGradient x1="0.0" y1="0.0" x2="1.0" y2="0.0" id="def_16764943921456_gp0">
+            <stop offset="0.0" stop-color="rgb(255,0,0)"/>
+            <stop offset="0.5" stop-color="rgb(0,255,0)"/>
+            <stop offset="0.75" stop-color="rgb(0,238,238)"/>
+            <stop offset="1.0" stop-color="rgb(0,0,255)"/>
+        </linearGradient>
+        <filter x="-0.20000000298023224" y="-0.20000000298023224" width="1.5" height="1.5" filterUnits="objectBoundingBox" id="def_16764943921456_filter-0">
+            <feOffset in="SourceAlpha" result="offset" dx="0.05000000074505806" dy="0.05000000074505806"/>
+            <feGaussianBlur stdDeviation="3.0,3.0" in="offset" result="blur"/>
+            <feBlend in="SourceGraphic" in2="blur"/>
+        </filter>
+    </defs>
+    <path d="M 20.0 20.0 h 100.0 v 400.0 h -100.0 v -400.0 " style = "fill:url(#def_16764943921456_gp0)"/>
+    <rect x="300.0" y="300.0" width="100.0" height="150.0" style="fill:url(#def_16764943921456_gp0)"/>
+    <g >
+        <ellipse cx="360.0" cy="60.0" rx="20.0" ry="40.0" style="stroke-width:2.0;stroke:rgb(200,200,0);stroke-opacity:0.39215687;fill:url(#def_16764943921456_gp0);" filter="url(#def_16764943921456_filter-0)"/>
+    </g>
+</svg>

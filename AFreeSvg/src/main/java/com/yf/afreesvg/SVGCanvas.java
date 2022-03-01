@@ -29,7 +29,10 @@ import org.w3c.dom.DocumentType;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringWriter;
 import java.lang.annotation.Retention;
@@ -303,7 +306,7 @@ public class SVGCanvas {
      * enable it to compatible with android
      * because of android vector cannot support all svg format,
      * you can set it true to compatible with android
-     * when it is true, when {@link #saveLayer(float, float, float, float)} }, it will use <g></g> replace <svg></svg>
+     * when it is true, when {@link #saveLayer(float, float, float, float)} }, it will use "<g></g>" replace "<svg></svg>"
      */
     private final boolean compatibleWithAndroid;
 
@@ -330,6 +333,10 @@ public class SVGCanvas {
      * @throws ParserConfigurationException
      */
     public SVGCanvas(double width, double height, SVGUnits units, boolean compatibleWithAndroid) throws ParserConfigurationException {
+        this(width, height, units, compatibleWithAndroid, null);
+    }
+
+    public SVGCanvas(double width, double height, SVGUnits units, boolean compatibleWithAndroid, InputStream inputStream) throws ParserConfigurationException {
         this.width = width;
         this.height = height;
         this.compatibleWithAndroid = compatibleWithAndroid;
@@ -339,16 +346,53 @@ public class SVGCanvas {
 
         DocumentBuilderFactory factory = DocumentBuilderFactory
                 .newInstance();
-        DocumentBuilder builder;
 
-        builder = factory.newDocumentBuilder();
-        document = builder.newDocument();
+        Document tempDocument = null;
+        try {
+            if (inputStream != null) {
+                DocumentBuilder documentBuilder = factory.newDocumentBuilder();
+                Document inputDocument = documentBuilder.parse(inputStream);
+                Element root = inputDocument.getDocumentElement();
+                if (root.getNodeName().equals(SVG_NAME)) {
+                    tempDocument = inputDocument;
+                    rootSvgElement = root;
+                    layerElement = rootSvgElement;
+                    initDefFromRootElement();
+                }
+
+            }
+        } catch (IOException | SAXException | ParserConfigurationException ignored) {
+
+        }
+
+        if (tempDocument != null) {
+            document = tempDocument;
+        } else {
+            DocumentBuilder builder;
+            builder = factory.newDocumentBuilder();
+            document = builder.newDocument();
+            initRootSvgElement();
+        }
 
         initXmlVersion();
-        initRootSvgElement();
 
         geomDoubleConverter = SVGUtils::doubleToString;
         transformDoubleConverter = SVGUtils::doubleToString;
+    }
+
+    private void initDefFromRootElement() {
+        NodeList nodeList = rootSvgElement.getChildNodes();
+        for (int i = 0; i < nodeList.getLength(); ++i) {
+            Node n = nodeList.item(i);
+            if (n instanceof Element && n.getNodeName().equals(DEFS_NAME)) {
+                defElement = (Element) n;
+                break;
+            }
+        }
+        if (defElement != null) {
+            rootSvgElement.removeChild(defElement);
+            rootSvgElement.insertBefore(defElement, rootSvgElement.getFirstChild());
+        }
     }
 
     private void initRootSvgElement() {
@@ -1434,14 +1478,14 @@ public class SVGCanvas {
 
     /**
      * create a new layer and save the current layer
-     * it will generate <svg></svg> or <g></g> element
+     * it will generate "<svg></svg>" or "<g></g>" element
      *
      * @param x      the layer x pos
      * @param y      the layer y pos
      * @param width  the layer width
      * @param height the layer height
      * @return The value to {@link #restoreToCount(int)} to balance this saveLayer()
-     * @see #compatibleWithAndroid ,when set {@link #compatibleWithAndroid} true, it will use <g></g> to create layer, otherwise use <svg></svg>
+     * @see #compatibleWithAndroid when set {@link #compatibleWithAndroid} true, it will use "<g></g>" to create layer, otherwise use "<svg></svg>"
      * when {@link #restore() } {@link #restoreToCount(int)} the element will be added to the prev layer
      */
 
