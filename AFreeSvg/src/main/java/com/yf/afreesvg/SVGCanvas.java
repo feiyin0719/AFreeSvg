@@ -145,7 +145,7 @@ public class SVGCanvas {
      *
      * @see #addGradient(SVGGradient)
      */
-    private Map<SVGGradient, String> gradients = new HashMap<>();
+    private final Map<SVGGradient, String> gradients = new HashMap<>();
     /**
      * A map of all the filters used, and the corresponding id.  When
      * generating the SVG file, all the filters used must be defined
@@ -153,7 +153,7 @@ public class SVGCanvas {
      *
      * @see #addFilterElementToDef(SVGFilter, String)
      */
-    private Map<SVGFilter, String> filters = new HashMap<>();
+    private final Map<SVGFilter, String> filters = new HashMap<>();
     /**
      * A map of all the paths used, and the corresponding id.  When
      * generating the SVG file, all the path used must be defined
@@ -161,7 +161,7 @@ public class SVGCanvas {
      *
      * @see #addPathElementToDef(SVGPath, String)
      */
-    private Map<SVGPath, String> textPaths = new HashMap<>();
+    private final Map<SVGPath, String> textPaths = new HashMap<>();
 
     /**
      * Units for the width and height of the SVG, if null then no
@@ -229,7 +229,7 @@ public class SVGCanvas {
      * @see Saveflags
      * @see #save(int)
      */
-    public static final int SAVE_FLAG_MATRIX = 0x02;
+    public static final int SAVE_FLAG_MATRIX = 1 << 1;
 
     /**
      * The layer save flags.
@@ -261,7 +261,7 @@ public class SVGCanvas {
      * @see #SAVE_FLAG_ALL {@link #SAVE_FLAG_CLIP} {@link #SAVE_FLAG_MATRIX}
      * @see #save()  {@link #restore()}
      */
-    private Stack<Integer> saveFlags = new Stack<>();
+    private final Stack<Integer> saveFlags = new Stack<>();
     /**
      * The  matrix stack of save.
      * When {@link #save()},it will push the current transform
@@ -269,7 +269,7 @@ public class SVGCanvas {
      *
      * @see #save()  {@link #restore()}
      */
-    private Stack<Matrix> matrixList = new Stack<>();
+    private final Stack<Matrix> matrixList = new Stack<>();
     /**
      * The clips stack of save
      * When {@link #save()},it will push the current clip shape
@@ -278,7 +278,7 @@ public class SVGCanvas {
      * @see #clip
      * @see #save()  {@link #restore()}
      */
-    private Stack<SVGClipShape> clipShapes = new Stack<>();
+    private final Stack<SVGClipShape> clipShapes = new Stack<>();
     /**
      * The clipRef stack of save
      * When {@link #save()},it will push the current clipRef
@@ -287,7 +287,7 @@ public class SVGCanvas {
      * @see #clipRef
      * @see #save()  {@link #restore()}
      */
-    private Stack<String> clipRefs = new Stack<>();
+    private final Stack<String> clipRefs = new Stack<>();
 
     /**
      * The layer stack of save
@@ -297,7 +297,7 @@ public class SVGCanvas {
      * @see #layerElement
      * @see #saveLayer(float, float, float, float)
      */
-    private Stack<Element> layerStack = new Stack<>();
+    private final Stack<Element> layerStack = new Stack<>();
 
     /**
      * enable it to compatible with android
@@ -339,7 +339,7 @@ public class SVGCanvas {
 
         DocumentBuilderFactory factory = DocumentBuilderFactory
                 .newInstance();
-        DocumentBuilder builder = null;
+        DocumentBuilder builder;
 
         builder = factory.newDocumentBuilder();
         document = builder.newDocument();
@@ -347,18 +347,8 @@ public class SVGCanvas {
         initXmlVersion();
         initRootSvgElement();
 
-        geomDoubleConverter = new DoubleFunction<String>() {
-            @Override
-            public String apply(double value) {
-                return SVGUtils.doubleToString(value);
-            }
-        };
-        transformDoubleConverter = new DoubleFunction<String>() {
-            @Override
-            public String apply(double value) {
-                return SVGUtils.doubleToString(value);
-            }
-        };
+        geomDoubleConverter = SVGUtils::doubleToString;
+        transformDoubleConverter = SVGUtils::doubleToString;
     }
 
     private void initRootSvgElement() {
@@ -403,7 +393,7 @@ public class SVGCanvas {
     /**
      * Set the prefix of defs element
      *
-     * @param defsKeyPrefix
+     * @param defsKeyPrefix the prefix string
      * @since 0.0.1
      */
     public void setDefsKeyPrefix(@NonNull String defsKeyPrefix) {
@@ -578,7 +568,7 @@ public class SVGCanvas {
      * @see SVGPolygon
      * @since 0.0.1
      */
-    public void drawPolygon(PointF points[], SVGPaint paint) {
+    public void drawPolygon(PointF[] points, SVGPaint paint) {
         drawPolygon(points, paint, null);
     }
 
@@ -592,7 +582,7 @@ public class SVGCanvas {
      * @see SVGPolygon
      * @since 0.0.1
      */
-    public void drawPolygon(PointF points[], SVGPaint paint, String id) {
+    public void drawPolygon(PointF[] points, SVGPaint paint, String id) {
         if (points == null || points.length < 3) {
             throw new IllegalArgumentException("points is null or points length <3");
         }
@@ -609,7 +599,7 @@ public class SVGCanvas {
      * @see #convertPoints(float[])
      * @since 0.0.1
      */
-    public void drawPolyline(float points[], SVGPaint paint) {
+    public void drawPolyline(float[] points, SVGPaint paint) {
         drawPolyline(points, paint, null);
     }
 
@@ -623,7 +613,7 @@ public class SVGCanvas {
      * @see #convertPoints(float[])
      * @since 0.0.1
      */
-    public void drawPolyline(float points[], SVGPaint paint, String id) {
+    public void drawPolyline(float[] points, SVGPaint paint, String id) {
         drawPolyline(convertPoints(points), paint, id);
     }
 
@@ -636,7 +626,7 @@ public class SVGCanvas {
      * @see SVGPolyline
      * @since 0.0.1
      */
-    public void drawPolyline(PointF points[], SVGPaint paint) {
+    public void drawPolyline(PointF[] points, SVGPaint paint) {
         drawPolyline(points, paint, null);
     }
 
@@ -650,7 +640,7 @@ public class SVGCanvas {
      * @see SVGPolyline
      * @since 0.0.1
      */
-    public void drawPolyline(PointF points[], SVGPaint paint, String id) {
+    public void drawPolyline(PointF[] points, SVGPaint paint, String id) {
         if (points == null || points.length < 2) {
             throw new IllegalArgumentException("points is null or points length <2");
         }
@@ -943,17 +933,11 @@ public class SVGCanvas {
             elementIDs.clear();
         }
 
-        if (gradients != null) {
-            gradients.clear();
-        }
+        gradients.clear();
 
-        if (filters != null) {
-            filters.clear();
-        }
+        filters.clear();
 
-        if (textPaths != null) {
-            textPaths.clear();
-        }
+        textPaths.clear();
 
         saveFlags.clear();
         matrixList.clear();
@@ -1049,8 +1033,8 @@ public class SVGCanvas {
      * @return The points of type PointF[]
      * @since 0.0.1
      */
-    private PointF[] convertPoints(float points[]) {
-        PointF pointF[] = new PointF[points.length / 2];
+    private PointF[] convertPoints(float[] points) {
+        PointF[] pointF = new PointF[points.length / 2];
         for (int i = 0; i < points.length; i += 2)
             pointF[i / 2] = new PointF(points[i], points[i + 1]);
         return pointF;
@@ -1093,7 +1077,7 @@ public class SVGCanvas {
      */
 
     private void addFilterToElement(Element element, SVGFilter filter) {
-        String filterId = null;
+        String filterId;
         if (filters.containsKey(filter)) {
             filterId = filters.get(filter);
         } else {
@@ -1254,7 +1238,7 @@ public class SVGCanvas {
         if (viewBox != null) {
             rootSvgElement.setAttribute("viewBox", viewBox.valueStr(this.geomDoubleConverter));
             if (preserveAspectRatio != null) {
-                rootSvgElement.setAttribute("preserveAspectRatio", preserveAspectRatio.toString() + (meetOrSlice == null ? "" : " " + meetOrSlice.toString()));
+                rootSvgElement.setAttribute("preserveAspectRatio", preserveAspectRatio + (meetOrSlice == null ? "" : " " + meetOrSlice));
 
             }
         }
@@ -1660,7 +1644,7 @@ public class SVGCanvas {
         float miterLimit = DEFAULT_MITER_LIMIT;
         int alpha = 255;
         String strokeColor = "white";
-        float dashArray[] = null;
+        float[] dashArray = null;
         if (paint != null) {
             if (paint.getStrokeWidth() > 0)
                 strokeWidth = paint.getStrokeWidth();
@@ -1736,7 +1720,7 @@ public class SVGCanvas {
             b.append("fill-opacity:").append(opacity).append(';');
         }
         if (!paint.getFillRule().equals(SVGPaint.FillRule.FILL_RULE_DEFAULT)) {
-            b.append("fill-rule:" + paint.getFillRule()).append(';');
+            b.append("fill-rule:").append(paint.getFillRule()).append(';');
         }
         return b.toString();
     }
@@ -1825,17 +1809,15 @@ public class SVGCanvas {
      * @since 0.0.1
      */
     private String getSVGTransform(Matrix t) {
-        float value[] = new float[9];
+        float[] value = new float[9];
         t.getValues(value);
 
-        StringBuilder b = new StringBuilder("matrix(");
-        b.append(transformDP(value[Matrix.MSCALE_X])).append(",");
-        b.append(transformDP(value[Matrix.MSKEW_Y])).append(",");
-        b.append(transformDP(value[Matrix.MSKEW_X])).append(",");
-        b.append(transformDP(value[Matrix.MSCALE_Y])).append(",");
-        b.append(transformDP(value[Matrix.MTRANS_X])).append(",");
-        b.append(transformDP(value[Matrix.MTRANS_Y])).append(")");
-        return b.toString();
+        return "matrix(" + transformDP(value[Matrix.MSCALE_X]) + "," +
+                transformDP(value[Matrix.MSKEW_Y]) + "," +
+                transformDP(value[Matrix.MSKEW_X]) + "," +
+                transformDP(value[Matrix.MSCALE_Y]) + "," +
+                transformDP(value[Matrix.MTRANS_X]) + "," +
+                transformDP(value[Matrix.MTRANS_Y]) + ")";
     }
 
     /**
