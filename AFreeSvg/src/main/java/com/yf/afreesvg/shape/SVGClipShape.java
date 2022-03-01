@@ -1,5 +1,7 @@
 package com.yf.afreesvg.shape;
 
+import androidx.annotation.NonNull;
+
 import com.yf.afreesvg.ConvertToSVGElement;
 import com.yf.afreesvg.PosMode;
 import com.yf.afreesvg.SVGCanvas;
@@ -108,6 +110,7 @@ public class SVGClipShape implements ConvertToSVGElement, Cloneable {
         return element;
     }
 
+    @NonNull
     public Object clone() {
         return new SVGClipShape(this);
     }

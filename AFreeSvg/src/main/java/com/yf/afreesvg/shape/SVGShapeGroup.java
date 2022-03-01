@@ -1,5 +1,7 @@
 package com.yf.afreesvg.shape;
 
+import androidx.annotation.NonNull;
+
 import com.yf.afreesvg.SVGCanvas;
 import com.yf.afreesvg.util.DoubleFunction;
 
@@ -48,14 +50,13 @@ public class SVGShapeGroup implements SVGShape {
     @Override
     public Element convertToSVGElement(SVGCanvas canvas, Document document, DoubleFunction<String> convert) {
         Element g = document.createElement("g");
-        Iterator<SVGShape> iterator = list.iterator();
-        while (iterator.hasNext()) {
-            SVGShape shape = iterator.next();
+        for (SVGShape shape : list) {
             g.appendChild(shape.convertToSVGElement(canvas, document, convert));
         }
         return g;
     }
 
+    @NonNull
     @Override
     public Object clone() {
         return new SVGShapeGroup(this);

@@ -1,5 +1,6 @@
 package com.yf.afreesvg.shape;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.StringDef;
 
 import com.yf.afreesvg.SVGCanvas;
@@ -534,6 +535,7 @@ public class SVGPath extends SVGBaseShape {
         return pathElements.listIterator();
     }
 
+    @NonNull
     public Object clone() {
         return new SVGPath(this);
     }

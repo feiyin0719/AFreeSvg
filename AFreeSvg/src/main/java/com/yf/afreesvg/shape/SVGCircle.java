@@ -1,5 +1,7 @@
 package com.yf.afreesvg.shape;
 
+import androidx.annotation.NonNull;
+
 import com.yf.afreesvg.SVGCanvas;
 import com.yf.afreesvg.util.DoubleFunction;
 
@@ -73,6 +75,7 @@ public class SVGCircle extends SVGBaseShape {
         return element;
     }
 
+    @NonNull
     @Override
     public Object clone() {
         return new SVGCircle(cx, cy, r);

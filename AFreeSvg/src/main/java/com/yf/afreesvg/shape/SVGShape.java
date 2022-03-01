@@ -1,5 +1,7 @@
 package com.yf.afreesvg.shape;
 
+import androidx.annotation.NonNull;
+
 import com.yf.afreesvg.ConvertToSVGElement;
 import com.yf.afreesvg.SVGCanvas;
 
@@ -16,5 +18,6 @@ public interface SVGShape extends ConvertToSVGElement, Cloneable {
      *
      * @return
      */
+    @NonNull
     public Object clone();
 }

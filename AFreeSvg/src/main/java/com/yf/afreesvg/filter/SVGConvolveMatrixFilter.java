@@ -219,7 +219,6 @@ public class SVGConvolveMatrixFilter extends SVGBaseFilter {
         /**
          * Set bias
          *
-         * @return
          * @since 0.0.2
          */
         public void setBias(float bias) {
@@ -229,7 +228,6 @@ public class SVGConvolveMatrixFilter extends SVGBaseFilter {
         /**
          * Get targetX
          *
-         * @return
          * @since 0.0.2
          */
         public int getTargetX() {
@@ -239,7 +237,6 @@ public class SVGConvolveMatrixFilter extends SVGBaseFilter {
         /**
          * Set targetX
          *
-         * @return
          * @since 0.0.2
          */
         public void setTargetX(int targetX) {

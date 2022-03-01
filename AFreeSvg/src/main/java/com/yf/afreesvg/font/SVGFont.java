@@ -19,24 +19,25 @@ public class SVGFont {
      * Font family name
      */
     @NonNull
-    private String fontFamily;
+    private final String fontFamily;
     /**
      * Font size
      */
-    private int fontSize;
+    private final int fontSize;
     /**
      * Font weight
      * The values range
      * "normal | bold | bolder | lighter | 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900"
      */
     @NonNull
-    private String fontWeight;
+    private final String fontWeight;
     /**
      * Font style
      *
      * @see FontStyle
      */
     private @FontStyle
+    final
     String fontStyle;
     /**
      * Font variant
@@ -44,6 +45,7 @@ public class SVGFont {
      * @see FontVariant
      */
     private @FontVariant
+    final
     String fontVariant;
 
     @StringDef({FontStyle.STYLE_NORMAL, FontStyle.STYLE_ITALIC, FontStyle.STYLE_OBLIQUE})
@@ -178,6 +180,9 @@ public class SVGFont {
         }
 
         public SVGFont build() {
+            if (fontFamily == null) {
+                throw new IllegalArgumentException("fontFamily cannot be null");
+            }
             return new SVGFont(fontFamily, fontSize, fontWeight, fontStyle, fontVariant);
         }
     }

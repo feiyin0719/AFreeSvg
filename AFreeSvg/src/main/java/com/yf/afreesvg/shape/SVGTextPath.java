@@ -2,6 +2,8 @@ package com.yf.afreesvg.shape;
 
 import android.graphics.Paint;
 
+import androidx.annotation.NonNull;
+
 import com.yf.afreesvg.SVGCanvas;
 import com.yf.afreesvg.SVGPaint;
 import com.yf.afreesvg.SVGUnits;
@@ -268,6 +270,7 @@ public class SVGTextPath extends SVGBaseShape {
         }
     }
 
+    @NonNull
     @Override
     public Object clone() {
         SVGPaint paint = new SVGPaint();

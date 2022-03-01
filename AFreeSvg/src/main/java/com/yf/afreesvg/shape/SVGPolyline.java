@@ -2,6 +2,8 @@ package com.yf.afreesvg.shape;
 
 import android.graphics.PointF;
 
+import androidx.annotation.NonNull;
+
 import com.yf.afreesvg.SVGCanvas;
 import com.yf.afreesvg.util.DoubleFunction;
 
@@ -29,6 +31,7 @@ public class SVGPolyline extends SVGPolygon {
         return element;
     }
 
+    @NonNull
     @Override
     public Object clone() {
         return new SVGPolyline(points);

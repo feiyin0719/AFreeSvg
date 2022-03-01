@@ -1,5 +1,7 @@
 package com.yf.afreesvg.shape;
 
+import androidx.annotation.NonNull;
+
 import com.yf.afreesvg.SVGCanvas;
 import com.yf.afreesvg.util.DoubleFunction;
 
@@ -86,6 +88,7 @@ public class SVGOval extends SVGBaseShape {
         return element;
     }
 
+    @NonNull
     @Override
     public Object clone() {
         return new SVGOval(cx, cy, rx, ry);

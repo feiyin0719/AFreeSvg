@@ -1,5 +1,7 @@
 package com.yf.afreesvg.shape;
 
+import androidx.annotation.NonNull;
+
 import com.yf.afreesvg.SVGPaint;
 
 import org.w3c.dom.Element;
@@ -40,9 +42,8 @@ public abstract class SVGBaseShape implements SVGShape {
     }
 
 
+    @NonNull
     @Override
-    public Object clone() {
-        return null;
-    }
+    abstract public Object clone();
 
 }

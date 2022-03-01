@@ -89,7 +89,7 @@ public abstract class SVGBaseGradient implements SVGGradient {
     }
 
     /**
-     * Add offset colot
+     * Add offset color
      *
      * @param offset
      * @param color
@@ -138,7 +138,7 @@ public abstract class SVGBaseGradient implements SVGGradient {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         SVGBaseGradient that = (SVGBaseGradient) o;
-        return posMode == that.posMode &&
+        return posMode.equals(that.posMode) &&
                 Objects.equals(spreadMode, that.spreadMode) &&
                 Objects.equals(stopOffset, that.stopOffset) &&
                 Objects.equals(stopColor, that.stopColor);

@@ -2,6 +2,8 @@ package com.yf.afreesvg.shape;
 
 import android.graphics.PointF;
 
+import androidx.annotation.NonNull;
+
 import com.yf.afreesvg.SVGCanvas;
 import com.yf.afreesvg.util.DoubleFunction;
 
@@ -36,6 +38,7 @@ public class SVGPolygon extends SVGBaseShape {
         return points;
     }
 
+    @NonNull
     @Override
     public Object clone() {
         return new SVGPolygon(points);
@@ -49,11 +52,11 @@ public class SVGPolygon extends SVGBaseShape {
         return element;
     }
 
-    protected String getPointsStr(PointF points[], DoubleFunction<String> convert) {
+    protected String getPointsStr(PointF[] points, DoubleFunction<String> convert) {
         StringBuilder sb = new StringBuilder();
         if (points.length > 0) {
-            for (int i = 0; i < points.length; ++i)
-                sb.append(" " + convert.apply(points[i].x) + "," + convert.apply(points[i].y));
+            for (PointF point : points)
+                sb.append(" ").append(convert.apply(point.x)).append(",").append(convert.apply(point.y));
         }
         return sb.toString();
     }
