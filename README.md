@@ -9,7 +9,7 @@
 gradle添加jitpack仓库和依赖
 ```
  maven { url 'https://jitpack.io' }
- implementation 'com.github.feiyin0719:AFreeSvg:0.0.3'
+ implementation 'com.github.feiyin0719:AFreeSvg:0.0.4'
 ```
 
 ## 参考代码
@@ -163,6 +163,14 @@ gradle添加jitpack仓库和依赖
 
 绘制canvas，使用方法类似安卓canvas。
 
+构造函数
+  public SVGCanvas(double width, double height, SVGUnits units, boolean compatibleWithAndroid, InputStream inputStream)
+  width 宽度
+  height 高度
+  units 单位 可选
+  compatibleWithAndroid 可选 默认为true 用于指示saveLayer()创建新图层时使用<g>标签还是<svg>标签 true为使用<g> false为<svg>
+  inputStream 可选 一个现有的svg图片文件流, 若为合法svg图片文件流,会将现有svg图片内容填充至canvas,可用于修改已存在svg
+
 图形绘制api 
 
       1. drawRect(RectF rectF, SVGPaint paint) //绘制矩形
@@ -180,11 +188,15 @@ gradle添加jitpack仓库和依赖
       13. public void drawImage(String uri, float x, float y, float width, float height, SVGPaint paint)//绘制图片
       14. public void drawCircle(float cx, float cy, float r, SVGPaint paint) //绘制圆形
 
-transform clip 操作api
+transform clip saveLayer clear 操作api
 
       1. void clip(SVGClipShape shape) //设置clip区域，后续的绘制操作只会在clip区域上显示
       2. translate scale rotate skew //变换操作，使用方法和canvas一致
-      3. save() save(int flags)  restore() //和安卓canvas save restore一致，save后会保存当前canvas状态（transform和clip信息），restore会回退到之前状态,flags用来指示保存什么信息，不填则全部保存，SAVE_FLAG_CLIP 只保存clip信息。SAVE_FLAG_MATRIX 只保存transform信息
+      3. save() save(int flags)  //和安卓canvas save restore一致，save后会保存当前canvas状态,flags用来指示保存什么信息，不填则全部保存，SAVE_FLAG_CLIP 只保存clip信息。SAVE_FLAG_MATRIX 只保存transform信息（transform和clip信息）
+      4. saveLayer()会创建新图层,并保存当前图层状态 
+      5. restore会回退到之前状态 与save saveLayer 对应
+      6. clearLayer() 清空当前图层
+      7. clear() 清空当前canvas
 
 保存api
 
@@ -348,6 +360,9 @@ fun createLinearGradient(): SVGLinearGradient {
 
   
 ## 版本日志
+ - **0.0.4**
+ 1. 支持saveLayer clearLayer clear操作
+ 2. 支持基于现有svg图片创建功能
 - **0.0.3**
  1. 支持kotlin dsl，可以更加简洁明了的创建filter shape gradient（需配合[AFreeSvgKtx](https://github.com/feiyin0719/AFreeSvgKtx.git)使用）
  2. 重构内部代码实现
