@@ -165,11 +165,12 @@ gradle添加jitpack仓库和依赖
 
 构造函数
   public SVGCanvas(double width, double height, SVGUnits units, boolean compatibleWithAndroid, InputStream inputStream)
-  width 宽度
-  height 高度
-  units 单位 可选
-  compatibleWithAndroid 可选 默认为true 用于指示saveLayer()创建新图层时使用<g>标签还是<svg>标签 true为使用<g> false为<svg>
-  inputStream 可选 一个现有的svg图片文件流, 若为合法svg图片文件流,会将现有svg图片内容填充至canvas,可用于修改已存在svg
+  
+  1. width 宽度
+  2. height 高度
+  3. units 单位 可选
+  4. compatibleWithAndroid 可选 默认为true 用于指示saveLayer()创建新图层时使用<g>标签还是<svg>标签 true为使用<g> false为<svg>
+  5. inputStream 可选 一个现有的svg图片文件流, 若为合法svg图片文件流,会将现有svg图片内容填充至canvas,可用于修改已存在svg
 
 图形绘制api 
 
