@@ -33,20 +33,9 @@
 package com.yf.afreesvg;
 
 
-import com.yf.afreesvg.util.Args;
 import com.yf.afreesvg.util.DoubleConverter;
 import com.yf.afreesvg.util.DoubleFunction;
 import com.yf.afreesvg.util.RyuDouble;
-
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.zip.GZIPOutputStream;
 
 /**
  * Utility methods related to the {@link SVGCanvas} implementation.
@@ -55,90 +44,6 @@ public class SVGUtils {
 
     private SVGUtils() {
         // no need to instantiate this
-    }
-
-    /**
-     * Writes a file containing the SVG element.
-     *
-     * @param file       the file ({@code null} not permitted).
-     * @param svgElement the SVG element ({@code null} not permitted).
-     * @throws IOException if there is an I/O problem.
-     * @since 0.0.1
-     */
-    public static void writeToSVG(File file, String svgElement)
-            throws IOException {
-        writeToSVG(file, svgElement, false);
-    }
-
-    /**
-     * Writes a file containing the SVG element.
-     *
-     * @param file       the file ({@code null} not permitted).
-     * @param svgElement the SVG element ({@code null} not permitted).
-     * @param zip        compress the output.
-     * @throws IOException if there is an I/O problem.
-     * @since 0.0.1
-     */
-    public static void writeToSVG(File file, String svgElement, boolean zip)
-            throws IOException {
-        BufferedWriter writer = null;
-        try {
-            OutputStream os = new FileOutputStream(file);
-            if (zip) {
-                os = new GZIPOutputStream(os);
-            }
-            OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
-            writer = new BufferedWriter(osw);
-            writer.write("<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\" \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">\n");
-            writer.write(svgElement + "\n");
-            writer.flush();
-        } finally {
-            try {
-                if (writer != null) {
-                    writer.close();
-                }
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
-        }
-    }
-
-    /**
-     * Writes an HTML file containing an SVG element.
-     *
-     * @param file       the file.
-     * @param title      the title.
-     * @param svgElement the SVG element.
-     * @throws IOException if there is an I/O problem.
-     */
-    public static void writeToHTML(File file, String title, String svgElement)
-            throws IOException {
-        BufferedWriter writer = null;
-        try {
-            FileOutputStream fos = new FileOutputStream(file);
-            OutputStreamWriter osw = new OutputStreamWriter(fos, "UTF-8");
-            writer = new BufferedWriter(osw);
-            writer.write("<!DOCTYPE html>\n");
-            writer.write("<html>\n");
-            writer.write("<head>\n");
-            writer.write("<title>" + title + "</title>\n");
-            writer.write("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n");
-            writer.write("</head>\n");
-            writer.write("<body>\n");
-            writer.write(svgElement + "\n");
-            writer.write("</body>\n");
-            writer.write("</html>\n");
-            writer.flush();
-        } finally {
-            try {
-                if (writer != null) {
-                    writer.close();
-                }
-            } catch (IOException ex) {
-                Logger.getLogger(SVGUtils.class.getName()).log(Level.SEVERE,
-                        null, ex);
-            }
-        }
     }
 
     /**
