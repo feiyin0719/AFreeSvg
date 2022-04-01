@@ -36,6 +36,7 @@ dependencies {
 //    androidTestImplementation 'org.mockito:mockito-android:3.11.2'
     androidTestImplementation "com.google.dexmaker:dexmaker:1.2"
     androidTestImplementation "com.google.dexmaker:dexmaker-mockito:1.2"
+    testImplementation "org.robolectric:robolectric:3.8"
 
 }
 
@@ -44,7 +45,7 @@ ext {
     // 从Github上clone下来的项目的本地地址
     GITHUB_REPO_PATH = "../../AFreeSvg"
     PUBLISH_GROUP_ID = 'com.yf'
-    PUBLISH_ARTIFACT_ID = 'afreesvg'
+    PUBLISH_ARTIFACT_ID = 'com.yf.afreesvg'
     PUBLISH_VERSION = '0.0.3'
 }
 uploadArchives {

@@ -1705,27 +1705,31 @@ public class SVGCanvas {
         if (paint != null) {
             if (paint.getStrokeWidth() > 0)
                 strokeWidth = paint.getStrokeWidth();
-            switch (paint.getStrokeCap()) {
-                case ROUND:
-                    strokeCap = "round";
-                    break;
-                case SQUARE:
-                    strokeCap = "square";
-                    break;
-                case BUTT:
-                default:
-                    // already set to "butt"
+            if (paint.getStrokeCap() != null) {
+                switch (paint.getStrokeCap()) {
+                    case ROUND:
+                        strokeCap = "round";
+                        break;
+                    case SQUARE:
+                        strokeCap = "square";
+                        break;
+                    case BUTT:
+                    default:
+                        // already set to "butt"
+                }
             }
-            switch (paint.getStrokeJoin()) {
-                case BEVEL:
-                    strokeJoin = "bevel";
-                    break;
-                case ROUND:
-                    strokeJoin = "round";
-                    break;
-                case MITER:
-                default:
-                    // already set to "miter"
+            if (paint.getStrokeJoin() != null) {
+                switch (paint.getStrokeJoin()) {
+                    case BEVEL:
+                        strokeJoin = "bevel";
+                        break;
+                    case ROUND:
+                        strokeJoin = "round";
+                        break;
+                    case MITER:
+                    default:
+                        // already set to "miter"
+                }
             }
             miterLimit = paint.getStrokeMiter();
 

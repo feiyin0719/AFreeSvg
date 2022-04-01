@@ -13,7 +13,7 @@
 
 package com.yf.afreesvg.filter;
 
-import androidx.test.ext.junit.runners.AndroidJUnit4;
+import org.robolectric.RobolectricTestRunner;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,7 +21,8 @@ import org.w3c.dom.Element;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-@RunWith(AndroidJUnit4.class)
+
+@RunWith(RobolectricTestRunner.class)
 public class SVGFilterGroupTest extends SVGFilterBaseTest {
 
     @Test

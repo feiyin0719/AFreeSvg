@@ -15,7 +15,7 @@ package com.yf.afreesvg.gradient;
 
 import android.graphics.PointF;
 
-import androidx.test.ext.junit.runners.AndroidJUnit4;
+import org.robolectric.RobolectricTestRunner;
 
 import com.yf.afreesvg.TestConstant;
 
@@ -26,7 +26,7 @@ import org.w3c.dom.Element;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-@RunWith(AndroidJUnit4.class)
+@RunWith(RobolectricTestRunner.class)
 public class SVGLinearGradientTest extends SVGGradientBaseTest {
 
     @Test
