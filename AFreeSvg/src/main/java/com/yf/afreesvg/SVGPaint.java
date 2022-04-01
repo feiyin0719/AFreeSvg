@@ -15,7 +15,7 @@ package com.yf.afreesvg;
 
 import android.graphics.Paint;
 
-import androidx.annotation.ColorLong;
+import androidx.annotation.ColorInt;
 import androidx.annotation.StringDef;
 
 import com.yf.afreesvg.filter.SVGFilter;
@@ -53,8 +53,8 @@ public class SVGPaint extends Paint {
      * The fill color
      * Use it can different of strokeColor
      */
-    protected @ColorLong
-    long fillColor;
+    protected @ColorInt
+    int fillColor;
     /**
      * Stroke use gradient
      * true and {@link #gradient} is not null means that stroke use gradient
@@ -219,7 +219,7 @@ public class SVGPaint extends Paint {
      * @return The fill color
      * @since 0.0.1
      */
-    public long getFillColor() {
+    public int getFillColor() {
         return fillColor;
     }
 
@@ -229,7 +229,7 @@ public class SVGPaint extends Paint {
      * @param fillColor
      * @since 0.0.1
      */
-    public void setFillColor(@ColorLong long fillColor) {
+    public void setFillColor(@ColorInt int fillColor) {
         this.fillColor = fillColor;
     }
 

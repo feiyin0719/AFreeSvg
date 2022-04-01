@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
             svgCanvas = new SVGCanvas(500, 500, null, true, inputStream);
             SVGPaint paint = new SVGPaint();
             paint.setStyle(Paint.Style.STROKE);
-            paint.setFillColor(0xff0000ff);
+            paint.setFillColor(Color.YELLOW);
             paint.setDashArray(new float[]{5, 5, 10});
             paint.setColor(Color.RED);
             paint.setStrokeWidth(2);
