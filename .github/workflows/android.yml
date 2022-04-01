@@ -28,5 +28,3 @@ jobs:
       run: ./gradlew AFreeSvg:lint
     - name: run test
       run: ./gradlew AFreeSvg:testDebugUnitTest
-    - name: run test
-      run: ./gradlew 
