@@ -11,7 +11,7 @@
 gradle添加jitpack仓库和依赖
 ```
  maven { url 'https://jitpack.io' }
- implementation 'com.github.feiyin0719:AFreeSvg:0.0.4'
+ implementation 'com.github.feiyin0719:AFreeSvg:0.0.6'
 ```
 
 ## 参考代码
@@ -363,6 +363,10 @@ fun createLinearGradient(): SVGLinearGradient {
 
   
 ## 版本日志
+ - **0.0.6**
+ 1. remove AFreeSvgKtx code to fix release issue
+ - **0.0.5**
+ 1. 兼容低版本color设置
  - **0.0.4**
  1. 支持saveLayer clearLayer clear操作
  2. 支持基于现有svg图片创建功能
