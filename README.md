@@ -2,6 +2,8 @@
 
 [![](https://jitpack.io/v/feiyin0719/AFreeSvg.svg)](https://jitpack.io/#feiyin0719/AFreeSvg)
 
+[![Security Status](https://www.murphysec.com/platform3/v3/badge/1618010252381814784.svg?t=1)](https://www.murphysec.com/accept?code=5d39dc82da26158a1589316ba416c941&type=1&from=2&t=2)
+
 一个可以在安卓上绘制svg图片的库
 用法类似安卓canvas，通过SVGCanvas绘制图形，然后可以导出svg文件
 
